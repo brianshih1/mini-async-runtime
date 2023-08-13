@@ -1,10 +1,29 @@
-use std::{future::Future, ptr::NonNull};
+use std::{future::Future, mem, ptr::NonNull};
 
-use super::join_handle::JoinHandle;
+use super::{header::Header, join_handle::JoinHandle};
 
+#[derive(Debug)]
 pub struct Task {
     // Pointer to the raw task (allocated on heap)
     pub raw_task: NonNull<()>,
+}
+
+impl Task {
+    pub(crate) fn schedule(self) {
+        let ptr = self.raw_task.as_ptr();
+        let header = ptr as *const Header;
+        mem::forget(self);
+
+        unsafe {
+            ((*header).vtable.schedule)(ptr);
+        }
+    }
+}
+
+impl Drop for Task {
+    fn drop(&mut self) {
+        todo!()
+    }
 }
 
 /// Creates a new local task.
@@ -15,7 +34,7 @@ pub struct Task {
 /// When run, the task polls `future`. When woken up, it gets scheduled for
 /// running by the `schedule` function.
 ///
-pub(crate) fn spawn_local<F, R, S>(
+pub(crate) fn create_task<F, R, S>(
     executor_id: usize,
     future: F,
     schedule: S,
