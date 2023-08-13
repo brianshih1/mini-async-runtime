@@ -18,6 +18,17 @@ impl Task {
             ((*header).vtable.schedule)(ptr);
         }
     }
+
+    pub(crate) fn run(self) {
+        let ptr = self.raw_task.as_ptr();
+        let header = ptr as *const Header;
+
+        // vtable.run will call drop_task manually
+        mem::forget(self);
+        unsafe {
+            ((*header).vtable.run)(ptr);
+        }
+    }
 }
 
 impl Drop for Task {

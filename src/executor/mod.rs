@@ -8,7 +8,7 @@ pub mod local_executor;
 
 pub mod task_queue;
 
-pub mod executor_queues;
+pub mod queue_manager;
 
 scoped_tls::scoped_thread_local!(static LOCAL_EX: LocalExecutor);
 
@@ -27,7 +27,7 @@ pub(crate) fn executor_id() -> Option<usize> {
     }
 }
 
-pub fn executor() -> ExecutorProxy {
+pub(crate) fn executor() -> ExecutorProxy {
     ExecutorProxy {}
 }
 

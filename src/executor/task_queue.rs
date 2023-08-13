@@ -1,4 +1,4 @@
-use std::{cell::RefCell, collections::VecDeque, future::Future, rc::Rc};
+use std::{borrow::BorrowMut, cell::RefCell, collections::VecDeque, future::Future, rc::Rc};
 
 use crate::task::{
     join_handle::JoinHandle,
@@ -7,13 +7,24 @@ use crate::task::{
 
 /// Wrapper around an index that uniquely identifies a TaskQueue
 pub struct TaskQueueHandle {
-    index: usize,
+    pub(crate) index: usize,
 }
 
 #[derive(Debug)]
 pub(crate) struct TaskQueue {
     // contains the actual queue of Tasks
     pub(crate) ex: Rc<TaskQueueExecutor>,
+    // The invariant around active is that when it's true,
+    // it needs to be inside the active_executors
+    pub(crate) active: bool,
+}
+
+impl Eq for TaskQueue {}
+
+impl Ord for TaskQueue {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        todo!()
+    }
 }
 
 impl PartialOrd for TaskQueue {
@@ -25,6 +36,27 @@ impl PartialOrd for TaskQueue {
 impl PartialEq for TaskQueue {
     fn eq(&self, other: &Self) -> bool {
         todo!()
+    }
+}
+
+impl TaskQueue {
+    pub(crate) fn new(name: &str) -> Self {
+        TaskQueue {
+            ex: Rc::new(TaskQueueExecutor::new(name)),
+            active: false,
+        }
+    }
+
+    pub fn get_task(&self) -> Option<Task> {
+        self.ex.get_task()
+    }
+
+    pub(crate) fn is_active(&self) -> bool {
+        self.active
+    }
+
+    pub(crate) fn reset_active(&mut self) {
+        self.active = !self.ex.local_queue.is_empty();
     }
 }
 
@@ -55,14 +87,16 @@ impl TaskQueueExecutor {
 
             if let Some(tq) = tq {
                 {
-                    let queue = tq.borrow_mut();
-                    let foo = queue.ex;
-                    foo.as_ref().local_queue.push(task);
+                    tq.borrow().ex.as_ref().local_queue.push(task);
                 }
                 // TODO: maybe_activate?
             }
         };
         create_task(executor_id, future, schedule)
+    }
+
+    pub fn get_task(&self) -> Option<Task> {
+        self.local_queue.pop()
     }
 
     pub(crate) fn spawn_and_schedule<T>(
@@ -95,5 +129,9 @@ impl LocalQueue {
 
     pub(crate) fn pop(&self) -> Option<Task> {
         self.queue.borrow_mut().pop_front()
+    }
+
+    pub(crate) fn is_empty(&self) -> bool {
+        self.queue.borrow().is_empty()
     }
 }
