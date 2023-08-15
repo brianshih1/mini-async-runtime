@@ -5,6 +5,8 @@ use crate::task::{
     task::{create_task, Task},
 };
 
+use super::LOCAL_EX;
+
 /// Wrapper around an index that uniquely identifies a TaskQueue
 pub struct TaskQueueHandle {
     pub(crate) index: usize,
@@ -23,28 +25,28 @@ impl Eq for TaskQueue {}
 
 impl Ord for TaskQueue {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        todo!()
+        std::cmp::Ordering::Equal
     }
 }
 
 impl PartialOrd for TaskQueue {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        todo!()
+        Some(std::cmp::Ordering::Equal)
     }
 }
 
 impl PartialEq for TaskQueue {
     fn eq(&self, other: &Self) -> bool {
-        todo!()
+        true
     }
 }
 
 impl TaskQueue {
-    pub(crate) fn new(name: &str) -> Self {
-        TaskQueue {
+    pub(crate) fn new(name: &str) -> Rc<RefCell<Self>> {
+        Rc::new(RefCell::new(TaskQueue {
             ex: Rc::new(TaskQueueExecutor::new(name)),
             active: false,
-        }
+        }))
     }
 
     pub fn get_task(&self) -> Option<Task> {
@@ -89,7 +91,12 @@ impl TaskQueueExecutor {
                 {
                     tq.borrow().ex.as_ref().local_queue.push(task);
                 }
-                // TODO: maybe_activate?
+                {
+                    LOCAL_EX.with(|local_ex| {
+                        let mut queues = local_ex.queues.as_ref().borrow_mut();
+                        queues.maybe_activate_queue(tq);
+                    });
+                }
             }
         };
         create_task(executor_id, future, schedule)

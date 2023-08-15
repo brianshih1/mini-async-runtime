@@ -1,7 +1,10 @@
 use core::fmt;
 use std::sync::atomic::{AtomicI16, Ordering};
 
-use super::raw::TaskVTable;
+use super::{
+    raw::TaskVTable,
+    state::{CLOSED, COMPLETED},
+};
 
 pub(crate) struct Header {
     pub(crate) state: u8,
@@ -20,6 +23,22 @@ pub(crate) struct Header {
     /// The static lifetime guarantees that the reference would be valid
     /// while the Header exists
     pub(crate) vtable: &'static TaskVTable,
+}
+
+impl Header {
+    /// Cancels the task.
+    ///
+    /// This method will mark the task as closed, but it won't reschedule the
+    /// task or drop its future.
+    pub(crate) fn cancel(&mut self) {
+        // If the task has been completed or closed, it can't be canceled.
+        if self.state & (COMPLETED | CLOSED) != 0 {
+            return;
+        }
+
+        // Mark the task as closed.
+        self.state |= CLOSED;
+    }
 }
 
 impl fmt::Debug for Header {

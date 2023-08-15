@@ -5,10 +5,9 @@ use crate::task::{join_handle::JoinHandle, task::Task};
 use self::local_executor::LocalExecutor;
 
 pub mod local_executor;
-
-pub mod task_queue;
-
+mod local_executor_test;
 pub mod queue_manager;
+pub mod task_queue;
 
 scoped_tls::scoped_thread_local!(static LOCAL_EX: LocalExecutor);
 

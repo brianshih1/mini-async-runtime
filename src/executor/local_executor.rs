@@ -14,13 +14,27 @@ use super::{
 };
 
 #[derive(Debug)]
-pub struct LocalExecutor {
-    id: usize,
-    queues: Rc<RefCell<QueueManager>>,
+pub(crate) struct LocalExecutor {
+    pub(crate) id: usize,
+    pub(crate) queues: Rc<RefCell<QueueManager>>,
 }
 
 impl LocalExecutor {
-    pub fn add_default_task_queue() {}
+    pub fn default() -> Self {
+        let ex = LocalExecutor {
+            id: 0, // TODO: id_gen
+            queues: Rc::new(RefCell::new(QueueManager::new())),
+        };
+        ex.add_default_task_queue();
+        ex
+    }
+
+    pub fn add_default_task_queue(&self) {
+        self.queues
+            .borrow_mut()
+            .available_executors
+            .insert(0, TaskQueue::new("default"));
+    }
 
     pub fn get_id(&self) -> usize {
         self.id
@@ -31,7 +45,11 @@ impl LocalExecutor {
     }
 
     pub(crate) fn get_queue(&self, handle: TaskQueueHandle) -> Option<Rc<RefCell<TaskQueue>>> {
-        todo!()
+        self.queues
+            .borrow()
+            .available_executors
+            .get(&handle.index)
+            .cloned()
     }
 
     pub(crate) fn spawn<T>(&self, future: impl Future<Output = T>) -> JoinHandle<T> {

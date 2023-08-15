@@ -1,6 +1,6 @@
-use std::{future::Future, mem, ptr::NonNull};
+use std::{future::Future, marker::PhantomData, mem, ptr::NonNull};
 
-use super::{header::Header, join_handle::JoinHandle};
+use super::{header::Header, join_handle::JoinHandle, raw::RawTask, state::SCHEDULED};
 
 #[derive(Debug)]
 pub struct Task {
@@ -33,7 +33,22 @@ impl Task {
 
 impl Drop for Task {
     fn drop(&mut self) {
-        todo!()
+        let ptr = self.raw_task.as_ptr();
+        let header = ptr as *mut Header;
+
+        unsafe {
+            // Cancel the task.
+            (*header).cancel();
+
+            // Drop the future.
+            ((*header).vtable.drop_future)(ptr);
+
+            // Mark the task as unscheduled.
+            (*header).state &= !SCHEDULED;
+
+            // Drop the task reference.
+            ((*header).vtable.drop_task)(ptr);
+        }
     }
 }
 
@@ -54,5 +69,12 @@ where
     F: Future<Output = R>,
     S: Fn(Task),
 {
-    todo!()
+    let raw_task = RawTask::<_, R, S>::allocate(future, schedule, executor_id);
+
+    let task = Task { raw_task };
+    let handle = JoinHandle {
+        raw_task,
+        _marker: PhantomData,
+    };
+    (task, handle)
 }

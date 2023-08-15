@@ -1,10 +1,11 @@
 use std::{
     alloc::{self, Layout},
     future::Future,
-    mem,
+    mem::{self, ManuallyDrop},
+    pin::Pin,
     ptr::NonNull,
     sync::atomic::{AtomicI16, Ordering},
-    task::{RawWaker, RawWakerVTable, Waker},
+    task::{Context, Poll, RawWaker, RawWakerVTable, Waker},
 };
 
 use super::{
@@ -69,7 +70,7 @@ where
             let raw = Self::from_ptr(raw_task.as_ptr());
             // Write the header as the first field of the task.
             (raw.header as *mut Header).write(Header {
-                state: todo!(),
+                state: SCHEDULED | HANDLE,
                 executor_id,
                 references: AtomicI16::new(0),
                 vtable: &TaskVTable {
@@ -260,7 +261,10 @@ where
         }
     }
 
-    unsafe fn drop_future(ptr: *const ()) {}
+    unsafe fn drop_future(ptr: *const ()) {
+        let raw = Self::from_ptr(ptr);
+        raw.future.drop_in_place();
+    }
 
     /// Drops a task.
     ///
@@ -269,7 +273,18 @@ where
     /// task gets destroyed.
     #[inline]
     unsafe fn drop_task(ptr: *const ()) {
-        todo!()
+        let raw = Self::from_ptr(ptr);
+
+        // Decrement the reference count.
+        let refs = Self::decrement_references(&mut *(raw.header as *mut Header));
+
+        let state = (*raw.header).state;
+
+        // If this was the last reference to the task and the `JoinHandle` has been
+        // dropped too, then destroy the task.
+        if refs == 0 && state & HANDLE == 0 {
+            Self::destroy(ptr);
+        }
     }
 
     unsafe fn get_output(ptr: *const ()) -> *const () {
@@ -279,10 +294,101 @@ where
 
     /// Runs a task.
     ///
-    /// If polling its future panics, the task will be closed and the panic will
-    /// be propagated into the caller.
+    /// Returns if the task needs to be scheduled again. If it's closed or completed, then return false.
+    /// Otherwise, return true
     unsafe fn run(ptr: *const ()) -> bool {
-        todo!()
+        let raw = Self::from_ptr(ptr);
+
+        let mut state = (*raw.header).state;
+
+        // If the task has already been closed, drop the task reference and return.
+        if state & CLOSED != 0 {
+            // Drop the future.
+            Self::drop_future(ptr);
+
+            // Mark the task as unscheduled.
+            (*(raw.header as *mut Header)).state &= !SCHEDULED;
+
+            // Drop the task reference.
+            Self::drop_task(ptr);
+            return false;
+        }
+
+        // Unset the Scheduled bit and set the Running bit
+        state = (state & !SCHEDULED) | RUNNING;
+        (*(raw.header as *mut Header)).state = state;
+
+        let waker = ManuallyDrop::new(Waker::from_raw(RawWaker::new(ptr, &Self::RAW_WAKER_VTABLE)));
+        let cx = &mut Context::from_waker(&waker);
+
+        // TODO: Guard
+        let poll = <F as Future>::poll(Pin::new_unchecked(&mut *raw.future), cx);
+
+        // state could be updated after the poll
+        state = (*raw.header).state;
+
+        // ret is true if the task needs to be scheduled again. This happens
+        // if the task is not complete and not closed.
+        let mut ret = false;
+        match poll {
+            Poll::Ready(out) => {
+                Self::drop_future(ptr);
+                raw.output.write(out);
+
+                // A place where the output will be stored in case it needs to be dropped.
+                let mut output = None;
+
+                // The task is now completed.
+                // If the handle is dropped, we'll need to close it and drop the output.
+                // We can drop the output if there is no handle since the handle is the
+                // only thing that can retrieve the output from the raw task.
+                let new = if state & HANDLE == 0 {
+                    (state & !RUNNING & !SCHEDULED) | COMPLETED | CLOSED
+                } else {
+                    (state & !RUNNING & !SCHEDULED) | COMPLETED
+                };
+
+                (*(raw.header as *mut Header)).state = new;
+
+                // If the handle is dropped or if the task was closed while running,
+                // now it's time to drop the output.
+                if state & HANDLE == 0 || state & CLOSED != 0 {
+                    // Read the output.
+                    output = Some(raw.output.read());
+                }
+
+                drop(output);
+            }
+            Poll::Pending => {
+                // The task is still not completed.
+
+                // If the task was closed while running, we'll need to unschedule in case it
+                // was woken up and then destroy it.
+                let new = if state & CLOSED != 0 {
+                    state & !RUNNING & !SCHEDULED
+                } else {
+                    state & !RUNNING
+                };
+
+                if state & CLOSED != 0 {
+                    Self::drop_future(ptr);
+                }
+
+                (*(raw.header as *mut Header)).state = new;
+
+                if state & SCHEDULED != 0 {
+                    // The thread that woke the task up didn't reschedule it because
+                    // it was running so now it's our responsibility to do so.
+                    Self::schedule(ptr);
+                    ret = true;
+                }
+            }
+        }
+
+        // references is incremented each time it's scheduled. After it's run,
+        // it needs to be dropped to decrement the reference.
+        Self::drop_task(ptr);
+        ret
     }
 }
 
