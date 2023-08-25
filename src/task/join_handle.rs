@@ -26,6 +26,7 @@ impl<R> Future for JoinHandle<R> {
         self: std::pin::Pin<&mut Self>,
         cx: &mut std::task::Context<'_>,
     ) -> std::task::Poll<Self::Output> {
+        println!("Polling join handle");
         let ptr = self.raw_task.as_ptr();
         let header = ptr as *mut Header;
 

@@ -53,10 +53,8 @@ impl LocalExecutor {
     }
 
     pub(crate) fn spawn<T>(&self, future: impl Future<Output = T>) -> JoinHandle<T> {
-        let tq = self
-            .queues
-            .borrow()
-            .active_executing
+        let active_executing = self.queues.borrow().active_executing.clone();
+        let tq = active_executing
             .clone() // this clone is cheap because we clone an `Option<Rc<_>>`
             .or_else(|| self.get_default_queue())
             .unwrap();
@@ -101,8 +99,10 @@ impl LocalExecutor {
         loop {
             // TODO: Check if prempt
             if !self.run_one_task_queue() {
+                println!("Returned false");
                 return false;
             } else {
+                println!("run_task_queues. Ran is true, loop again");
                 ran = true;
             }
         }
@@ -111,17 +111,19 @@ impl LocalExecutor {
 
     // Returns true if a task queue is run
     fn run_one_task_queue(&self) -> bool {
+        println!("run_one_task_queue called");
         let mut q_manager = self.queues.borrow_mut();
         let tq = q_manager.active_executors.pop();
         match tq {
             Some(tq) => {
                 q_manager.active_executing = Some(tq.clone());
-
+                drop(q_manager);
                 loop {
                     // TODO: Break if pre-empted or yielded
                     let tq = tq.borrow_mut();
 
                     if let Some(task) = tq.get_task() {
+                        drop(tq);
                         task.run();
                     } else {
                         break;
@@ -131,7 +133,7 @@ impl LocalExecutor {
                 tq_ref.reset_active();
                 let need_repush = tq_ref.is_active();
                 if need_repush {
-                    q_manager.active_executors.push(tq.clone());
+                    self.queues.borrow_mut().active_executors.push(tq.clone());
                 }
                 true
             }

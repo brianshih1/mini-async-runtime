@@ -84,7 +84,7 @@ impl TaskQueueExecutor {
         future: impl Future<Output = T>,
     ) -> (Task, JoinHandle<T>) {
         let tq = Rc::downgrade(&tq);
-        let schedule = |task| {
+        let schedule = move |task| {
             let tq = tq.upgrade();
 
             if let Some(tq) = tq {

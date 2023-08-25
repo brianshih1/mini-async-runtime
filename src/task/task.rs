@@ -20,6 +20,7 @@ impl Task {
     }
 
     pub(crate) fn run(self) {
+        println!("Running task");
         let ptr = self.raw_task.as_ptr();
         let header = ptr as *const Header;
 
