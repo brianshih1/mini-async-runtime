@@ -99,10 +99,10 @@ impl LocalExecutor {
         loop {
             // TODO: Check if prempt
             if !self.run_one_task_queue() {
-                println!("Returned false");
+                println!("run_task_queues: no task executed, returning");
                 return false;
             } else {
-                println!("run_task_queues. Ran is true, loop again");
+                println!("run_task_queues: Ran is true, loop again");
                 ran = true;
             }
         }
@@ -113,6 +113,8 @@ impl LocalExecutor {
     fn run_one_task_queue(&self) -> bool {
         println!("run_one_task_queue called");
         let mut q_manager = self.queues.borrow_mut();
+        let size = q_manager.active_executors.len();
+        println!("Size is: {}", size);
         let tq = q_manager.active_executors.pop();
         match tq {
             Some(tq) => {
@@ -126,6 +128,7 @@ impl LocalExecutor {
                         drop(tq);
                         task.run();
                     } else {
+                        println!("No task. Break!");
                         break;
                     }
                 }
@@ -137,7 +140,10 @@ impl LocalExecutor {
                 }
                 true
             }
-            None => false,
+            None => {
+                println!("no task queue to run");
+                false
+            }
         }
     }
 }

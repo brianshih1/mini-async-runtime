@@ -15,6 +15,8 @@ pub(crate) const SCHEDULED: u8 = 1 << 0;
 /// This flag can't be set when the task is completed. However, it can be in
 /// scheduled state while it is running, in which case it will be rescheduled as
 /// soon as polling finishes.
+///
+/// 2
 pub(crate) const RUNNING: u8 = 1 << 1;
 
 /// Set if the task has been completed.
@@ -35,6 +37,8 @@ pub(crate) const COMPLETED: u8 = 1 << 2;
 /// [`JoinHandle::cancel()`]. 2. Its output gets awaited by the [`JoinHandle`].
 /// 3. It panics while polling the future.
 /// 4. It is completed and the [`JoinHandle`] gets dropped.
+///
+/// 8
 pub(crate) const CLOSED: u8 = 1 << 3;
 
 /// Set if the [`JoinHandle`] still exists.
@@ -42,4 +46,6 @@ pub(crate) const CLOSED: u8 = 1 << 3;
 /// The [`JoinHandle`] is a special case in that it is only tracked by this
 /// flag, while all other task references ([`Task`] and [`Waker`]s) are tracked
 /// by the reference count.
+///
+/// 16
 pub(crate) const HANDLE: u8 = 1 << 4;

@@ -81,6 +81,7 @@ where
                     destroy: Self::destroy,
                     run: Self::run,
                 },
+                awaiter: None,
             });
 
             // Write the schedule function as the third field of the task.
@@ -357,6 +358,9 @@ where
                     output = Some(raw.output.read());
                 }
 
+                // Notify the awaiter that the task has been completed.
+                (*(raw.header as *mut Header)).notify(None);
+
                 drop(output);
             }
             Poll::Pending => {
@@ -376,7 +380,16 @@ where
 
                 (*(raw.header as *mut Header)).state = new;
 
-                if state & SCHEDULED != 0 {
+                let is_scheduled = state & SCHEDULED;
+                println!("Scheduled: {}", is_scheduled);
+                // If the task was closed while running, we need to notify the awaiter.
+                // If the task was woken up while running, we need to schedule it.
+                // Otherwise, we just drop the task reference.
+                if state & CLOSED != 0 {
+                    println!("err");
+                    // Notify the awaiter that the future has been dropped.
+                    (*(raw.header as *mut Header)).notify(None);
+                } else if state & SCHEDULED != 0 {
                     // The thread that woke the task up didn't reschedule it because
                     // it was running so now it's our responsibility to do so.
                     Self::schedule(ptr);

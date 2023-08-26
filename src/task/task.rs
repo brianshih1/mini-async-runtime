@@ -47,6 +47,9 @@ impl Drop for Task {
             // Mark the task as unscheduled.
             (*header).state &= !SCHEDULED;
 
+            // Notify the awaiter that the future has been dropped.
+            (*header).notify(None);
+
             // Drop the task reference.
             ((*header).vtable.drop_task)(ptr);
         }

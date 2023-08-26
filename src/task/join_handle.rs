@@ -38,17 +38,27 @@ impl<R> Future for JoinHandle<R> {
                 // If the task is scheduled or running, we need to wait until its future is
                 // dropped.
                 if state & (SCHEDULED | RUNNING) != 0 {
+                    // Replace the waker with one associated with the current task.
+                    (*header).register(cx.waker());
                     return Poll::Pending;
                 }
 
+                (*header).notify(Some(cx.waker()));
                 return Poll::Ready(None);
             }
 
             if state & COMPLETED == 0 {
+                // Replace the waker with one associated with the current task.
+                (*header).register(cx.waker());
+                println!("Join Handle's poll PENDING");
                 return Poll::Pending;
             }
 
             (*header).state |= CLOSED;
+
+            // Notify the awaiter. Even though the awaiter is most likely the current
+            // task, it could also be another task.
+            (*header).notify(Some(cx.waker()));
 
             // Take the output from the task.
             let output = ((*header).vtable.get_output)(ptr) as *mut R;
