@@ -14,7 +14,7 @@ fn simple_spawn() {
     let local_ex = LocalExecutor::default();
     let res = local_ex.run(async {
         let handle = spawn_local(async { 1 + 5 });
-        handle.await.unwrap()
+        handle.await.unwrap() + 7
     });
-    assert_eq!(res, 6)
+    assert_eq!(res, 13)
 }

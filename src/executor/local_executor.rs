@@ -155,7 +155,18 @@ pub(crate) fn dummy_waker() -> Waker {
     }
 
     fn vtable() -> &'static RawWakerVTable {
-        &RawWakerVTable::new(|_| raw_waker(), |_| {}, |_| {}, |_| {})
+        &RawWakerVTable::new(
+            |_| raw_waker(),
+            |_| {
+                println!("Dummy wake");
+            },
+            |_| {
+                println!("Dummy wake_by_ref");
+            },
+            |_| {
+                println!("Dummy drop");
+            },
+        )
     }
 
     unsafe { Waker::from_raw(raw_waker()) }

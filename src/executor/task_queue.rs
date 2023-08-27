@@ -89,6 +89,7 @@ impl TaskQueueExecutor {
 
             if let Some(tq) = tq {
                 {
+                    println!("Push to Task Queue");
                     tq.borrow().ex.as_ref().local_queue.push(task);
                 }
                 {

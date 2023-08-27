@@ -167,6 +167,7 @@ where
 
     /// Wakes a waker. Ptr is the raw task.
     unsafe fn wake_by_ref(ptr: *const ()) {
+        println!("Wake_by_ref");
         let raw = Self::from_ptr(ptr);
         if Self::thread_id() != Some(raw.my_executor_id()) {
             todo!()
@@ -333,6 +334,7 @@ where
         let mut ret = false;
         match poll {
             Poll::Ready(out) => {
+                println!("poll is ready");
                 Self::drop_future(ptr);
                 raw.output.write(out);
 
@@ -364,6 +366,7 @@ where
                 drop(output);
             }
             Poll::Pending => {
+                println!("Task is pending");
                 // The task is still not completed.
 
                 // If the task was closed while running, we'll need to unschedule in case it

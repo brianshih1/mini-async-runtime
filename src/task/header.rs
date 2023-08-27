@@ -54,10 +54,12 @@ impl Header {
     /// notified.
     #[inline]
     pub(crate) fn notify(&mut self, current: Option<&Waker>) {
+        println!("Notify!");
         // Take the waker out.
         let waker = self.awaiter.take();
 
         if let Some(w) = waker {
+            println!("Wake!");
             w.wake()
         }
     }
@@ -68,6 +70,7 @@ impl Header {
     /// completed.
     #[inline]
     pub(crate) fn register(&mut self, waker: &Waker) {
+        println!("Register");
         // Put the waker into the awaiter field.
         self.awaiter = Some(waker.clone());
     }
