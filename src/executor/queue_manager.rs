@@ -6,17 +6,17 @@ use super::task_queue::TaskQueue;
 
 #[derive(Debug)]
 pub(crate) struct QueueManager {
-    pub active_executors: BinaryHeap<Rc<RefCell<TaskQueue>>>,
+    pub active_queues: BinaryHeap<Rc<RefCell<TaskQueue>>>,
     pub active_executing: Option<Rc<RefCell<TaskQueue>>>,
-    pub available_executors: AHashMap<usize, Rc<RefCell<TaskQueue>>>,
+    pub available_queues: AHashMap<usize, Rc<RefCell<TaskQueue>>>,
 }
 
 impl QueueManager {
     pub fn new() -> Self {
         QueueManager {
-            active_executors: BinaryHeap::new(),
+            active_queues: BinaryHeap::new(),
             active_executing: None,
-            available_executors: AHashMap::new(),
+            available_queues: AHashMap::new(),
         }
     }
 
@@ -25,7 +25,7 @@ impl QueueManager {
         if !state.is_active() {
             state.active = true;
             drop(state);
-            self.active_executors.push(queue);
+            self.active_queues.push(queue);
         }
     }
 }

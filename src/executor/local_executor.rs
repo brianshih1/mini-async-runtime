@@ -32,7 +32,7 @@ impl LocalExecutor {
     pub fn add_default_task_queue(&self) {
         self.queues
             .borrow_mut()
-            .available_executors
+            .available_queues
             .insert(0, TaskQueue::new("default"));
     }
 
@@ -47,7 +47,7 @@ impl LocalExecutor {
     pub(crate) fn get_queue(&self, handle: TaskQueueHandle) -> Option<Rc<RefCell<TaskQueue>>> {
         self.queues
             .borrow()
-            .available_executors
+            .available_queues
             .get(&handle.index)
             .cloned()
     }
@@ -113,9 +113,9 @@ impl LocalExecutor {
     fn run_one_task_queue(&self) -> bool {
         println!("run_one_task_queue called");
         let mut q_manager = self.queues.borrow_mut();
-        let size = q_manager.active_executors.len();
+        let size = q_manager.active_queues.len();
         println!("Size is: {}", size);
-        let tq = q_manager.active_executors.pop();
+        let tq = q_manager.active_queues.pop();
         match tq {
             Some(tq) => {
                 q_manager.active_executing = Some(tq.clone());
@@ -136,7 +136,7 @@ impl LocalExecutor {
                 tq_ref.reset_active();
                 let need_repush = tq_ref.is_active();
                 if need_repush {
-                    self.queues.borrow_mut().active_executors.push(tq.clone());
+                    self.queues.borrow_mut().active_queues.push(tq.clone());
                 }
                 true
             }
