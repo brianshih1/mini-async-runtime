@@ -33,7 +33,9 @@ impl<T> Async<T> {
         let mut op = op;
         loop {
             match op(self.get_ref()) {
-                Err(err) if err.kind() == io::ErrorKind::WouldBlock => {}
+                Err(err) if err.kind() == io::ErrorKind::WouldBlock => {
+                    println!("would block");
+                }
                 res => return res,
             }
             self.readable().await?;

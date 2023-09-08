@@ -6,7 +6,7 @@ use std::{
     task::{Context, Poll, RawWaker, RawWakerVTable, Waker},
 };
 
-use crate::{executor::LOCAL_EX, reactor::Reactor, task::join_handle::JoinHandle};
+use crate::{executor::LOCAL_EX, parking, reactor::Reactor, task::join_handle::JoinHandle};
 
 use super::{
     queue_manager::QueueManager,
@@ -18,6 +18,7 @@ pub(crate) struct LocalExecutor {
     pub(crate) id: usize,
     pub(crate) queues: Rc<RefCell<QueueManager>>,
     reactor: Rc<Reactor>,
+    parker: parking::Parker,
 }
 
 pub(crate) const DEFAULT_RING_SUBMISSION_DEPTH: usize = 128;
@@ -27,6 +28,7 @@ impl LocalExecutor {
         let ex = LocalExecutor {
             id: 0, // TODO: id_gen
             queues: Rc::new(RefCell::new(QueueManager::new())),
+            parker: parking::Parker::new(),
             reactor: Rc::new(Reactor::new(DEFAULT_RING_SUBMISSION_DEPTH)),
         };
         ex.add_default_task_queue();
@@ -87,6 +89,10 @@ impl LocalExecutor {
                     // cancellation or panic. So in case of panic this just propagates
                     return t.unwrap();
                 }
+
+                self.parker
+                    .poll_io()
+                    .expect("Failed to poll io! This is actually pretty bad!");
 
                 // TODO: I/O work
                 self.run_task_queues();

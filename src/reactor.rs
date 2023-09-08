@@ -32,8 +32,8 @@ impl Reactor {
         self.new_source(raw, SourceType::PollableFd)
     }
 
-    fn react(&self) -> io::Result<()> {
+    pub fn react(&self) -> io::Result<bool> {
         self.sys.wait();
-        Ok(())
+        Ok(true)
     }
 }

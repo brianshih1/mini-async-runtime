@@ -87,7 +87,10 @@ pub(crate) trait UringCommon {
         let mut completed: usize = 0;
         loop {
             if self.consume_one_event().is_none() {
+                println!("No events to consume!");
                 break;
+            } else {
+                println!("We got an event!!");
             }
             completed += 1;
         }
@@ -274,6 +277,7 @@ impl SourceMap {
 
 fn process_one_event(cqe: Option<iou::CQE>, source_map: Rc<RefCell<SourceMap>>) -> Option<bool> {
     if let Some(value) = cqe {
+        println!("There's a CQE!");
         // No user data is `POLL_REMOVE` or `CANCEL`, we won't process.
         if value.user_data() == 0 {
             return Some(false);
