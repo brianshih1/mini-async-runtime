@@ -1,8 +1,11 @@
-use std::future::Future;
+use std::{future::Future, rc::Rc};
 
-use crate::task::{join_handle::JoinHandle, task::Task};
+use crate::{
+    reactor::Reactor,
+    task::{join_handle::JoinHandle, task::Task},
+};
 
-use self::local_executor::LocalExecutor;
+use self::{local_executor::LocalExecutor, task_queue::TaskQueueHandle};
 
 pub mod local_executor;
 mod local_executor_test;
@@ -39,4 +42,13 @@ impl ExecutorProxy {
     {
         LOCAL_EX.with(|local_ex| local_ex.spawn(future))
     }
+
+    pub fn current_task_queue(&self) -> TaskQueueHandle {
+        todo!()
+        // return LOCAL_EX.with(|local_ex| local_ex.current_task_queue());
+    }
+}
+
+pub(crate) fn get_reactor() -> Rc<Reactor> {
+    LOCAL_EX.with(|local_ex| local_ex.get_reactor())
 }

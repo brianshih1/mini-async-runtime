@@ -8,6 +8,7 @@ use crate::task::{
 use super::LOCAL_EX;
 
 /// Wrapper around an index that uniquely identifies a TaskQueue
+#[derive(Debug)]
 pub struct TaskQueueHandle {
     pub(crate) index: usize,
 }

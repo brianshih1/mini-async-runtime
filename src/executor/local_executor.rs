@@ -6,7 +6,7 @@ use std::{
     task::{Context, Poll, RawWaker, RawWakerVTable, Waker},
 };
 
-use crate::{executor::LOCAL_EX, task::join_handle::JoinHandle};
+use crate::{executor::LOCAL_EX, reactor::Reactor, task::join_handle::JoinHandle};
 
 use super::{
     queue_manager::QueueManager,
@@ -17,16 +17,24 @@ use super::{
 pub(crate) struct LocalExecutor {
     pub(crate) id: usize,
     pub(crate) queues: Rc<RefCell<QueueManager>>,
+    reactor: Rc<Reactor>,
 }
+
+pub(crate) const DEFAULT_RING_SUBMISSION_DEPTH: usize = 128;
 
 impl LocalExecutor {
     pub fn default() -> Self {
         let ex = LocalExecutor {
             id: 0, // TODO: id_gen
             queues: Rc::new(RefCell::new(QueueManager::new())),
+            reactor: Rc::new(Reactor::new(DEFAULT_RING_SUBMISSION_DEPTH)),
         };
         ex.add_default_task_queue();
         ex
+    }
+
+    pub fn get_reactor(&self) -> Rc<Reactor> {
+        self.reactor.clone()
     }
 
     pub fn add_default_task_queue(&self) {
