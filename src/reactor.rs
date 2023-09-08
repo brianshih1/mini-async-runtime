@@ -1,4 +1,4 @@
-use std::os::fd::RawFd;
+use std::{io, os::fd::RawFd};
 
 use crate::{
     executor::executor,
@@ -30,5 +30,10 @@ impl Reactor {
 
     pub fn insert_pollable_io(&self, raw: RawFd) -> Source {
         self.new_source(raw, SourceType::PollableFd)
+    }
+
+    fn react(&self) -> io::Result<()> {
+        self.sys.wait();
+        Ok(())
     }
 }

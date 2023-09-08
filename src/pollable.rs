@@ -19,3 +19,24 @@ impl<T: AsRawFd> Async<T> {
         })
     }
 }
+
+impl<T> Async<T> {
+    pub async fn readable(&self) -> io::Result<()> {
+        self.source.readable().await
+    }
+
+    pub fn get_ref(&self) -> &T {
+        self.io.as_ref().unwrap()
+    }
+
+    pub async fn read_with<R>(&self, op: impl FnMut(&T) -> io::Result<R>) -> io::Result<R> {
+        let mut op = op;
+        loop {
+            match op(self.get_ref()) {
+                Err(err) if err.kind() == io::ErrorKind::WouldBlock => {}
+                res => return res,
+            }
+            self.readable().await?;
+        }
+    }
+}

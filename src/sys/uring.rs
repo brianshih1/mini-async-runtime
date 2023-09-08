@@ -77,6 +77,22 @@ pub(crate) trait UringCommon {
             Ok(0)
         }
     }
+
+    /// Return `None` if no event is completed, `Some(true)` for a task is woken
+    /// up and `Some(false)` for not.
+    fn consume_one_event(&mut self) -> Option<bool>;
+
+    // TODO: Wakers?
+    fn consume_completion_queue(&mut self) -> usize {
+        let mut completed: usize = 0;
+        loop {
+            if self.consume_one_event().is_none() {
+                break;
+            }
+            completed += 1;
+        }
+        completed
+    }
 }
 
 #[derive(Debug)]
@@ -85,6 +101,7 @@ struct SleepableRing {
     in_kernel: usize,
     submission_queue: ReactorQueue,
     name: &'static str,
+    source_map: Rc<RefCell<SourceMap>>,
 }
 
 impl UringCommon for SleepableRing {
@@ -112,6 +129,14 @@ impl UringCommon for SleepableRing {
     fn submission_queue(&mut self) -> ReactorQueue {
         self.submission_queue.clone()
     }
+
+    fn consume_one_event(&mut self) -> Option<bool> {
+        let source_map = self.source_map.clone();
+        process_one_event(self.ring.peek_for_cqe(), source_map).map(|x| {
+            self.in_kernel -= 1;
+            x
+        })
+    }
 }
 
 impl SleepableRing {
@@ -125,6 +150,7 @@ impl SleepableRing {
             in_kernel: 0,
             submission_queue: UringQueueState::with_capacity(size * 4),
             name,
+            source_map,
         })
     }
 }
@@ -172,6 +198,13 @@ impl Reactor {
             UringOpDescriptor::PollAdd(flags),
             &mut self.source_map.clone(),
         );
+    }
+
+    pub(crate) fn wait(&self) {
+        let mut main_ring = self.main_ring.borrow_mut();
+
+        main_ring.consume_completion_queue();
+        main_ring.consume_submission_queue().unwrap();
     }
 }
 
@@ -229,4 +262,34 @@ impl SourceMap {
         self.map.insert(id, source.inner.clone());
         id
     }
+
+    fn consume_source(&mut self, id: u64) -> Pin<Rc<RefCell<InnerSource>>> {
+        let source = self.map.remove(&id).unwrap();
+        // let mut s = mut_source(&source);
+        // s.id = None;
+        // s.queue = None;
+        source
+    }
+}
+
+fn process_one_event(cqe: Option<iou::CQE>, source_map: Rc<RefCell<SourceMap>>) -> Option<bool> {
+    if let Some(value) = cqe {
+        // No user data is `POLL_REMOVE` or `CANCEL`, we won't process.
+        if value.user_data() == 0 {
+            return Some(false);
+        }
+
+        let src = source_map.borrow_mut().consume_source(value.user_data());
+
+        let result = value.result();
+
+        let mut woke = false;
+
+        let mut inner_source = src.borrow_mut();
+        inner_source.wakers.result = Some(result.map(|v| v as usize));
+        woke = inner_source.wakers.wake_waiters();
+
+        return Some(woke);
+    }
+    None
 }

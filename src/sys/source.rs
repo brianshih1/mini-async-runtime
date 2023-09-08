@@ -93,4 +93,15 @@ impl Wakers {
             waiters: Vec::new(),
         }
     }
+
+    pub(super) fn wake_waiters(&mut self) -> bool {
+        if self.waiters.is_empty() {
+            false
+        } else {
+            self.waiters.drain(..).for_each(|x| {
+                x.wake();
+            });
+            true
+        }
+    }
 }
