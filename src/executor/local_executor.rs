@@ -9,6 +9,8 @@ use std::{
 use crate::{executor::LOCAL_EX, parking, reactor::Reactor, task::join_handle::JoinHandle};
 
 use super::{
+    local_executor_builder::LocalExecutorBuilder,
+    placement::Placement,
     queue_manager::QueueManager,
     task_queue::{TaskQueue, TaskQueueHandle},
 };
@@ -24,15 +26,25 @@ pub(crate) struct LocalExecutor {
 pub(crate) const DEFAULT_RING_SUBMISSION_DEPTH: usize = 128;
 
 impl LocalExecutor {
-    pub fn default() -> Self {
-        let ex = LocalExecutor {
-            id: 0, // TODO: id_gen
+    pub fn new(cpu_binding: Option<impl IntoIterator<Item = usize>>) -> Self {
+        match cpu_binding {
+            Some(cpu_set) => bind_to_cpu_set(cpu_set),
+            None => {}
+        }
+        LocalExecutor {
+            id: 0,
             queues: Rc::new(RefCell::new(QueueManager::new())),
             parker: parking::Parker::new(),
             reactor: Rc::new(Reactor::new(DEFAULT_RING_SUBMISSION_DEPTH)),
-        };
-        ex.add_default_task_queue();
-        ex
+        }
+    }
+
+    pub fn init(&mut self) {
+        self.add_default_task_queue();
+    }
+    pub fn default() -> Self {
+        let builder = LocalExecutorBuilder::new(Placement::Unbound);
+        builder.build()
     }
 
     pub fn get_reactor(&self) -> Rc<Reactor> {
@@ -160,6 +172,15 @@ impl LocalExecutor {
             }
         }
     }
+}
+
+pub(crate) fn bind_to_cpu_set(cpus: impl IntoIterator<Item = usize>) {
+    let mut cpuset = nix::sched::CpuSet::new();
+    for cpu in cpus {
+        cpuset.set(cpu).unwrap();
+    }
+    let pid = nix::unistd::Pid::from_raw(0);
+    nix::sched::sched_setaffinity(pid, &cpuset).unwrap();
 }
 
 pub(crate) fn dummy_waker() -> Waker {

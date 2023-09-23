@@ -8,7 +8,9 @@ use crate::{
 use self::{local_executor::LocalExecutor, task_queue::TaskQueueHandle};
 
 pub mod local_executor;
+pub mod local_executor_builder;
 mod local_executor_test;
+pub mod placement;
 pub mod queue_manager;
 pub mod task_queue;
 
