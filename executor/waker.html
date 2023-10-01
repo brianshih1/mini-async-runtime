@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>API - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+        <title>Waker - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html" class="active"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html" class="active"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -142,68 +142,74 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="api"><a class="header" href="#api">API</a></h1>
-<p>As we mentioned earlier, an executor is a task scheduler. Therefore, it needs APIs to submit tasks to the executor as well as consume the output of the tasks.</p>
-<p>There are 3 main APIs that our executor supports:</p>
-<ul>
-<li><strong>run</strong>: runs the task to completion</li>
-<li><strong>spawn_local</strong>: spawns a task onto the executor</li>
-<li><strong>spawn_local_into</strong>: spawns a task onto a specific task queue</li>
-</ul>
-<p>Here is a simple example of using the APIs to run a simple task that performs arithmetics:</p>
+                        <h1 id="waker"><a class="header" href="#waker">Waker</a></h1>
+<p>When <code>poll</code>ed, a <code>Future</code> returns <code>Poll::Pending</code> if it’s blocked by another operation (e.g. waiting for a disk read to complete). The executor can keep polling the <code>Future</code> at regular intervals to check if it’s ready yet. But that’s inefficient and wastes CPU cycles.</p>
+<p>A more efficient solution is to poll again when the operation blocking the <code>Future</code> from making progress is finished (e.g. when the disk read is complete). Ideally, the blocking operation notifies the executor that the <code>Future</code> is ready to be <code>poll</code>ed again. This is what the <code>Waker</code> is for.</p>
+<p>The <code>poll</code> method of the <code>Future</code> contains a <code>Context</code>:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>let local_ex = LocalExecutor::default();
-let res = local_ex.run(async { 1 + 2 });
-assert_eq!(res, 3)
+</span>fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;
 <span class="boring">}</span></code></pre></pre>
-<h3 id="run"><a class="header" href="#run">Run</a></h3>
-<p>To run a task, you call the <code>run</code> method on the executor, which is a synchronous method and runs the task in the form of a Future (which we will cover next) until completion.</p>
-<p>Here is its signature:</p>
+<p>Each <code>Context</code> has a waker that can be retrieved with <code>cx.waker()</code>. Each <code>waker</code> has a <code>wake()</code> method, which notifies the executor that the <code>Future</code> is ready to be <code>poll</code>ed again.</p>
+<p>So what exactly is a <code>Waker</code>? The <code>Waker</code> is a <code>struct</code> that contains function pointers. However, what the functions do is totally up to the executor that polls the <code>Future</code>.</p>
+<p>To create a <code>Waker</code>, we can use the <code>from_raw</code> constructor:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>pub fn run&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt;) -&gt; T 
+</span>pub const unsafe fn from_raw(waker: RawWaker) -&gt; Waker
 <span class="boring">}</span></code></pre></pre>
-<h3 id="spawn_local"><a class="header" href="#spawn_local">spawn_local</a></h3>
-<p>To schedule a <code>task</code> onto the <code>executor</code>, use the <code>spawn_local</code> method:</p>
+<p>The <code>RawWaker</code> contains a <code>RawWakerVTable</code> which contains pointers to methods like <code>wake</code>.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>let local_ex = LocalExecutor::default();
-let res = local_ex.run(async {
-    let first = spawn_local(async_fetch_value());
-		let second = spawn_local(async_fetch_value_2());
-    first.await.unwrap() + second.await.unwrap()
-});
+</span>pub struct RawWaker {
+		...
+    /// Virtual function pointer table that customizes the behavior of this waker.
+    vtable: &amp;'static RawWakerVTable,
+}
+
+pub struct RawWakerVTable {
+    clone: unsafe fn(*const ()) -&gt; RawWaker,
+    wake: unsafe fn(*const ()),
+    wake_by_ref: unsafe fn(*const ()),
+    drop: unsafe fn(*const ()),
+}
 <span class="boring">}</span></code></pre></pre>
-<p>If <code>spawn_local</code> isn’t called from a local executor (i.e. inside a <code>LocalExecutor::run</code>), it will panic. Here is its signature:</p>
+<p>When <code>Waker::wake</code> is called, the <code>RawWakerVTable</code>'s <code>wake</code> method is called. Below is the implementation of <code>Waker::wake()</code>. We can see that it simply calls the virtual function implemented by the executor.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>pub fn spawn_local&lt;T&gt;(future: impl Future&lt;Output = T&gt; + 'static) -&gt; JoinHandle&lt;T&gt;
-where
-    T: 'static
+</span>pub fn wake(self) {
+  // The actual wakeup call is delegated through a virtual function call
+  // to the implementation which is defined by the executor.
+  let wake = self.waker.vtable.wake;
+  let data = self.waker.data;
+
+  // Don't call `drop` -- the waker will be consumed by `wake`.
+  crate::mem::forget(self);
+
+  // SAFETY: This is safe because `Waker::from_raw` is the only way
+  // to initialize `wake` and `data` requiring the user to acknowledge
+  // that the contract of `RawWaker` is upheld.
+  unsafe { (wake)(data) };
+}
 <span class="boring">}</span></code></pre></pre>
-<p>The return type of <code>spawn_local</code> is a <code>JoinHandle</code>, which is a <code>Future</code> that awaits the result of a task. We will cover abstractions like <code>JoinHandle</code> in more depth later.</p>
-<h3 id="spawn_local_into"><a class="header" href="#spawn_local_into">spawn_local_into</a></h3>
-<p>One of the abstractions that we will cover later is a <code>TaskQueue</code>. <code>TaskQueue</code> is an abstraction of a collection of tasks. In phase 3, we will introduce more advanced scheduling mechanisms that dictate how much time an executor spends on each <code>TaskQueue</code>.</p>
-<p>A single executor can have many task queues. To specify which <code>TaskQueue</code> to spawn a task to, we can invoke the <code>spawn_local_into</code> method as follows:</p>
+<p>A common pattern is that the <code>wake</code> method adds the <code>Future</code> back to a queue. The executor can then loop over the queue of <code>Future</code>s that are ready to be <code>poll</code>ed again.</p>
+<p>Let’s look at an example:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>local_ex.run(async {
-		let task_queue_handle = executor().create_task_queue(...);
-		let task = spawn_local_into(async { write_file().await }, task_queue_handle);
-	}
-)
+</span>async fn send_email() {
+    async_send_email(...).await;
+}
 <span class="boring">}</span></code></pre></pre>
+<p>In this example, when <code>send_email</code> is <code>poll</code>ed, it returns <code>Poll::pending</code> because making a network request to send the email takes time. However, the <code>cx.waker()</code> is stored by the email client. When the email client finishes sending the email, it calls <code>waker.wake()</code> to notify the executor that the <code>Future</code> is ready to be <code>poll</code>ed again.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../executor/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../executor/async-await.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../executor/primitive-intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../executor/implementation-details.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -213,11 +219,11 @@ where
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../executor/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../executor/async-await.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../executor/primitive-intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../executor/implementation-details.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="spacer"></li></ol></li><li class="chapter-item expanded "><li class="part-title">Phase 2 - Asynchronous I/O</li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -143,7 +143,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>In this blog series, I will explore building a toy version of <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a>, which is an <code>asynchronous</code> framework for building <code>thread-per-core</code> applications.</p>
+                        <h1 id="motivation"><a class="header" href="#motivation">Motivation</a></h1>
+<p>In this blog series, I will explore building a toy version of <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a>, which is an <code>asynchronous</code> framework for building <code>thread-per-core</code> applications.</p>
 <h3 id="what-is-thread-per-core"><a class="header" href="#what-is-thread-per-core">What is Thread-Per-Core?</a></h3>
 <p>A complex application may have many tasks that it needs to execute. To speed up the application, some of these tasks can be performed in parallel. The ability of a system to execute multiple tasks concurrently is known as <strong>multitasking</strong>.</p>
 <p>Thread-based multitasking is one of the ways an operating system supports multitasking. In thread-based multitasking, an application can spawn a thread for each of its internal tasks. While the CPU can only run one thread at a time, the CPU scheduler can switch between threads to give the user the perception of two or more threads running simultaneously. The switching between threads is known as context switching. </p>
@@ -167,7 +168,7 @@
 <p>As we mentioned earlier, the thread-per-core architecture eliminates threads from the picture. Contrary to multithreading applications which let the OS’s CPU scheduler decide which thread to run, thread-per-core frameworks like Glommio built their own <strong>executors</strong> to decide which tasks to run. In other words, an executor is a task scheduler.</p>
 <p>An executor needs to decide when to switch between tasks. There are two main ways in which schedulers do that: preemptive multitasking and cooperative multitasking.</p>
 <p>In <strong>preemptive multitasking</strong>, the scheduler decides when to switch between tasks. It may have an internal timer that forces a task to give up control to the CPU to ensure that each task gets a fair share of the CPU.</p>
-<p>In <strong>cooperative multitasking</strong>, each task runs until it voluntarily gives up control to the scheduler. The type of multitasking Glommio supports is cooperative multitasking.</p>
+<p>In <strong>cooperative multitasking</strong>, the scheduler lets the task run until it voluntarily gives up control back to the scheduler. <code>Glommio</code> supports cooperative multitasking.</p>
 <p>So how might an executor run tasks? The most simple mechanism is with the event loop.</p>
 <h3 id="the-event-loop"><a class="header" href="#the-event-loop">The Event Loop</a></h3>
 <p>The most simple way in which an executor runs tasks is to use a loop. In each iteration, the executor fetches the tasks and runs all of them sequentially.</p>
@@ -237,7 +238,1288 @@ where
 	}
 )
 <span class="boring">}</span></code></pre></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="prerequisites---rust-primitives"><a class="header" href="#prerequisites---rust-primitives">Prerequisites - Rust Primitives</a></h1>
+<p>We will be using Rust primitives heavily to support asynchronous operations. In this section, I will perform a quick summary of Rust primitives including <code>Future</code>, <code>Async/Await</code>, and <code>Waker</code>.</p>
+<p>If you are already familiar with these primitives, feel free to skip this section. If you want a more thorough explanation of these primitives, I recommend these two blogs: <a href="https://rust-lang.github.io/async-book/01_getting_started/04_async_await_primer.html">async/.await Primer</a> and Philipp Oppermann’s <a href="https://os.phil-opp.com/async-await/">Async/Await blog</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="future"><a class="header" href="#future">Future</a></h1>
+<p>A future represents a value that might not be available yet. Each future implements the <code>std::future::Future</code> trait as follows:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Future {
+    type Output;
+
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context) -&gt; Poll&lt;Self::Output&gt;;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The associated type, <code>Output</code>, represents the type of the output value.</p>
+<p>The <code>poll</code> method returns whether the value is ready or not. It’s also used to advance the <code>Future</code> towards completion. The <code>poll</code> method returns <code>Poll::Ready(value)</code> if it’s completed and <code>Poll::Pending</code> if it’s not complete yet. It’s important to understand that a <code>Future</code> does nothing until it’s <code>poll</code>ed. Polling a future forces it to make progress.</p>
+<p>The <code>Poll</code> enum looks like this:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum Poll&lt;T&gt; {
+    Ready(T),
+    Pending,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>poll</code> method takes in a <code>Context</code> argument. As we will cover soon, the <code>Context</code> holds a <code>Waker</code> instance which notifies any interested tasks that are blocked by the current task.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="asyncawait"><a class="header" href="#asyncawait">Async/Await</a></h1>
+<p><code>Async/Await</code> lets the programmer write code that looks like normal synchronous code. But the compiler then turns the code into asynchronous code. The <code>async</code> keyword can be used in a function signature to turn a synchronous function into an asynchronous function that returns a future:</p>
+<p>The way <code>async/await</code> works is that programmers write code that looks like synchronous code. But the compiler then turns the code into asynchronous code. <code>Async/Await</code> is based on two keywords: <code>async</code> and <code>await</code>. During compilation, any code block wrapped inside the <code>async</code> keyword is converted into a state machine in the form of a <code>Future</code>.</p>
+<p>As a simple example, the following async function <code>one_fn</code> may be compiled into <code>compiled_one_fn</code>, which is a function that returns a <code>Future</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn one_fn() -&gt; u32 {
+    1
+}
+
+fn compiled_one_fn() -&gt; impl Future&lt;Output = u32&gt; {
+    future::ready(1)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>To gain a better intuition for how asynchronous code gets converted into a state machine, let’s look at a more complex <code>async</code> function. We are going to convert the <code>notify_user</code> method below into a state machine that implements the <code>Future</code> trait.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn notify_user(user_id: u32) {
+	let user = async_fetch_user(user_id).await;
+	if user.group == 1 {
+			async_send_email(&amp;user).await;
+	}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The method above first fetches the user’s information. It then sends an email if the user’s group matches <code>1</code>.</p>
+<p>If we think about the function as a state machine, here are its possible states:</p>
+<ul>
+<li><strong>Unpolled</strong>: the start state of the function</li>
+<li><strong>FetchingUser</strong>: the state when the function is waiting for <code>async_fetch_user(user_id)</code> to complete</li>
+<li><strong>SendingEmail</strong>: the state when the function is waiting for <code>async_send_email(user)</code> to complete</li>
+<li><strong>Ready</strong>: the end state of the function.</li>
+</ul>
+<p>Each point represents a pausing point in the function. The state machine we are going to create implements the <code>Future</code> trait. Each call to the future’s <code>poll</code> method performs a possible state transition.</p>
+<p>The compiler creates the following enum to track the state of the state machine (note that my examples are for demonstration purposes and not what the compiler actually generates)</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum State {
+	Unpolled,
+	FetchingUser,
+	SendingEmail,
+	Ready
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Next, the compiler generates the following struct to hold all the variables the state machine needs.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct NotifyUser {
+	state: State,
+	user_id: u32,
+	fetch_user_fut: Option&lt;impl Future&lt;Output = User&gt;&gt;,
+	send_email_fut: Option&lt;impl Future&lt;Output = ()&gt;&gt;,
+	user: Option&lt;User&gt;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>To track the progress of <code>async_fetch_user(user_id).await</code> and <code>async_send_email(&amp;user).await</code>, the state machine stores the <code>async_fetch_user</code>'s state machine inside the <code>fetch_user_fut</code> field and stores the <code>async_send_email</code>'s state machine inside the <code>send_email_fut</code> field.</p>
+<p>Note that <code>fetch_user_fut</code> and <code>send_email_fut</code> are both <code>Option</code>s. This is because the state machine won’t be initiated until the <code>NotifyUser</code> state machine reaches there. In the case of <code>send_email_fut</code>, the state machine may never be initiated in the case that <code>[user.group](&lt;http://user.group&gt;)</code> is not <code>1</code>.</p>
+<p>Conceptually, <code>fetch_user_fut</code> and <code>send_email_fut</code> are like children state machines that make up a bigger state machine that is the <code>NotifyUser</code>.</p>
+<p>Now that we have a state machine, let’s implement the <code>Future</code> trait:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Future for NotifyUser {
+	type Output = ();
+	
+	fn poll(&amp;mut self, cx: &amp;mut Context) -&gt; Poll&lt;()&gt; {
+		loop {
+			match self.state {
+				State::Unpolled =&gt; { todo!() },
+				State::FetchingUser =&gt; { todo!() },
+				State::SendingEmail =&gt; { todo!() },
+				State::Ready =&gt; { todo!() };
+			}
+		}
+	}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>poll</code> method starts a <code>loop</code> because in the case that one of the states isn’t blocked, the state machine can perform multiple state transitions in a single <code>poll</code> call. This reduces the number of <code>poll</code> calls the executor needs to make.</p>
+<p>Now, let’s look at how each state performs the state transition.</p>
+<p>When we initialize <code>NotifyUser</code>,  its <code>state</code> is <code>State::Unpolled</code>, which represents the starting state. When we <code>poll</code> <code>NotifyUser</code> for the first time, it calls <code>async_fetch_user</code> to instantiate and store the <code>fetch_user_fut</code> state machine.</p>
+<p>It then transitions its <code>state</code> to <code>State::FetchingUser</code>. Note that this code block doesn’t return <code>Poll::Pending</code>. This is because none of the executed code is blocking, so we can go ahead and execute the handle for the next state transition.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>State::Unpolled =&gt; {
+		self.fetch_user_fut = Some(async_fetch_user(self.user_id));
+		self.state = State::FetchingUser;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>When we get to the <code>FetchinUser</code> state, it <code>poll</code>s the <code>fetch_user_fut</code> to see if it’s ready. If it’s <code>Pending</code>, we return <code>Poll::Pending</code>. Otherwise, <code>NotifyUser</code> can perform its next state transition. If <code>self.user.group == 1</code>, it needs to create and store the <code>fetch_user_fut</code> state machine and transition the state to <code>State::SendingEmail</code>. Otherwise, it can transition its state to <code>State::Ready</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>State::FetchingUser =&gt; {
+		match self.fetch_user_fut.unwrap().poll(cx) {
+				Poll::Pending =&gt; return Poll::Pending,
+				Poll::Ready(user) =&gt; {
+						self.user = Some(user);
+						if self.user.group == 1 {
+								self.fetch_user_fut = Some(async_send_email(&amp;self.user));
+								self.state = State::SendingEmail;
+						} else {
+								self.state = State::Ready;
+						}
+				}
+		}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>If the state is <code>SendingEmail</code>, it polls <code>send_email_fut</code> to check if it’s ready. If it is, it transitions the state to <code>State::Ready</code>. Otherwise, it returns <code>Poll::Pending</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>State::SendingEmail =&gt; {
+		match self.send_email_fut.unwrap().poll(cx) {
+				Poll::Pending =&gt; return Poll::Pending,
+				Poll::Ready(()) =&gt; {
+						self.state = State::Ready;
+				}
+		}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Finally, if the state is <code>Ready</code>, <code>NotifyUser</code> returns <code>Poll::Ready(())</code> to indicate that the state machine is complete.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>State::Ready =&gt; return Poll::Ready(());
+<span class="boring">}</span></code></pre></pre>
+<p>Here is the full code:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum State {
+	Unpolled,
+	FetchingUser,
+	SendingEmail,
+	Ready
+}
+
+struct NotifyUser {
+	state: State,
+	user_id: u32,
+	fetch_user_fut: Option&lt;impl Future&lt;Output = User&gt;&gt;,
+	send_email_fut: Option&lt;impl Future&lt;Output = ()&gt;&gt;,
+	user: Option&lt;User&gt;
+}
+
+impl Future for NotifyUser {
+	type Output = ();
+	
+	fn poll(&amp;mut self, cx: &amp;mut Context) -&gt; Poll&lt;()&gt; {
+		loop {
+			match self.state {
+				State::Unpolled =&gt; {
+						self.fetch_user_fut = Some(async_fetch_user(self.user_id));
+						self.state = State::FetchingUser;
+				},
+				State::FetchingUser =&gt; {
+						match self.fetch_user_fut.unwrap().poll(cx) {
+								Poll::Pending =&gt; return Poll::Pending,
+								Poll::Ready(user) =&gt; {
+										self.user = Some(user);
+										if self.user.group == 1 {
+												self.fetch_user_fut = Some(async_send_email(&amp;self.user));
+												self.state = State::SendingEmail;
+										} else {
+												self.state = State::Ready;
+										}
+								}
+						}
+				},
+				State::SendingEmail =&gt; {
+						match self.send_email_fut.unwrap().poll(cx) {
+								Poll::Pending =&gt; return Poll::Pending,
+								Poll::Ready(()) =&gt; {
+										self.state = State::Ready;
+								}
+						}
+				},
+				State::Ready =&gt; return Poll::Ready(());
+			}
+		}
+	}
+}
+<span class="boring">}</span></code></pre></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="waker"><a class="header" href="#waker">Waker</a></h1>
+<p>When <code>poll</code>ed, a <code>Future</code> returns <code>Poll::Pending</code> if it’s blocked by another operation (e.g. waiting for a disk read to complete). The executor can keep polling the <code>Future</code> at regular intervals to check if it’s ready yet. But that’s inefficient and wastes CPU cycles.</p>
+<p>A more efficient solution is to poll again when the operation blocking the <code>Future</code> from making progress is finished (e.g. when the disk read is complete). Ideally, the blocking operation notifies the executor that the <code>Future</code> is ready to be <code>poll</code>ed again. This is what the <code>Waker</code> is for.</p>
+<p>The <code>poll</code> method of the <code>Future</code> contains a <code>Context</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;
+<span class="boring">}</span></code></pre></pre>
+<p>Each <code>Context</code> has a waker that can be retrieved with <code>cx.waker()</code>. Each <code>waker</code> has a <code>wake()</code> method, which notifies the executor that the <code>Future</code> is ready to be <code>poll</code>ed again.</p>
+<p>So what exactly is a <code>Waker</code>? The <code>Waker</code> is a <code>struct</code> that contains function pointers. However, what the functions do is totally up to the executor that polls the <code>Future</code>.</p>
+<p>To create a <code>Waker</code>, we can use the <code>from_raw</code> constructor:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub const unsafe fn from_raw(waker: RawWaker) -&gt; Waker
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>RawWaker</code> contains a <code>RawWakerVTable</code> which contains pointers to methods like <code>wake</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct RawWaker {
+		...
+    /// Virtual function pointer table that customizes the behavior of this waker.
+    vtable: &amp;'static RawWakerVTable,
+}
+
+pub struct RawWakerVTable {
+    clone: unsafe fn(*const ()) -&gt; RawWaker,
+    wake: unsafe fn(*const ()),
+    wake_by_ref: unsafe fn(*const ()),
+    drop: unsafe fn(*const ()),
+}
+<span class="boring">}</span></code></pre></pre>
+<p>When <code>Waker::wake</code> is called, the <code>RawWakerVTable</code>'s <code>wake</code> method is called. Below is the implementation of <code>Waker::wake()</code>. We can see that it simply calls the virtual function implemented by the executor.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn wake(self) {
+  // The actual wakeup call is delegated through a virtual function call
+  // to the implementation which is defined by the executor.
+  let wake = self.waker.vtable.wake;
+  let data = self.waker.data;
+
+  // Don't call `drop` -- the waker will be consumed by `wake`.
+  crate::mem::forget(self);
+
+  // SAFETY: This is safe because `Waker::from_raw` is the only way
+  // to initialize `wake` and `data` requiring the user to acknowledge
+  // that the contract of `RawWaker` is upheld.
+  unsafe { (wake)(data) };
+}
+<span class="boring">}</span></code></pre></pre>
+<p>A common pattern is that the <code>wake</code> method adds the <code>Future</code> back to a queue. The executor can then loop over the queue of <code>Future</code>s that are ready to be <code>poll</code>ed again.</p>
+<p>Let’s look at an example:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn send_email() {
+    async_send_email(...).await;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>In this example, when <code>send_email</code> is <code>poll</code>ed, it returns <code>Poll::pending</code> because making a network request to send the email takes time. However, the <code>cx.waker()</code> is stored by the email client. When the email client finishes sending the email, it calls <code>waker.wake()</code> to notify the executor that the <code>Future</code> is ready to be <code>poll</code>ed again.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="implementation-details"><a class="header" href="#implementation-details">Implementation Details</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="core-abstractions"><a class="header" href="#core-abstractions">Core abstractions</a></h1>
+<p>Here are the core abstractions that make up our executor:</p>
+<ul>
+<li>Local Executor</li>
+<li>Task</li>
+<li>TaskQueue</li>
+<li>Queue Manager</li>
+<li>JoinHandle</li>
+</ul>
+<h3 id="task"><a class="header" href="#task">Task</a></h3>
+<p>A Task is the basic unit of work in an executor. A task is created by the <code>run</code> and <code>spawn_local</code> methods. The task keeps track of whether the provided <code>Future</code> is completed. It also tracks if the task is <code>canceled</code> or <code>closed</code> and deallocates itself from the memory if it’s no longer needed.</p>
+<h3 id="local-executor"><a class="header" href="#local-executor">Local Executor</a></h3>
+<p>The <code>Local Executor</code> is responsible for tracking and running a collection of <code>task</code>s. It’s responsible for switching between different tasks and performing multitasking.</p>
+<h3 id="task-queue"><a class="header" href="#task-queue">Task Queue</a></h3>
+<p>Each TaskQueue holds a queue of <code>Task</code>. Right now, <code>TaskQueue</code> simply holds a list of Tasks. But in <code>Phase 4</code>, we will expose more advanced APIs that allow developers to specify roughly how the single-threaded executor should split up the CPU amongst the different task queues through the <code>shares</code> property.</p>
+<h3 id="queue-manager"><a class="header" href="#queue-manager">Queue Manager</a></h3>
+<p>A Queue Manager decides which Task Queue to run. At any point, the queue manager keeps track of which Task Queue is running. In this phase, the queue manager will simply pick an arbitrary task queue to run.</p>
+<h3 id="joinhandle"><a class="header" href="#joinhandle">JoinHandle</a></h3>
+<p>When a task is spawned, the user needs a way to consume the output. This is what the <code>JoinHandle</code> does - it allows the user to consume the output of the task by calling <code>await</code>. The user can also cancel the task with the handle.</p>
+<p>As shown in the example below, <code>spawn_local</code> returns a <code>JoinHandle</code> which can be <code>await</code>ed.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let handle = spawn_local(async { 1 + 3 });
+let output = handle.await;
+<span class="boring">}</span></code></pre></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="task-1"><a class="header" href="#task-1">Task</a></h1>
+<p>A Task is the basic unit of work in an executor. A Task is created whenever a <code>Future</code> is spawned onto the Executor. You can think of a Task as a wrapper around the spawned <code>Future</code>.</p>
+<p>To run the <code>Task</code>, the <code>Executor</code> <code>polls</code> the user-provided <code>Future</code>. The Future’s <code>poll</code> method would return <code>Poll::Ready</code> if it’s done. Otherwise, the Future returns <code>Poll::Pending</code>. In that case, the executor needs to repoll the Future when it is ready to make progress.</p>
+<p>Apart from the <code>Future</code>, the <code>Task</code> needs to keep track of a few other things. Let’s look at some of these properties:</p>
+<h3 id="state"><a class="header" href="#state"><strong>State</strong></a></h3>
+<p>A task needs to keep track of its <code>state</code> so that an executor knows if they are completed, canceled, etc.</p>
+<p>Here are the following states:</p>
+<ul>
+<li><strong>SCHEDULED</strong>: set if the task is scheduled for running</li>
+<li><strong>RUNNING</strong>: running is set when the future is polled.</li>
+<li><strong>COMPLETED</strong>: a task is completed when polling the future returns <code>Poll::Ready</code>. This means that the output is stored inside the task.</li>
+<li><strong>CLOSED</strong>: if a task is closed, it’s either canceled or the output has been consumed by a JoinHandle. If a task is <code>CLOSED</code>, the task’s <code>future</code> will never be <code>poll</code>ed again so it can be dropped.</li>
+<li><strong>HANDLE</strong>: set if the JoinHandle still exists.</li>
+</ul>
+<p>For a more thorough explanation of the invariants of the state, check out <a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/state.rs">this code snippet</a>.</p>
+<p>Some of these states aren’t mutually exclusive. The state of the task is stored as an <code>u8</code>. Each of the states is stored as a bit. For example, <code>SCHEDULED</code> is <code>1 &lt;&lt; 0</code> while <code>HANDLE</code> is <code>HANDLE</code> is <code>1 &lt;&lt; 4</code>. So a <code>state</code> of <code>17</code> means that the state is both <code>SCHEDULED</code> and <code>HANDLE</code>.</p>
+<h3 id="output"><a class="header" href="#output"><strong>Output</strong></a></h3>
+<p>The task needs to store the output of a Task.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let handle = spawn_local(async { 1 + 2 });
+let res = future.await;
+<span class="boring">}</span></code></pre></pre>
+<p>In the example above, the task created from <code>spawn_local</code> may be completed before <code>await</code> is called. Therefore, the <code>Task</code> needs to store the output (which is 3 in this example) to be consumed by an <code>await</code>.</p>
+<h3 id="waker-1"><a class="header" href="#waker-1"><strong>Waker</strong></a></h3>
+<p>If the <code>Task</code>'s <code>Future</code> returns <code>Poll::Pending</code>, the <code>executor</code> eventually needs to <code>poll</code> the <code>Future</code> again. The question is - when should it be?</p>
+<p>The <code>Task</code> could be blocked by a <code>file read</code> or a child <code>Task</code>. In either case, we would like to notify the <code>executor</code> that the blocked <code>Task</code> is ready to make progress when the <code>file read</code> operation is done or the child <code>Task</code> is completed. This is what the <code>Waker</code> is for.</p>
+<p>Whenever the executor <code>poll</code>s a Task, it creates a <code>Waker</code> and passes it to the <code>poll</code> method as part of the <code>Context</code>. The blocking operation, such as a file read, needs to store the <code>Waker</code>. When the blocking operation is completed, it needs to call <code>Waker::wake</code> so that the executor can reschedule the blocked <code>Task</code> and eventually <code>poll</code> it.</p>
+<p>In the following example, a task is spawned onto the executor when <code>spawn_local</code> is called. Let’s call this the parent task.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>spawn_local(async {
+	let child_handle = spawn_local(async {...});
+	child_handle.await;
+});
+<span class="boring">}</span></code></pre></pre>
+<p>When the future is <code>polled</code>, there is an inner <code>spawn_local</code> that spawns the child task onto the executor. The parent task can’t make progress until the child task is <code>completed</code> or <code>closed</code>.</p>
+<p>The child task needs a way to notify the parent task that it’s done and that the parent task can be polled again. This is what a <code>waker</code> does and the <code>child task</code> stores the <code>waker</code> of the blocked task.</p>
+<h3 id="references"><a class="header" href="#references"><strong>References</strong></a></h3>
+<p>The <code>Task</code> needs to be deallocated when there is no more need for it. The <code>Task</code> is no longer needed if it’s canceled or when it’s completed and the output is consumed. In addition to the <code>state</code>, the <code>Task</code> also has a <code>references</code> counter. When the reference is 0, the task is deallocated.</p>
+<h3 id="schedule"><a class="header" href="#schedule"><strong>Schedule</strong></a></h3>
+<p>A task needs to know how to reschedule itself. This is because each time it’s executed, it’s popped from the executor’s Task Queue. If it’s blocked by another task, it needs to be scheduled again when the blocking task is completed.</p>
+<p>The <code>create_task</code> method takes a <code>schedule</code> function. The task stores the <code>schedule</code> method as a raw method. Here is a simplified version of how a task is created:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let schedule = move |task| {
+    let task_queue = tq.upgrade();
+    task_queue.local_queue.push(task);
+};
+create_task(executor_id, future, schedule)
+<span class="boring">}</span></code></pre></pre>
+<p>All the <code>schedule</code> method does is that it pushes a task onto the Task Queue.</p>
+<h3 id="implementation"><a class="header" href="#implementation">Implementation</a></h3>
+<p>The raw task is allocated on the heap as follows:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Task {
+    // Pointer to the raw task (allocated on heap)
+    pub raw_task: NonNull&lt;()&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Here is the <code>RawTask</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct RawTask&lt;F, R, S&gt; {
+    /// The task header.
+    pub(crate) header: *const Header,
+
+    /// The schedule function.
+    pub(crate) schedule: *const S,
+
+    /// The future.
+    pub(crate) future: *mut F,
+
+    /// The output of the future.
+    pub(crate) output: *mut R,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>Header</code> contains the <code>state</code>, the <code>references,</code> and the <code>awaiter</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct Header {
+    pub(crate) state: u8,
+
+    pub(crate) executor_id: usize,
+
+    /// Current reference count of the task.
+    pub(crate) references: AtomicI16,
+
+    /// The virtual table.
+    pub(crate) vtable: &amp;'static TaskVTable,
+
+    /// The task that is blocked on the `JoinHandle`.
+    ///
+    /// This waker needs to be woken up once the task completes or is closed.
+    pub(crate) awaiter: Option&lt;Waker&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Both the <code>Glommio crate</code> and the <code>async_task</code> crate use the virtual table to contain pointers to methods necessary for bookkeeping the task. My understanding is that this reduces the runtime overhead, but let me know if there are other reasons why!</p>
+<h3 id="creating-a-task"><a class="header" href="#creating-a-task">Creating a Task</a></h3>
+<p>Finally, to create a <code>Task</code>, you invoke the <code>create_task</code> method:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) fn create_task&lt;F, R, S&gt;(
+    executor_id: usize,
+    future: F,
+    schedule: S,
+) -&gt; (Task, JoinHandle&lt;R&gt;)
+where
+    F: Future&lt;Output = R&gt;,
+    S: Fn(Task),
+{
+    let raw_task = RawTask::&lt;_, R, S&gt;::allocate(future, schedule, executor_id);
+
+    let task = Task { raw_task };
+    let handle = JoinHandle {
+        raw_task,
+        _marker: PhantomData,
+    };
+    (task, handle)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The core of this function is the <code>allocate</code> method which allocates the <code>Task</code> onto the heap:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) fn allocate(future: F, schedule: S, executor_id: usize) -&gt; NonNull&lt;()&gt; {
+  let task_layout = Self::task_layout();
+  unsafe {
+      let raw_task = NonNull::new(alloc::alloc(task_layout.layout) as *mut ()).unwrap();
+      let raw = Self::from_ptr(raw_task.as_ptr());
+      // Write the header as the first field of the task.
+      (raw.header as *mut Header).write(Header {
+          state: SCHEDULED | HANDLE,
+          executor_id,
+          references: AtomicI16::new(0),
+          vtable: &amp;TaskVTable {
+              schedule: Self::schedule,
+              drop_future: Self::drop_future,
+              get_output: Self::get_output,
+              drop_task: Self::drop_task,
+              destroy: Self::destroy,
+              run: Self::run,
+          },
+          awaiter: None,
+      });
+
+      // Write the schedule function as the third field of the task.
+      (raw.schedule as *mut S).write(schedule);
+
+      // Write the future as the fourth field of the task.
+      raw.future.write(future);
+      raw_task
+  }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Note that the initial <code>state</code> of a <code>Task</code> is <code>SCHEDULED | HANDLE</code>. It’s <code>SCHEDULED</code> because a task is considered to be scheduled whenever its <code>Task</code> reference exists. There’s a <code>HANDLE</code> because the <code>JoinHandle</code> hasn’t dropped yet.</p>
+<h3 id="api-1"><a class="header" href="#api-1">API</a></h3>
+<p>The two most important APIs of a <code>Task</code> are <code>schedule</code> and <code>run</code>.</p>
+<p><strong>pub(crate) fn schedule(self)</strong></p>
+<p>This method schedules the task. It increments the <code>references</code> and calls the <code>schedule</code> method stored in the <code>Task</code>. In the context of an executor, the <code>schedule</code> method pushes itself onto the <code>Task Queue</code> that it was originally spawned into.</p>
+<p><strong>pub(crate) fn run(self)</strong></p>
+<p>The <code>run</code> method is how the user-provided future gets <code>poll</code>ed. Since the <code>run</code> method is quite meaty, I will dedicate the entire next page to talk about how it works.</p>
+<h3 id="code-references"><a class="header" href="#code-references">Code References</a></h3>
+<p>To check out my toy implementation or Glommio’s implementation, check out:</p>
+<p><strong>Mini Async Runtime</strong></p>
+<ul>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L39">Raw Task</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/state.rs">State</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/task.rs#L6">Task</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/task.rs#L12">Task::schedule</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/task.rs#L22">Task::run</a></li>
+</ul>
+<p><strong>Glommio</strong></p>
+<ul>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/raw.rs#L72">Raw Task</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/state.rs">State</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/task_impl.rs#L53">Task</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/task_impl.rs#L82">Task::schedule</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/task_impl.rs#L98">Task::run</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="running-the-task"><a class="header" href="#running-the-task">Running the Task</a></h1>
+<p>When the <code>Task</code> is run, the task doesn’t just <code>poll</code> the user-provided <code>Future</code>. It also needs to perform memory accounting and handle edge cases.</p>
+<p>Let’s break it down section by section.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>unsafe fn run(ptr: *const ()) -&gt; bool {
+		let raw = Self::from_ptr(ptr);
+		
+		let mut state = (*raw.header).state;
+		
+		// Update the task's state before polling its future.
+		// If the task has already been closed, drop the task reference and return.
+		if state &amp; CLOSED != 0 {
+		    // Drop the future.
+		    Self::drop_future(ptr);
+		
+		    // Mark the task as unscheduled.
+		    (*(raw.header as *mut Header)).state &amp;= !SCHEDULED;
+		
+		    // Notify the awaiter that the future has been dropped.
+		    (*(raw.header as *mut Header)).notify(None);
+		
+		    // Drop the task reference.
+		    Self::drop_task(ptr);
+		    return false;
+		}
+		...
+}
+<span class="boring">}</span></code></pre></pre>
+<p>First, we check if the task is already closed. If it is, we want to return early. But before returning, we need to unset the <code>SCHEDULED</code> bit of the Task’s <code>state</code>. We also want to notify the awaiter (blocked task) that it is unblocked.</p>
+<p>The <code>notify</code> method’s implementation is as follows:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Notifies the awaiter blocked on this task.
+pub(crate) fn notify(&amp;mut self, current: Option&lt;&amp;Waker&gt;) {
+    let waker = self.awaiter.take();
+
+		// TODO: Check against current
+    if let Some(w) = waker {
+        w.wake()
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>As mentioned earlier, a task stores the <code>waker</code>. The <code>notify</code> method calls the <code>waker</code>.</p>
+<p>If the <code>Task</code> isn’t closed, we can proceed with running the Task. First, we update the <code>state</code> of the <code>Task</code> by unsetting the <code>SCHEDULED</code> bit and setting the <code>RUNNING</code> bit.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Unset the Scheduled bit and set the Running bit
+state = (state &amp; !SCHEDULED) | RUNNING;
+(*(raw.header as *mut Header)).state = state;
+<span class="boring">}</span></code></pre></pre>
+<p>Next, we poll the Task’s Future. Polling a future requires a <code>waker</code>. We create one with <code>RAW_WAKER_VTABLE</code> which we will cover in more detail in another page.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let waker = ManuallyDrop::new(Waker::from_raw(RawWaker::new(ptr, &amp;Self::RAW_WAKER_VTABLE)));
+let cx = &amp;mut Context::from_waker(&amp;waker);
+
+let poll = &lt;F as Future&gt;::poll(Pin::new_unchecked(&amp;mut *raw.future), cx);
+<span class="boring">}</span></code></pre></pre>
+<p>If polling the future returns <code>Poll::Ready</code>, we need to do some housekeeping:</p>
+<ul>
+<li>since we never need to poll the future again, we can drop it</li>
+<li>We update the state to not be <code>(state &amp; !RUNNING &amp; !SCHEDULED) | COMPLETED</code>. If the <code>HANDLE</code> is dropped, then we also need to mark it as <code>CLOSED</code>. This is because the definition of <code>CLOSED</code> is when the output of the <code>JoinHandle</code> has been consumed. If the <code>JoinHandle</code> is dropped, the output of the <code>Task</code> is not needed so it’s technically “consumed”.</li>
+<li>In the case that the output is not needed, which is when the <code>HANDLE</code> is dropped or if the task was closed while running, we can drop the <code>output</code> early since no one will consume it.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match poll {
+  Poll::Ready(out) =&gt; {
+      Self::drop_future(ptr);
+      raw.output.write(out);
+
+      // A place where the output will be stored in case it needs to be dropped.
+      let mut output = None;
+
+      // The task is now completed.
+      // If the handle is dropped, we'll need to close it and drop the output.
+      // We can drop the output if there is no handle since the handle is the
+      // only thing that can retrieve the output from the raw task.
+      let new = if state &amp; HANDLE == 0 {
+          (state &amp; !RUNNING &amp; !SCHEDULED) | COMPLETED | CLOSED
+      } else {
+          (state &amp; !RUNNING &amp; !SCHEDULED) | COMPLETED
+      };
+
+      (*(raw.header as *mut Header)).state = new;
+
+      // If the handle is dropped or if the task was closed while running,
+      // now it's time to drop the output.
+      if state &amp; HANDLE == 0 || state &amp; CLOSED != 0 {
+          // Read the output.
+          output = Some(raw.output.read());
+      }
+
+      // Notify the awaiter that the task has been completed.
+      (*(raw.header as *mut Header)).notify(None);
+
+      drop(output);
+  }
+  Poll::Pending =&gt; {
+			...
+	}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Let’s look at what happens if the future returns <code>Poll::Pending</code>. In most cases, all we need to do here is to unset the <code>RUNNING</code> bit of the task. However, in the case that the task was closed while running, we need to invoke <code>drop_future</code> to deallocate the future. We would also want to notify the <code>awaiter</code> if the Task is closed while running.</p>
+<p>Note that the task can be closed while running in a few scenarios:</p>
+<ul>
+<li>the JoinHandle is dropped</li>
+<li>JoinHandle::cancel is called</li>
+<li>the task panics while running, which will automatically close the task.</li>
+</ul>
+<p>Here is the code when the future returns <code>Poll::Pending</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Poll::Pending =&gt; {
+		// The task is still not completed.
+
+		// If the task was closed while running, we'll need to unschedule in case it
+		// was woken up and then destroy it.
+		let new = if state &amp; CLOSED != 0 {
+		    state &amp; !RUNNING &amp; !SCHEDULED
+		} else {
+		    state &amp; !RUNNING
+		};
+		
+		if state &amp; CLOSED != 0 {
+		    Self::drop_future(ptr);
+		}
+		
+		(*(raw.header as *mut Header)).state = new;
+		
+		// If the task was closed while running, we need to notify the awaiter.
+		// If the task was woken up while running, we need to schedule it.
+		// Otherwise, we just drop the task reference.
+		if state &amp; CLOSED != 0 {
+		    // Notify the awaiter that the future has been dropped.
+		    (*(raw.header as *mut Header)).notify(None);
+		} else if state &amp; SCHEDULED != 0 {
+		    // The thread that woke the task up didn't reschedule it because
+		    // it was running so now it's our responsibility to do so.
+		    Self::schedule(ptr);
+		    ret = true;
+		}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Finally, <code>drop_task</code> is called to potentially deallocate the task:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Self::drop_task(ptr);
+<span class="boring">}</span></code></pre></pre>
+<p>Here is the implementation for <code>drop_task</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>unsafe fn drop_task(ptr: *const ()) {
+  let raw = Self::from_ptr(ptr);
+
+  // Decrement the reference count.
+  let refs = Self::decrement_references(&amp;mut *(raw.header as *mut Header));
+
+  let state = (*raw.header).state;
+
+  // If this was the last reference to the task and the `JoinHandle` has been
+  // dropped too, then destroy the task.
+  if refs == 0 &amp;&amp; state &amp; HANDLE == 0 {
+      Self::destroy(ptr);
+  }
+}  
+<span class="boring">}</span></code></pre></pre>
+<p>Note that <code>drop_task</code> only deallocates the <code>task</code> if the reference count is <code>0</code> and the <code>HANDLE</code> is dropped. The <code>HANDLE</code> is not part of the reference count.</p>
+<p>The goal of this section is to showcase the type of challenges that one can expect when building an asynchronous runtime. One needs to pay particular attention to deallocating memory as early as possible and be careful about updating the state of the Task in different scenarios.</p>
+<h3 id="code-references-1"><a class="header" href="#code-references-1">Code References</a></h3>
+<p>To check out my toy implementation or Glommio’s implementation, check out:</p>
+<p><strong>Mini Async Runtime</strong></p>
+<ul>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L297">RawTask::run</a></li>
+</ul>
+<p><strong>Glommio</strong></p>
+<ul>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/raw.rs#L432">RawTask::run</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="taskqueue"><a class="header" href="#taskqueue">TaskQueue</a></h1>
+<p>An <code>executor</code> needs to store a list of scheduled <code>Task</code>s. This is what the <code>TaskQueue</code> is for, it holds a collection of managed tasks.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct TaskQueue {
+    // contains the actual queue of Tasks
+    pub(crate) ex: Rc&lt;TaskQueueExecutor&gt;,
+    // The invariant around active is that when it's true,
+    // it needs to be inside the active_executors
+    pub(crate) active: bool,
+}
+
+pub(crate) struct TaskQueueExecutor {
+    local_queue: LocalQueue,
+    name: String,
+}
+
+struct LocalQueue {
+    queue: RefCell&lt;VecDeque&lt;Task&gt;&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>TaskQueue</code> contains a <code>TaskQueueExecutor</code> which contains the actual <code>LocalQueue</code> which holds a <code>VecDeque</code> of <code>Task</code>s.</p>
+<p>The two most important methods on a <code>TaskQueueExecutor</code> are:</p>
+<ul>
+<li>create_task</li>
+<li>spawn_and_schedule</li>
+</ul>
+<p><strong>create_task</strong></p>
+<p>Create task allocates the <code>Task</code> and creates the corresponding <code>JoinHandle</code>. Note that creating a <code>Task</code> requires providing a <code>schedule</code> method. The provided <code>schedule</code> method is a closure that simply pushes the <code>task</code> onto the <code>local_queue</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Creates a Task with the Future and push it onto the queue by scheduling
+fn create_task&lt;T&gt;(
+    &amp;self,
+    executor_id: usize,
+    tq: Rc&lt;RefCell&lt;TaskQueue&gt;&gt;,
+    future: impl Future&lt;Output = T&gt;,
+) -&gt; (Task, JoinHandle&lt;T&gt;) {
+    let tq = Rc::downgrade(&amp;tq);
+    let schedule = move |task| {
+        let tq = tq.upgrade();
+
+        if let Some(tq) = tq {
+            {
+                tq.borrow().ex.as_ref().local_queue.push(task);
+            }
+            {
+                LOCAL_EX.with(|local_ex| {
+                    let mut queues = local_ex.queues.as_ref().borrow_mut();
+                    queues.maybe_activate_queue(tq);
+                });
+            }
+        }
+    };
+    create_task(executor_id, future, schedule)
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>spawn_and_schedule</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) fn spawn_and_schedule&lt;T&gt;(
+    &amp;self,
+    executor_id: usize,
+    tq: Rc&lt;RefCell&lt;TaskQueue&gt;&gt;,
+    future: impl Future&lt;Output = T&gt;,
+) -&gt; JoinHandle&lt;T&gt; {
+    let (task, handle) = self.create_task(executor_id, tq, future);
+    task.schedule();
+    handle
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>spawn_and_schedule</code> simply creates the task and invokes the <code>schedule</code> method which pushes the <code>task</code> onto the <code>LocalQueue</code> of the <code>TaskQueueExecutor</code>.</p>
+<h3 id="code-references-2"><a class="header" href="#code-references-2">Code References</a></h3>
+<p>To check out my toy implementation or Glommio’s implementation, check out:</p>
+<p><strong>Mini Async Runtime</strong></p>
+<ul>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L16">TaskQueue</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L79">TaskQueueExecutor::create_task</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L110">TaskQueueExecutor::spawn_and_schedule</a></li>
+</ul>
+<p><strong>Glommio</strong></p>
+<ul>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/executor/mod.rs#L126">TaskQueue</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/executor/multitask.rs#L114">LocalExecutor</a> - My toy implementation calls the <code>LocalExecutor</code> the <code>TaskQueueExecutor</code></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="waker-2"><a class="header" href="#waker-2">Waker</a></h1>
+<p>Earlier, we saw that when <code>RawTask::run</code> is called, the method creates a <code>waker</code> when <code>poll</code>ing the user-provided <code>Future</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let waker = ManuallyDrop::new(Waker::from_raw(RawWaker::new(ptr, &amp;Self::RAW_WAKER_VTABLE)));
+let cx = &amp;mut Context::from_waker(&amp;waker);
+
+let poll = &lt;F as Future&gt;::poll(Pin::new_unchecked(&amp;mut *raw.future), cx);
+<span class="boring">}</span></code></pre></pre>
+<p>So what does the <code>Waker</code> need to do? When <code>Waker::wake()</code> is called, the <code>Waker</code> needs to notify the executor that the <code>Task</code> is ready to be <code>run</code> again. Therefore, <code>Waker::wake()</code> needs to <code>schedule</code> the <code>Task</code> by pushing it back to the <code>TaskQueue</code>. Let’s look at how we can add a <code>Task</code> back to the <code>TaskQueue</code> when <code>Waker::wake</code> is called.</p>
+<p>To create a <code>Waker</code>, you need to pass it a <code>RAW_WAKER_VTABLE</code>. The <code>Waker</code> is created with <code>Waker::from_raw(RawWaker::new(ptr, &amp;Self::RAW_WAKER_VTABLE))</code>. The <code>RAW_WAKER_VTABLE</code> is just a virtual function pointer table to methods like <code>wake</code>.</p>
+<p>When <code>Waker::wake()</code> is called, the actual wakeup call is delegated through a virtual function call to the implementation which is defined by the executor.</p>
+<p><code>RAW_WAKER_VTABLE</code> is defined as a <code>constant</code> variable in the <code>RawTask</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;F, R, S&gt; RawTask&lt;F, R, S&gt;
+where
+    F: Future&lt;Output = R&gt;,
+    S: Fn(Task),
+{
+    const RAW_WAKER_VTABLE: RawWakerVTable = RawWakerVTable::new(
+        Self::clone_waker,
+        Self::wake,
+        Self::wake_by_ref,
+        Self::drop_waker,
+    );
+<span class="boring">}</span></code></pre></pre>
+<p>Here is the implementation of <code>wake</code> and <code>wake_by_ref</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>unsafe fn wake(ptr: *const ()) {
+    Self::wake_by_ref(ptr);
+    Self::drop_waker(ptr);
+}
+
+/// Wakes a waker. Ptr is the raw task.
+unsafe fn wake_by_ref(ptr: *const ()) {
+    let raw = Self::from_ptr(ptr);
+	  let state = (*raw.header).state;
+	
+	  // If the task is completed or closed, it can't be woken up.
+	  if state &amp; (COMPLETED | CLOSED) == 0 {
+	      // If the task is already scheduled do nothing.
+	      if state &amp; SCHEDULED == 0 {
+	          // Mark the task as scheduled.
+	          (*(raw.header as *mut Header)).state = state | SCHEDULED;
+	          if state &amp; RUNNING == 0 {
+	              // Schedule the task.
+	              Self::schedule(ptr);
+	          }
+	      }
+	  }
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>Wake</code> simply calls <code>Self::schedule</code> if the task is not completed, not closed, and not scheduled.</p>
+<p><code>RawTask::schedule</code> simply calls <code>raw.schedule</code>, which is a property on the <code>RawTask</code> provided by the executor during the creation of the <code>RawTask</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>unsafe fn schedule(ptr: *const ()) {
+    let raw = Self::from_ptr(ptr);
+
+		...
+    let task = Task {
+        raw_task: NonNull::new_unchecked(ptr as *mut ()),
+    };
+
+    (*raw.schedule)(task);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>In <code>create_task</code> below, we can see that the executor provides a <code>schedule</code> callback that simply pushes the task back onto the <code>local_queue</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn create_task&lt;T&gt;(
+    &amp;self,
+    executor_id: usize,
+    tq: Rc&lt;RefCell&lt;TaskQueue&gt;&gt;,
+    future: impl Future&lt;Output = T&gt;,
+) -&gt; (Task, JoinHandle&lt;T&gt;) {
+    ...
+    let schedule = move |task| {
+	      ...
+        if let Some(tq) = tq {
+          tq.borrow().ex.as_ref().local_queue.push(task);
+          ...
+        }
+    };
+    create_task(executor_id, future, schedule)
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="code-references-3"><a class="header" href="#code-references-3">Code References</a></h3>
+<p>To check out my toy implementation or Glommio’s implementation, check out:</p>
+<p><strong>Mini Async Runtime</strong></p>
+<ul>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L168">wake_by_ref</a></li>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L192">RawTask::schedule</a></li>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L80">TaskQueueExecutor::create_task</a></li>
+</ul>
+<p><strong>Glommio</strong></p>
+<ul>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/raw.rs#L259">wake_by_ref</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/raw.rs#L363">RawTask::schedule</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="localexecutor"><a class="header" href="#localexecutor">LocalExecutor</a></h1>
+<p>As a refresher, here’s an example of an executor running a task and spawning a task onto the executor.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let local_ex = LocalExecutor::default();
+let res = local_ex.run(async {
+    let handle = spawn_local(async_write_file());
+    handle.await;
+});
+<span class="boring">}</span></code></pre></pre>
+<h3 id="single-threaded"><a class="header" href="#single-threaded">Single Threaded</a></h3>
+<p>It’s important to understand that <code>LocalExecutor</code> is a single-threaded executor. This means that the executor can only be run on the thread that created it. <code>LocalExecutor</code> doesn’t implement the <code>Send</code> or <code>Sync</code> trait, so you cannot move a <code>LocalExecutor</code> across threads. This makes it easier to reason about the methods on <code>LocalExecutor</code> since it’s safe to assume that only one function invocation can be executing at any time. In other words, there won’t be two invocations of <code>run</code> on the same executor at once.</p>
+<p>Conceptually, the way to think about an executor is that it stores a collection of Task Queues. Each Task Queue has a collection of Tasks to execute. When <code>run</code> is called, the executor would choose one of the task queues to be the active executor. Then it will start looping and popping tasks off the Task Queue.</p>
+<h3 id="internals"><a class="header" href="#internals">Internals</a></h3>
+<p>Let’s look at the internals of an Executor:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct LocalExecutor {
+    pub(crate) id: usize,
+    pub(crate) queues: Rc&lt;RefCell&lt;QueueManager&gt;&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>A <code>LocalExecutor</code> contains a <code>QueueManager</code>. As explained earlier, a <code>QueueManager</code> contains all the <code>Task Queues</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct QueueManager {
+    pub active_queues: BinaryHeap&lt;Rc&lt;RefCell&lt;TaskQueue&gt;&gt;&gt;,
+    pub active_executing: Option&lt;Rc&lt;RefCell&lt;TaskQueue&gt;&gt;&gt;,
+    pub available_queues: AHashMap&lt;usize, Rc&lt;RefCell&lt;TaskQueue&gt;&gt;&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>At any time, a <code>QueueManager</code> is actively working on at most one <code>TaskQueue</code>. The <code>active_queues</code> property stores the <code>TaskQueues</code> that are not empty. Any <code>TaskQueue</code> inside <code>active_queues</code> is also inside <code>available_queues</code>. A <code>TaskQueue</code> is removed from <code>active_queues</code> whenever it’s empty.</p>
+<p>Now, we can finally look at <code>run</code>, the core method of a <code>LocalExecutor</code>.</p>
+<h3 id="deep-dive-into-run"><a class="header" href="#deep-dive-into-run">Deep Dive into Run</a></h3>
+<p>The <code>run</code> method runs the executor until the provided <code>future</code> completes. Here is its implementation:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn run&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt;) -&gt; T {
+    assert!(
+        !LOCAL_EX.is_set(),
+        &quot;There is already an LocalExecutor running on this thread&quot;
+    );
+    LOCAL_EX.set(self, || {
+				let join_handle = self.spawn(async move { future.await });
+        let waker = dummy_waker();
+        let cx = &amp;mut Context::from_waker(&amp;waker);
+        pin!(join_handle);
+        loop {
+            if let Poll::Ready(t) = join_handle.as_mut().poll(cx) {
+                // can't be canceled, and join handle is None only upon
+                // cancellation or panic. So in case of panic this just propagates
+                return t.unwrap();
+            }
+
+            // TODO: I/O work
+            self.run_task_queues();
+        }
+    })
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Let’s break down <code>run</code> line by line. First, <code>run</code> makes sure that no other executors are running on the same thread. <code>LOCAL_EX</code> is a thread local storage key defined as:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scoped_tls::scoped_thread_local!(static LOCAL_EX: LocalExecutor);
+<span class="boring">}</span></code></pre></pre>
+<p>Next, it calls  <code>spawn</code> to create and schedule the task onto the <code>TaskQueue</code>.</p>
+<p>It then loops until the <code>future</code> is completed. It’s super important to understand that the <code>poll</code> method here doesn’t actually <code>poll</code> the user-provided future. It simply <code>poll</code>s the <code>JoinHandle</code>, which checks if the <code>COMPLETED</code> flag on the task’s <code>state</code> is set.</p>
+<p>Since the <code>executor</code> is single-threaded, looping alone won’t actually progress the underlying future. Therefore, in each loop, the <code>executor</code> calls the <code>run_task_queues</code> method.</p>
+<p><code>run_task_queues</code> simply loops and calls <code>run_one_task_queue</code> until there are no more <code>task</code>s left in the <code>TaskQueue</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn run_task_queues(&amp;self) -&gt; bool {
+    let mut ran = false;
+    loop {
+        // TODO: Check if prempt
+        if !self.run_one_task_queue() {
+            return false;
+        } else {
+            ran = true;
+        }
+    }
+    ran
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>run_one_task_queue</code> sets the <code>active_executing</code> queue to one of the <code>active_queues</code>. It then loops until until there are no more tasks in that <code>TaskQueue</code>.</p>
+<p>In each loop, it calls <code>get_task</code> which pops a <code>task</code> from the <code>TaskQueue</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn run_one_task_queue(&amp;self) -&gt; bool {
+  let mut q_manager = self.queues.borrow_mut();
+  let size = q_manager.active_queues.len();
+  let tq = q_manager.active_queues.pop();
+  match tq {
+      Some(tq) =&gt; {
+          q_manager.active_executing = Some(tq.clone());
+          drop(q_manager);
+          loop {
+              // TODO: Break if pre-empted or yielded
+              let tq = tq.borrow_mut();
+
+              if let Some(task) = tq.get_task() {
+                  drop(tq);
+                  task.run();
+              } else {
+                  break;
+              }
+          }
+          true
+      }
+      None =&gt; {
+          false
+      }
+  }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>To summarize, <code>run</code> spawns a task onto one of the task queues. The executor then runs one <code>task_queue</code> at a time to completion until the spawned <code>task</code> is <code>COMPLETED</code>. The most important concept to remember here is that none of the task is <code>blocking</code>. Whenever one of the <code>task</code> is about to be run, it is popped from the <code>TaskQueue</code>. It won’t be scheduled back onto the <code>TaskQueue</code> until its <code>waker</code> is invoked, which is when the thing blocking it is no longer blocking. In other words, the <code>executor</code> will move from one <code>task</code> to another without waiting on any blocking code.</p>
+<h3 id="spawn_local-1"><a class="header" href="#spawn_local-1">spawn_local</a></h3>
+<p>The <code>spawn_local</code> method is how a user can spawn a task onto the executor.</p>
+<p><code>spawn_local</code> allows the developer to create two tasks that run concurrently instead of sequentially:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let res = local_ex.run(async {
+    let handle1 = spawn_local(async_write_file());
+		let handle2 = spawn_local(async_write_file());
+    handle1.await;
+		handle2.await;
+});
+<span class="boring">}</span></code></pre></pre>
+<p>This is the implementation of <code>spawn_local</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>	pub fn spawn_local&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt; + 'static) -&gt; JoinHandle&lt;T&gt;
+	where
+	    T: 'static,
+	{
+	    LOCAL_EX.with(|local_ex| local_ex.spawn(future))
+	}
+<span class="boring">}</span></code></pre></pre>
+<p><code>Spawn_local</code> simply finds the <code>LocalExecutor</code> on the current thread and calls <code>LocalExecutor::spawn</code>. Here is the implementation of <code>spawn</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) fn spawn&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt;) -&gt; JoinHandle&lt;T&gt; {
+    let active_executing = self.queues.borrow().active_executing.clone();
+    let tq = active_executing
+        .clone() // this clone is cheap because we clone an `Option&lt;Rc&lt;_&gt;&gt;`
+        .or_else(|| self.get_default_queue())
+        .unwrap();
+    let tq_executor = tq.borrow().ex.clone();
+    tq_executor.spawn_and_schedule(self.id, tq, future)
+}
+
+pub(crate) fn spawn_and_schedule&lt;T&gt;(
+    &amp;self,
+    executor_id: usize,
+    tq: Rc&lt;RefCell&lt;TaskQueue&gt;&gt;,
+    future: impl Future&lt;Output = T&gt;,
+) -&gt; JoinHandle&lt;T&gt; {
+    let (task, handle) = self.create_task(executor_id, tq, future);
+    task.schedule();
+    handle
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>Spawn</code> gets the active executing <code>TaskQueue</code>, creates a task and schedules the <code>Task</code> onto the <code>TaskQueue</code>.</p>
+<p>To summarize, <code>spawn_local</code> simply schedules a <code>Task</code> onto the <code>LocalExecutor</code>'s actively executing <code>TaskQueue</code>.</p>
+<h3 id="code-references-4"><a class="header" href="#code-references-4">Code References</a></h3>
+<p>To check out my toy implementation or Glommio’s implementation, check out:</p>
+<p><strong>Mini Async Runtime</strong></p>
+<ul>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L65">LocalExecutor::run</a></li>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L55">LocalExecutor::spawn</a></li>
+</ul>
+<p><strong>Glommio</strong></p>
+<ul>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/executor/mod.rs#L1429">LocalExecutor::run</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/executor/mod.rs#L632">LocalExecutor::spawn</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="join-handle"><a class="header" href="#join-handle">Join Handle</a></h1>
+<p>When a task is spawned, the user needs a way to consume the output or cancel the task. This is what the <code>JoinHandle</code> does - it allows the user to consume the output of the task or cancel the task.</p>
+<p>After a task is spawned, the way to consume the output is to <code>await</code> the handle. For example:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let handle = spawn_local(async { 1 + 3 });
+let res: i32 = handle.await;
+<span class="boring">}</span></code></pre></pre>
+<p><code>Await</code>ing is also a control flow mechanism that allows the user to control the execution order of two tasks. For example, in the following method, the second task won’t be spawned until the first task is completed.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let handle = spawn_local(...);
+handle.await;
+spawn_local(...);
+<span class="boring">}</span></code></pre></pre>
+<p>Since the <code>JoinHandle</code> can be <code>await</code>ed, it must implement the <code>Future</code> trait. So what does the <code>poll</code> method of the <code>JoinHandle</code> do?</p>
+<h3 id="poll"><a class="header" href="#poll">Poll</a></h3>
+<p><code>Poll</code>ing a <code>JoinHandle</code> doesn’t actually poll the user-provided future to progress it. The only way for the user-provided future to be <code>poll</code>ed is with the <code>RawTask::run</code> method which is invoked by the <code>LocalExecutor</code>’s <code>run</code> method.</p>
+<p>Before we look into what <code>poll</code> does, let’s first look at the different ways a <code>JoinHandle</code> is used.</p>
+<p>There are two different ways a <code>JoinHandle</code> gets created:</p>
+<ul>
+<li><code>LocalExecutor::run</code></li>
+<li><code>spawn_local</code> / <code>spawn_local_into</code></li>
+</ul>
+<p><strong>LocalExecutor::run</strong></p>
+<p>Here is a code snippet for the <code>run</code> method:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span> LOCAL_EX.set(self, || {
+    let waker = dummy_waker();
+    let cx = &amp;mut Context::from_waker(&amp;waker);
+    let join_handle = self.spawn(async move { future.await });
+    pin!(join_handle);
+    loop {
+        if let Poll::Ready(t) = join_handle.as_mut().poll(cx) {
+            return t.unwrap();
+        }
+        self.run_task_queues();
+    }
+})
+<span class="boring">}</span></code></pre></pre>
+<p>We can see that <code>join_handle</code> is only used as a way to inspect whether the user-provided future is completed or not. Therefore, a <code>dummy_waker</code> is used. A <code>dummy_waker</code> is a <code>Waker</code> that doesn’t do anything when <code>wake()</code> is invoked.</p>
+<p><strong>spawn_local / spawn_local_into</strong></p>
+<p>Earlier, we talked about how the compiler converts the body of an <code>async</code> function into a state machine, where each <code>.await</code> call represents a new state. We also learned that when the state machine is <code>poll</code>ed and it returns <code>Poll::Pending</code>, then the executor wouldn’t want to poll the state machine again until the blocking task is completed. Therefore, the blocking task needs to store the waker of the parent task and notify it when the parent task can be <code>poll</code>ed again.</p>
+<p>This is what the <code>JoinHandle</code> created from <code>spawn_local</code> and <code>spawn_local_into</code> needs to do. It stores the <code>waker</code> from the <code>poll</code> method and notifies the executor that the parent task can be <code>poll</code>ed again.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let local_ex = LocalExecutor::default();
+local_ex.run(async {
+    let join_handle = spawn_local(async_write_file());
+    join_handle.await;
+});
+<span class="boring">}</span></code></pre></pre>
+<p>In the example above, the <code>run</code> method would spawn the <code>Future</code> created from the <code>async</code> block as follows:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let join_handle = self.spawn(async move { future.await });
+<span class="boring">}</span></code></pre></pre>
+<p>Let’s call this <code>Task A</code>. When <code>Task A</code> gets <code>poll</code>ed, it executes the following two lines of code:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let join_handle = spawn_local(async_write_file());
+join_handle.await;
+<span class="boring">}</span></code></pre></pre>
+<p>Let’s call the task associated with <code>async_write_file</code> as <code>Task B</code>. When the join handle for <code>Task B</code> is <code>poll</code>ed, <code>Task B</code> is most likely not complete yet. Therefore, <code>Task B</code> needs to store the <code>Waker</code> from the <code>poll</code> method. The <code>Waker</code> would schedule <code>Task A</code> back onto the executor when <code>.wake()</code> is invoked.</p>
+<h3 id="deep-dive-into-poll"><a class="header" href="#deep-dive-into-poll">Deep Dive into Poll</a></h3>
+<p>Here is the rough structure of the <code>JoinHandle</code>'s <code>poll</code> method. Notice that the <code>Output</code> type is <code>Option&lt;R&gt;</code> instead of <code>R</code>. The <code>poll</code> method returns <code>Poll::Ready(None)</code> if the <code>task</code> is <code>CLOSED</code>. In general, there are three scenarios to cover:</p>
+<ul>
+<li>if the task is <code>CLOSED</code></li>
+<li>if the task is not <code>COMPLETED</code></li>
+<li>if the task is neither <code>CLOSED</code> nor not <code>COMPLETED</code></li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;R&gt; Future for JoinHandle&lt;R&gt; {
+    type Output = Option&lt;R&gt;;
+
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        let ptr = self.raw_task.as_ptr();
+        let header = ptr as *mut Header;
+
+        unsafe {
+            let state = (*header).state;
+
+            if state &amp; CLOSED != 0 {
+							 ...
+            }
+
+            if state &amp; COMPLETED == 0 {
+               ...
+            }
+
+            ...
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Let’s first look at what happens if the task is <code>CLOSED</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if state &amp; CLOSED != 0 {
+    // If the task is scheduled or running, we need to wait until its future is
+    // dropped.
+    if state &amp; (SCHEDULED | RUNNING) != 0 {
+        // Replace the waker with one associated with the current task.
+        (*header).register(cx.waker());
+        return Poll::Pending;
+    }
+
+    // Even though the awaiter is most likely the current task, it could also be
+    // another task.
+    (*header).notify(Some(cx.waker()));
+    return Poll::Ready(None);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>If the task is closed, we notify the awaiter and return <code>None</code>. However, in the case that it’s <code>CLOSED</code> but still <code>SCHEDULED | RUNNING</code>, that means the <code>future</code> hasn’t dropped yet. <em>My understanding of this is that we are playing safe here, but let me know if there’s another reason why we need to return <code>Poll::Pending</code> when the future hasn’t dropped yet.</em></p>
+<p>Next, if the state is not <code>COMPLETED</code>, then we simply register the <code>waker</code> as the <code>awaiter</code> and return <code>Poll::Pending</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if state &amp; COMPLETED == 0 {
+    // Replace the waker with one associated with the current task.
+    (*header).register(cx.waker());
+
+    return Poll::Pending;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Finally, in the case that the task’s state is not <code>CLOSED</code> and <code>COMPLETED</code>, then we mark the task as <code>CLOSED</code> since the output has been consumed. We notify the awaiter. And we return <code>Poll::Ready(Some(output)</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>(*header).state |= CLOSED;
+
+// Notify the awaiter. Even though the awaiter is most likely the current
+// task, it could also be another task.
+(*header).notify(Some(cx.waker()));
+
+// Take the output from the task.
+let output = ((*header).vtable.get_output)(ptr) as *mut R;
+Poll::Ready(Some(output.read()))
+<span class="boring">}</span></code></pre></pre>
+<h3 id="cancel"><a class="header" href="#cancel">Cancel</a></h3>
+<p>Another responsibility of <code>JoinHandle</code> is that it’s a handle for the user to cancel a task. I won’t go into too much detail about how <code>cancel</code> works. But the general idea is that canceling a task means that the future will not be <code>poll</code>ed again. However, if the task is already <code>COMPLETED</code>, canceling a <code>JoinHandle</code> does nothing.</p>
+<h3 id="code-references-5"><a class="header" href="#code-references-5">Code References</a></h3>
+<p>To check out my toy implementation or Glommio’s implementation, check out:</p>
+<p><strong>Mini Async Runtime</strong></p>
+<ul>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/join_handle.rs#L14">JoinHandle</a></li>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/join_handle.rs#L25">JoinHandle::poll</a></li>
+</ul>
+<p><strong>Glommio</strong></p>
+<ul>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/join_handle.rs#L23">JoinHandle</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/join_handle.rs#L152">JoinHandle::poll</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/join_handle.rs#L40">JoinHandle::cancel</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="life-of-a-task"><a class="header" href="#life-of-a-task">Life of a Task</a></h1>
+<p>This page aims to explain the execution of a task, following the code paths through the various parts of the executor.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let local_ex = LocalExecutor::default();
+let res = local_ex.run(async {
+    let handle = spawn_local({ async_read_file(...).await });
+    handle.await
+});
+<span class="boring">}</span></code></pre></pre>
+<h3 id="spawning-the-task"><a class="header" href="#spawning-the-task">Spawning the Task</a></h3>
+<p>When the <code>LocalExecutor</code> is created, a default <code>TaskQueue</code> <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L28">is created</a>. When <code>local_ex.run(...)</code> is called, the executor <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L74">spawns a task</a> with the Future created from the <code>async</code> block. It <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L116">creates a task</a> and <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L117">schedules the task</a> onto the default TaskQueue. Let’s call this task <code>Task1</code>.</p>
+<h3 id="running-task1"><a class="header" href="#running-task1">Running Task1</a></h3>
+<p>Spawning the task would <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L74C13-L74C71">create a JoinHandle</a> for <code>Task1</code>. The <code>LocalExecutor</code> creates a loop that will only exit when <code>Task1</code> is completed. The executor verifies when the task is completed by <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L77C41-L77C52">polling the JoinHandle</a>. If it’s completed, the loop exits, and the output of the task is returned. Otherwise, the executor begins <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L84">running tasks from active task queues</a>.</p>
+<p>To run the task, the executor would go through all the <code>TaskQueue</code>s and execute all the tasks in them. It does so by <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L99">creating an outer loop that loops through the<code>TaskQueue</code>s</a> and <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L123">creating an inner loop that runs all the tasks</a> in each TaskQueue.</p>
+<p>To run a task, the executor <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L127C40-L127C40">pops the task from the task queue</a> and <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L127">runs it</a>. When the task is <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L297">run</a>, it <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L323">creates a Waker</a> with the <code>RAW_WAKER_VTABLE</code>. Let’s call the created Waker <code>Waker1</code>. <code>Waker1</code>'s responsibility is to reschedule <code>Task1</code> onto the <code>TaskQueue</code> when <code>wake()</code> is called.</p>
+<p>Next, the executor <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L327">polls the user-provided Future</a> with <code>Waker1</code>. As a reminder, the user-provided Future is the Future created from the following <code>async</code> block:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async {
+    let handle = spawn_local(async { async_read_file(...).await });
+    handle.await
+}
+<span class="boring">}</span></code></pre></pre>
+<p>When the Future is <code>poll</code>ed, it would first spawn a task with the Future created from <code>async { async_read_file(...).await }</code>. Let’s call the spawned task <code>Task2</code>. Spawning <code>Task2</code> would also create a <code>JoinHandle</code> for it.</p>
+<p>Next, <code>handle.await</code> is called, which would <code>poll</code> the <code>JoinHandle</code>. Since <code>Task2</code> is not complete, <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/join_handle.rs#L52">the waker is registered as Task2’s awaiter</a>. This <code>waker</code> corresponds to <code>Waker1</code>. The idea is that <code>Task2</code> is blocking <code>Task1</code>. So when <code>Task2</code> completes, <code>Waker1::wake()</code> would be invoked. This would <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/join_handle.rs#L61">notify</a> the executor that <code>Task1</code> is ready to progress again by scheduling <code>Task1</code> onto the <code>TaskQueue</code>.</p>
+<h3 id="running-task2"><a class="header" href="#running-task2">Running Task2</a></h3>
+<p>After <code>Task1::run()</code> completes, we are back to <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L123">the inner loop</a> that runs all the tasks from the active TaskQueue. Since <code>Task2</code> is now in the <code>TaskQueue</code>, the executor would pop it off from the <code>TaskQueue</code> to execute it.</p>
+<p>When <code>Task2</code> is run, a <code>Waker</code> for <code>Task2</code> is created. Let’s call it <code>Waker2</code>. Next, the Future created from <code>async { async_read_file(...).await }</code> would be <code>poll</code>ed with <code>Waker2</code>. Since we haven’t covered how <code>I/O</code> works, let’s treat <code>async_read_file</code> as a black box. All we need to know is that when the operation is completed, <code>Waker2::wake()</code> will be invoked which will reschedule <code>Task2</code>.</p>
+<p>After <code>async_read_file</code> is completed, <code>Task2</code> is rescheduled back on the <code>TaskQueue</code>. We are back on <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L123">the inner loop</a> that runs the default <code>TaskQueue</code>. It would pop <code>Task2</code> off the <code>TaskQueue</code> and <code>poll</code> it. This time, the <code>Future</code> is completed. This would <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L364">notify <code>Task1</code></a> that <code>Task2</code> has been completed by <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/header.rs#L63">waking up <code>Waker1</code></a>. This would reschedule <code>Task1</code> and push it back onto the <code>TaskQueue</code>.</p>
+<h3 id="completing-task1"><a class="header" href="#completing-task1">Completing Task1</a></h3>
+<p>We are back to <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L123">the loop</a> that runs the default TaskQueue. It would pop <code>Task1</code> from the <code>TaskQueue</code> and run it. It would <code>poll</code> the <code>Future</code> which would return <code>Poll::Ready</code>. Finally, we can exit both the <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L123">inner loop</a> and <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L99">the outer loop</a> since there are no more tasks in any of the <code>TaskQueue</code>s to run.</p>
+<p>After <code>run_task_queues</code> <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L84">finishes executing</a>, the executor would <code>[poll</code> <code>Task1</code>'s <code>JoinHandle</code> again](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L77), which would return <code>Poll::Pending</code>. Then the executor can finally return the output result.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="pinned-threads"><a class="header" href="#pinned-threads">Pinned Threads</a></h1>
+<p>Our goal is to build a <code>thread-per-core</code> executor, but so far we’ve been building an executor that runs on the thread that creates it, which would run on whichever CPU the OS decides. Let’s fix that!</p>
+<p>On this page, we will build something like this:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The LocalExecutor will now only run on Cpu 0
+let builder = LocalExecutorBuilder::new(Placement::Fixed(0));
+let local_ex = builder.build();
+let res = local_ex.run(async {
+   ...
+});
+<span class="boring">}</span></code></pre></pre>
+<p>In this code snippet, we’ve introduced two new abstractions:</p>
+<ul>
+<li><strong>LocalExecutorBuilder</strong>: A factory used to create a <code>LocalExecutor</code></li>
+<li><strong>Placement</strong>: Specifies a policy that determines the CPUs that the <code>LocalExecutor</code> runs on.</li>
+</ul>
+<p>We specify to the <code>LocalExecutorBuilder</code> that we want to create an executor that only runs on <code>CPU 0</code> by passing it <code>Placement::Fixed(0)</code>. Then the executor created from <code>builder.build()</code> would only run on Cpu 0.</p>
+<p>By creating N executors and binding each executor to a specific CPU, the developer can implement a thread-per-core system.</p>
+<h3 id="implementation-1"><a class="header" href="#implementation-1">Implementation</a></h3>
+<p><strong>LocalExecutor</strong></p>
+<p>To limit the CPUs that the <code>LocalExecutor</code> can run on, it now takes a list of <code>CPU</code>s as its constructor parameters.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl LocalExecutor {
+    pub fn new(cpu_binding: Option&lt;impl IntoIterator&lt;Item = usize&gt;&gt;) -&gt; Self {
+        match cpu_binding {
+            Some(cpu_set) =&gt; bind_to_cpu_set(cpu_set),
+            None =&gt; {}
+        }
+        LocalExecutor { ... }
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>So how can we constrain the <code>LocalExecutor</code> to only run on the specified CPUs? We use Linux’s <a href="https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html">sched_setaffinity</a> method.</p>
+<p>As specified in Linux’s manual page, <code>After a call to **sched_setaffinity**(), the set of CPUs on which the thread will actually run is the intersection of the set specified in the *mask* argument and the set of CPUs actually present on the system.</code>.</p>
+<p>The method <code>bind_to_cpu_set</code> that <code>LocalExecutor::new</code> calls basically calls the <code>sched_setaffinity</code> method:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) fn bind_to_cpu_set(cpus: impl IntoIterator&lt;Item = usize&gt;) {
+    let mut cpuset = nix::sched::CpuSet::new();
+    for cpu in cpus {
+        cpuset.set(cpu).unwrap();
+    }
+    let pid = nix::unistd::Pid::from_raw(0);
+    nix::sched::sched_setaffinity(pid, &amp;cpuset).unwrap();
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>pid</code> is set to <code>0</code> because the manual page says that <code>If *pid* is zero, then the calling thread is used.</code></p>
+<p><strong>Placement</strong></p>
+<p>Next, we introduce <code>Placement</code>s. A <code>Placement</code> is a policy that determines what CPUs the <code>LocalExecutor</code> will run on. Currently, there are two <code>Placement</code>s. We may add more in <em>Phase 4</em>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum Placement {
+    /// The `Unbound` variant creates a [`LocalExecutor`]s that are not bound to
+    /// any CPU.
+    Unbound,
+    /// The [`LocalExecutor`] is bound to the CPU specified by
+    /// `Fixed`.
+    Fixed(usize),
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>Placement::Unbound</code> means that the <code>LocalExecutor</code> is not bound to any CPU. <code>Placement::Fixed(cpu_id)</code> means that the <code>LoccalExecutor</code> is bound to the specified CPU.</p>
+<p><strong>LocalExecutorBuilder</strong></p>
+<p>Finally, all the <code>LocalExecutorBuilder</code> does is that it transforms a <code>Placement</code> into a list of <code>CPU</code>s that will be passed into <code>LocalExecutor</code>'s constructor.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct LocalExecutorBuilder {
+    placement: Placement,
+}
+
+impl LocalExecutorBuilder {
+    pub fn new(placement: Placement) -&gt; LocalExecutorBuilder {
+        LocalExecutorBuilder { placement }
+    }
+
+    pub fn build(self) -&gt; LocalExecutor {
+        let cpu_binding = match self.placement {
+            Placement::Unbound =&gt; None::&lt;Vec&lt;usize&gt;&gt;,
+            Placement::Fixed(cpu) =&gt; Some(vec![cpu]),
+        };
+        let mut ex = LocalExecutor::new(cpu_binding);
+        ex.init();
+        ex
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>When <code>Placement::Fixed(cpu)</code> is provided, the <code>LocalExecutorBuilder</code> simply creates the <code>LocalExecutor</code> with <code>vec![cpu]</code> as the specified CPU.</p>
 
                     </main>
 

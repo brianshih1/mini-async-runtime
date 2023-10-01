@@ -1,0 +1,376 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Task - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html" class="active"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Building a Thread-Per-Core, Asynchronous Framework like Glommio</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="task"><a class="header" href="#task">Task</a></h1>
+<p>A Task is the basic unit of work in an executor. A Task is created whenever a <code>Future</code> is spawned onto the Executor. You can think of a Task as a wrapper around the spawned <code>Future</code>.</p>
+<p>To run the <code>Task</code>, the <code>Executor</code> <code>polls</code> the user-provided <code>Future</code>. The Future’s <code>poll</code> method would return <code>Poll::Ready</code> if it’s done. Otherwise, the Future returns <code>Poll::Pending</code>. In that case, the executor needs to repoll the Future when it is ready to make progress.</p>
+<p>Apart from the <code>Future</code>, the <code>Task</code> needs to keep track of a few other things. Let’s look at some of these properties:</p>
+<h3 id="state"><a class="header" href="#state"><strong>State</strong></a></h3>
+<p>A task needs to keep track of its <code>state</code> so that an executor knows if they are completed, canceled, etc.</p>
+<p>Here are the following states:</p>
+<ul>
+<li><strong>SCHEDULED</strong>: set if the task is scheduled for running</li>
+<li><strong>RUNNING</strong>: running is set when the future is polled.</li>
+<li><strong>COMPLETED</strong>: a task is completed when polling the future returns <code>Poll::Ready</code>. This means that the output is stored inside the task.</li>
+<li><strong>CLOSED</strong>: if a task is closed, it’s either canceled or the output has been consumed by a JoinHandle. If a task is <code>CLOSED</code>, the task’s <code>future</code> will never be <code>poll</code>ed again so it can be dropped.</li>
+<li><strong>HANDLE</strong>: set if the JoinHandle still exists.</li>
+</ul>
+<p>For a more thorough explanation of the invariants of the state, check out <a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/state.rs">this code snippet</a>.</p>
+<p>Some of these states aren’t mutually exclusive. The state of the task is stored as an <code>u8</code>. Each of the states is stored as a bit. For example, <code>SCHEDULED</code> is <code>1 &lt;&lt; 0</code> while <code>HANDLE</code> is <code>HANDLE</code> is <code>1 &lt;&lt; 4</code>. So a <code>state</code> of <code>17</code> means that the state is both <code>SCHEDULED</code> and <code>HANDLE</code>.</p>
+<h3 id="output"><a class="header" href="#output"><strong>Output</strong></a></h3>
+<p>The task needs to store the output of a Task.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let handle = spawn_local(async { 1 + 2 });
+let res = future.await;
+<span class="boring">}</span></code></pre></pre>
+<p>In the example above, the task created from <code>spawn_local</code> may be completed before <code>await</code> is called. Therefore, the <code>Task</code> needs to store the output (which is 3 in this example) to be consumed by an <code>await</code>.</p>
+<h3 id="waker"><a class="header" href="#waker"><strong>Waker</strong></a></h3>
+<p>If the <code>Task</code>'s <code>Future</code> returns <code>Poll::Pending</code>, the <code>executor</code> eventually needs to <code>poll</code> the <code>Future</code> again. The question is - when should it be?</p>
+<p>The <code>Task</code> could be blocked by a <code>file read</code> or a child <code>Task</code>. In either case, we would like to notify the <code>executor</code> that the blocked <code>Task</code> is ready to make progress when the <code>file read</code> operation is done or the child <code>Task</code> is completed. This is what the <code>Waker</code> is for.</p>
+<p>Whenever the executor <code>poll</code>s a Task, it creates a <code>Waker</code> and passes it to the <code>poll</code> method as part of the <code>Context</code>. The blocking operation, such as a file read, needs to store the <code>Waker</code>. When the blocking operation is completed, it needs to call <code>Waker::wake</code> so that the executor can reschedule the blocked <code>Task</code> and eventually <code>poll</code> it.</p>
+<p>In the following example, a task is spawned onto the executor when <code>spawn_local</code> is called. Let’s call this the parent task.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>spawn_local(async {
+	let child_handle = spawn_local(async {...});
+	child_handle.await;
+});
+<span class="boring">}</span></code></pre></pre>
+<p>When the future is <code>polled</code>, there is an inner <code>spawn_local</code> that spawns the child task onto the executor. The parent task can’t make progress until the child task is <code>completed</code> or <code>closed</code>.</p>
+<p>The child task needs a way to notify the parent task that it’s done and that the parent task can be polled again. This is what a <code>waker</code> does and the <code>child task</code> stores the <code>waker</code> of the blocked task.</p>
+<h3 id="references"><a class="header" href="#references"><strong>References</strong></a></h3>
+<p>The <code>Task</code> needs to be deallocated when there is no more need for it. The <code>Task</code> is no longer needed if it’s canceled or when it’s completed and the output is consumed. In addition to the <code>state</code>, the <code>Task</code> also has a <code>references</code> counter. When the reference is 0, the task is deallocated.</p>
+<h3 id="schedule"><a class="header" href="#schedule"><strong>Schedule</strong></a></h3>
+<p>A task needs to know how to reschedule itself. This is because each time it’s executed, it’s popped from the executor’s Task Queue. If it’s blocked by another task, it needs to be scheduled again when the blocking task is completed.</p>
+<p>The <code>create_task</code> method takes a <code>schedule</code> function. The task stores the <code>schedule</code> method as a raw method. Here is a simplified version of how a task is created:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let schedule = move |task| {
+    let task_queue = tq.upgrade();
+    task_queue.local_queue.push(task);
+};
+create_task(executor_id, future, schedule)
+<span class="boring">}</span></code></pre></pre>
+<p>All the <code>schedule</code> method does is that it pushes a task onto the Task Queue.</p>
+<h3 id="implementation"><a class="header" href="#implementation">Implementation</a></h3>
+<p>The raw task is allocated on the heap as follows:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Task {
+    // Pointer to the raw task (allocated on heap)
+    pub raw_task: NonNull&lt;()&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Here is the <code>RawTask</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct RawTask&lt;F, R, S&gt; {
+    /// The task header.
+    pub(crate) header: *const Header,
+
+    /// The schedule function.
+    pub(crate) schedule: *const S,
+
+    /// The future.
+    pub(crate) future: *mut F,
+
+    /// The output of the future.
+    pub(crate) output: *mut R,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>Header</code> contains the <code>state</code>, the <code>references,</code> and the <code>awaiter</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct Header {
+    pub(crate) state: u8,
+
+    pub(crate) executor_id: usize,
+
+    /// Current reference count of the task.
+    pub(crate) references: AtomicI16,
+
+    /// The virtual table.
+    pub(crate) vtable: &amp;'static TaskVTable,
+
+    /// The task that is blocked on the `JoinHandle`.
+    ///
+    /// This waker needs to be woken up once the task completes or is closed.
+    pub(crate) awaiter: Option&lt;Waker&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Both the <code>Glommio crate</code> and the <code>async_task</code> crate use the virtual table to contain pointers to methods necessary for bookkeeping the task. My understanding is that this reduces the runtime overhead, but let me know if there are other reasons why!</p>
+<h3 id="creating-a-task"><a class="header" href="#creating-a-task">Creating a Task</a></h3>
+<p>Finally, to create a <code>Task</code>, you invoke the <code>create_task</code> method:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) fn create_task&lt;F, R, S&gt;(
+    executor_id: usize,
+    future: F,
+    schedule: S,
+) -&gt; (Task, JoinHandle&lt;R&gt;)
+where
+    F: Future&lt;Output = R&gt;,
+    S: Fn(Task),
+{
+    let raw_task = RawTask::&lt;_, R, S&gt;::allocate(future, schedule, executor_id);
+
+    let task = Task { raw_task };
+    let handle = JoinHandle {
+        raw_task,
+        _marker: PhantomData,
+    };
+    (task, handle)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The core of this function is the <code>allocate</code> method which allocates the <code>Task</code> onto the heap:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) fn allocate(future: F, schedule: S, executor_id: usize) -&gt; NonNull&lt;()&gt; {
+  let task_layout = Self::task_layout();
+  unsafe {
+      let raw_task = NonNull::new(alloc::alloc(task_layout.layout) as *mut ()).unwrap();
+      let raw = Self::from_ptr(raw_task.as_ptr());
+      // Write the header as the first field of the task.
+      (raw.header as *mut Header).write(Header {
+          state: SCHEDULED | HANDLE,
+          executor_id,
+          references: AtomicI16::new(0),
+          vtable: &amp;TaskVTable {
+              schedule: Self::schedule,
+              drop_future: Self::drop_future,
+              get_output: Self::get_output,
+              drop_task: Self::drop_task,
+              destroy: Self::destroy,
+              run: Self::run,
+          },
+          awaiter: None,
+      });
+
+      // Write the schedule function as the third field of the task.
+      (raw.schedule as *mut S).write(schedule);
+
+      // Write the future as the fourth field of the task.
+      raw.future.write(future);
+      raw_task
+  }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Note that the initial <code>state</code> of a <code>Task</code> is <code>SCHEDULED | HANDLE</code>. It’s <code>SCHEDULED</code> because a task is considered to be scheduled whenever its <code>Task</code> reference exists. There’s a <code>HANDLE</code> because the <code>JoinHandle</code> hasn’t dropped yet.</p>
+<h3 id="api"><a class="header" href="#api">API</a></h3>
+<p>The two most important APIs of a <code>Task</code> are <code>schedule</code> and <code>run</code>.</p>
+<p><strong>pub(crate) fn schedule(self)</strong></p>
+<p>This method schedules the task. It increments the <code>references</code> and calls the <code>schedule</code> method stored in the <code>Task</code>. In the context of an executor, the <code>schedule</code> method pushes itself onto the <code>Task Queue</code> that it was originally spawned into.</p>
+<p><strong>pub(crate) fn run(self)</strong></p>
+<p>The <code>run</code> method is how the user-provided future gets <code>poll</code>ed. Since the <code>run</code> method is quite meaty, I will dedicate the entire next page to talk about how it works.</p>
+<h3 id="code-references"><a class="header" href="#code-references">Code References</a></h3>
+<p>To check out my toy implementation or Glommio’s implementation, check out:</p>
+<p><strong>Mini Async Runtime</strong></p>
+<ul>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L39">Raw Task</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/state.rs">State</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/task.rs#L6">Task</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/task.rs#L12">Task::schedule</a></li>
+<li><a href="https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/task.rs#L22">Task::run</a></li>
+</ul>
+<p><strong>Glommio</strong></p>
+<ul>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/raw.rs#L72">Raw Task</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/state.rs">State</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/task_impl.rs#L53">Task</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/task_impl.rs#L82">Task::schedule</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/task_impl.rs#L98">Task::run</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../executor/core-abstractions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../executor/raw_task.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../executor/core-abstractions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../executor/raw_task.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

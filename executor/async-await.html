@@ -1,0 +1,373 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Async/Await - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html" class="active"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Building a Thread-Per-Core, Asynchronous Framework like Glommio</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="asyncawait"><a class="header" href="#asyncawait">Async/Await</a></h1>
+<p><code>Async/Await</code> lets the programmer write code that looks like normal synchronous code. But the compiler then turns the code into asynchronous code. The <code>async</code> keyword can be used in a function signature to turn a synchronous function into an asynchronous function that returns a future:</p>
+<p>The way <code>async/await</code> works is that programmers write code that looks like synchronous code. But the compiler then turns the code into asynchronous code. <code>Async/Await</code> is based on two keywords: <code>async</code> and <code>await</code>. During compilation, any code block wrapped inside the <code>async</code> keyword is converted into a state machine in the form of a <code>Future</code>.</p>
+<p>As a simple example, the following async function <code>one_fn</code> may be compiled into <code>compiled_one_fn</code>, which is a function that returns a <code>Future</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn one_fn() -&gt; u32 {
+    1
+}
+
+fn compiled_one_fn() -&gt; impl Future&lt;Output = u32&gt; {
+    future::ready(1)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>To gain a better intuition for how asynchronous code gets converted into a state machine, let’s look at a more complex <code>async</code> function. We are going to convert the <code>notify_user</code> method below into a state machine that implements the <code>Future</code> trait.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn notify_user(user_id: u32) {
+	let user = async_fetch_user(user_id).await;
+	if user.group == 1 {
+			async_send_email(&amp;user).await;
+	}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The method above first fetches the user’s information. It then sends an email if the user’s group matches <code>1</code>.</p>
+<p>If we think about the function as a state machine, here are its possible states:</p>
+<ul>
+<li><strong>Unpolled</strong>: the start state of the function</li>
+<li><strong>FetchingUser</strong>: the state when the function is waiting for <code>async_fetch_user(user_id)</code> to complete</li>
+<li><strong>SendingEmail</strong>: the state when the function is waiting for <code>async_send_email(user)</code> to complete</li>
+<li><strong>Ready</strong>: the end state of the function.</li>
+</ul>
+<p>Each point represents a pausing point in the function. The state machine we are going to create implements the <code>Future</code> trait. Each call to the future’s <code>poll</code> method performs a possible state transition.</p>
+<p>The compiler creates the following enum to track the state of the state machine (note that my examples are for demonstration purposes and not what the compiler actually generates)</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum State {
+	Unpolled,
+	FetchingUser,
+	SendingEmail,
+	Ready
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Next, the compiler generates the following struct to hold all the variables the state machine needs.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct NotifyUser {
+	state: State,
+	user_id: u32,
+	fetch_user_fut: Option&lt;impl Future&lt;Output = User&gt;&gt;,
+	send_email_fut: Option&lt;impl Future&lt;Output = ()&gt;&gt;,
+	user: Option&lt;User&gt;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>To track the progress of <code>async_fetch_user(user_id).await</code> and <code>async_send_email(&amp;user).await</code>, the state machine stores the <code>async_fetch_user</code>'s state machine inside the <code>fetch_user_fut</code> field and stores the <code>async_send_email</code>'s state machine inside the <code>send_email_fut</code> field.</p>
+<p>Note that <code>fetch_user_fut</code> and <code>send_email_fut</code> are both <code>Option</code>s. This is because the state machine won’t be initiated until the <code>NotifyUser</code> state machine reaches there. In the case of <code>send_email_fut</code>, the state machine may never be initiated in the case that <code>[user.group](&lt;http://user.group&gt;)</code> is not <code>1</code>.</p>
+<p>Conceptually, <code>fetch_user_fut</code> and <code>send_email_fut</code> are like children state machines that make up a bigger state machine that is the <code>NotifyUser</code>.</p>
+<p>Now that we have a state machine, let’s implement the <code>Future</code> trait:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Future for NotifyUser {
+	type Output = ();
+	
+	fn poll(&amp;mut self, cx: &amp;mut Context) -&gt; Poll&lt;()&gt; {
+		loop {
+			match self.state {
+				State::Unpolled =&gt; { todo!() },
+				State::FetchingUser =&gt; { todo!() },
+				State::SendingEmail =&gt; { todo!() },
+				State::Ready =&gt; { todo!() };
+			}
+		}
+	}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>poll</code> method starts a <code>loop</code> because in the case that one of the states isn’t blocked, the state machine can perform multiple state transitions in a single <code>poll</code> call. This reduces the number of <code>poll</code> calls the executor needs to make.</p>
+<p>Now, let’s look at how each state performs the state transition.</p>
+<p>When we initialize <code>NotifyUser</code>,  its <code>state</code> is <code>State::Unpolled</code>, which represents the starting state. When we <code>poll</code> <code>NotifyUser</code> for the first time, it calls <code>async_fetch_user</code> to instantiate and store the <code>fetch_user_fut</code> state machine.</p>
+<p>It then transitions its <code>state</code> to <code>State::FetchingUser</code>. Note that this code block doesn’t return <code>Poll::Pending</code>. This is because none of the executed code is blocking, so we can go ahead and execute the handle for the next state transition.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>State::Unpolled =&gt; {
+		self.fetch_user_fut = Some(async_fetch_user(self.user_id));
+		self.state = State::FetchingUser;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>When we get to the <code>FetchinUser</code> state, it <code>poll</code>s the <code>fetch_user_fut</code> to see if it’s ready. If it’s <code>Pending</code>, we return <code>Poll::Pending</code>. Otherwise, <code>NotifyUser</code> can perform its next state transition. If <code>self.user.group == 1</code>, it needs to create and store the <code>fetch_user_fut</code> state machine and transition the state to <code>State::SendingEmail</code>. Otherwise, it can transition its state to <code>State::Ready</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>State::FetchingUser =&gt; {
+		match self.fetch_user_fut.unwrap().poll(cx) {
+				Poll::Pending =&gt; return Poll::Pending,
+				Poll::Ready(user) =&gt; {
+						self.user = Some(user);
+						if self.user.group == 1 {
+								self.fetch_user_fut = Some(async_send_email(&amp;self.user));
+								self.state = State::SendingEmail;
+						} else {
+								self.state = State::Ready;
+						}
+				}
+		}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>If the state is <code>SendingEmail</code>, it polls <code>send_email_fut</code> to check if it’s ready. If it is, it transitions the state to <code>State::Ready</code>. Otherwise, it returns <code>Poll::Pending</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>State::SendingEmail =&gt; {
+		match self.send_email_fut.unwrap().poll(cx) {
+				Poll::Pending =&gt; return Poll::Pending,
+				Poll::Ready(()) =&gt; {
+						self.state = State::Ready;
+				}
+		}
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Finally, if the state is <code>Ready</code>, <code>NotifyUser</code> returns <code>Poll::Ready(())</code> to indicate that the state machine is complete.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>State::Ready =&gt; return Poll::Ready(());
+<span class="boring">}</span></code></pre></pre>
+<p>Here is the full code:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum State {
+	Unpolled,
+	FetchingUser,
+	SendingEmail,
+	Ready
+}
+
+struct NotifyUser {
+	state: State,
+	user_id: u32,
+	fetch_user_fut: Option&lt;impl Future&lt;Output = User&gt;&gt;,
+	send_email_fut: Option&lt;impl Future&lt;Output = ()&gt;&gt;,
+	user: Option&lt;User&gt;
+}
+
+impl Future for NotifyUser {
+	type Output = ();
+	
+	fn poll(&amp;mut self, cx: &amp;mut Context) -&gt; Poll&lt;()&gt; {
+		loop {
+			match self.state {
+				State::Unpolled =&gt; {
+						self.fetch_user_fut = Some(async_fetch_user(self.user_id));
+						self.state = State::FetchingUser;
+				},
+				State::FetchingUser =&gt; {
+						match self.fetch_user_fut.unwrap().poll(cx) {
+								Poll::Pending =&gt; return Poll::Pending,
+								Poll::Ready(user) =&gt; {
+										self.user = Some(user);
+										if self.user.group == 1 {
+												self.fetch_user_fut = Some(async_send_email(&amp;self.user));
+												self.state = State::SendingEmail;
+										} else {
+												self.state = State::Ready;
+										}
+								}
+						}
+				},
+				State::SendingEmail =&gt; {
+						match self.send_email_fut.unwrap().poll(cx) {
+								Poll::Pending =&gt; return Poll::Pending,
+								Poll::Ready(()) =&gt; {
+										self.state = State::Ready;
+								}
+						}
+				},
+				State::Ready =&gt; return Poll::Ready(());
+			}
+		}
+	}
+}
+<span class="boring">}</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../executor/future.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../executor/waker.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../executor/future.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../executor/waker.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Join Handle - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html" class="active"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Building a Thread-Per-Core, Asynchronous Framework like Glommio</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="join-handle"><a class="header" href="#join-handle">Join Handle</a></h1>
+<p>When a task is spawned, the user needs a way to consume the output or cancel the task. This is what the <code>JoinHandle</code> does - it allows the user to consume the output of the task or cancel the task.</p>
+<p>After a task is spawned, the way to consume the output is to <code>await</code> the handle. For example:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let handle = spawn_local(async { 1 + 3 });
+let res: i32 = handle.await;
+<span class="boring">}</span></code></pre></pre>
+<p><code>Await</code>ing is also a control flow mechanism that allows the user to control the execution order of two tasks. For example, in the following method, the second task won’t be spawned until the first task is completed.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let handle = spawn_local(...);
+handle.await;
+spawn_local(...);
+<span class="boring">}</span></code></pre></pre>
+<p>Since the <code>JoinHandle</code> can be <code>await</code>ed, it must implement the <code>Future</code> trait. So what does the <code>poll</code> method of the <code>JoinHandle</code> do?</p>
+<h3 id="poll"><a class="header" href="#poll">Poll</a></h3>
+<p><code>Poll</code>ing a <code>JoinHandle</code> doesn’t actually poll the user-provided future to progress it. The only way for the user-provided future to be <code>poll</code>ed is with the <code>RawTask::run</code> method which is invoked by the <code>LocalExecutor</code>’s <code>run</code> method.</p>
+<p>Before we look into what <code>poll</code> does, let’s first look at the different ways a <code>JoinHandle</code> is used.</p>
+<p>There are two different ways a <code>JoinHandle</code> gets created:</p>
+<ul>
+<li><code>LocalExecutor::run</code></li>
+<li><code>spawn_local</code> / <code>spawn_local_into</code></li>
+</ul>
+<p><strong>LocalExecutor::run</strong></p>
+<p>Here is a code snippet for the <code>run</code> method:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span> LOCAL_EX.set(self, || {
+    let waker = dummy_waker();
+    let cx = &amp;mut Context::from_waker(&amp;waker);
+    let join_handle = self.spawn(async move { future.await });
+    pin!(join_handle);
+    loop {
+        if let Poll::Ready(t) = join_handle.as_mut().poll(cx) {
+            return t.unwrap();
+        }
+        self.run_task_queues();
+    }
+})
+<span class="boring">}</span></code></pre></pre>
+<p>We can see that <code>join_handle</code> is only used as a way to inspect whether the user-provided future is completed or not. Therefore, a <code>dummy_waker</code> is used. A <code>dummy_waker</code> is a <code>Waker</code> that doesn’t do anything when <code>wake()</code> is invoked.</p>
+<p><strong>spawn_local / spawn_local_into</strong></p>
+<p>Earlier, we talked about how the compiler converts the body of an <code>async</code> function into a state machine, where each <code>.await</code> call represents a new state. We also learned that when the state machine is <code>poll</code>ed and it returns <code>Poll::Pending</code>, then the executor wouldn’t want to poll the state machine again until the blocking task is completed. Therefore, the blocking task needs to store the waker of the parent task and notify it when the parent task can be <code>poll</code>ed again.</p>
+<p>This is what the <code>JoinHandle</code> created from <code>spawn_local</code> and <code>spawn_local_into</code> needs to do. It stores the <code>waker</code> from the <code>poll</code> method and notifies the executor that the parent task can be <code>poll</code>ed again.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let local_ex = LocalExecutor::default();
+local_ex.run(async {
+    let join_handle = spawn_local(async_write_file());
+    join_handle.await;
+});
+<span class="boring">}</span></code></pre></pre>
+<p>In the example above, the <code>run</code> method would spawn the <code>Future</code> created from the <code>async</code> block as follows:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let join_handle = self.spawn(async move { future.await });
+<span class="boring">}</span></code></pre></pre>
+<p>Let’s call this <code>Task A</code>. When <code>Task A</code> gets <code>poll</code>ed, it executes the following two lines of code:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let join_handle = spawn_local(async_write_file());
+join_handle.await;
+<span class="boring">}</span></code></pre></pre>
+<p>Let’s call the task associated with <code>async_write_file</code> as <code>Task B</code>. When the join handle for <code>Task B</code> is <code>poll</code>ed, <code>Task B</code> is most likely not complete yet. Therefore, <code>Task B</code> needs to store the <code>Waker</code> from the <code>poll</code> method. The <code>Waker</code> would schedule <code>Task A</code> back onto the executor when <code>.wake()</code> is invoked.</p>
+<h3 id="deep-dive-into-poll"><a class="header" href="#deep-dive-into-poll">Deep Dive into Poll</a></h3>
+<p>Here is the rough structure of the <code>JoinHandle</code>'s <code>poll</code> method. Notice that the <code>Output</code> type is <code>Option&lt;R&gt;</code> instead of <code>R</code>. The <code>poll</code> method returns <code>Poll::Ready(None)</code> if the <code>task</code> is <code>CLOSED</code>. In general, there are three scenarios to cover:</p>
+<ul>
+<li>if the task is <code>CLOSED</code></li>
+<li>if the task is not <code>COMPLETED</code></li>
+<li>if the task is neither <code>CLOSED</code> nor not <code>COMPLETED</code></li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;R&gt; Future for JoinHandle&lt;R&gt; {
+    type Output = Option&lt;R&gt;;
+
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        let ptr = self.raw_task.as_ptr();
+        let header = ptr as *mut Header;
+
+        unsafe {
+            let state = (*header).state;
+
+            if state &amp; CLOSED != 0 {
+							 ...
+            }
+
+            if state &amp; COMPLETED == 0 {
+               ...
+            }
+
+            ...
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Let’s first look at what happens if the task is <code>CLOSED</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if state &amp; CLOSED != 0 {
+    // If the task is scheduled or running, we need to wait until its future is
+    // dropped.
+    if state &amp; (SCHEDULED | RUNNING) != 0 {
+        // Replace the waker with one associated with the current task.
+        (*header).register(cx.waker());
+        return Poll::Pending;
+    }
+
+    // Even though the awaiter is most likely the current task, it could also be
+    // another task.
+    (*header).notify(Some(cx.waker()));
+    return Poll::Ready(None);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>If the task is closed, we notify the awaiter and return <code>None</code>. However, in the case that it’s <code>CLOSED</code> but still <code>SCHEDULED | RUNNING</code>, that means the <code>future</code> hasn’t dropped yet. <em>My understanding of this is that we are playing safe here, but let me know if there’s another reason why we need to return <code>Poll::Pending</code> when the future hasn’t dropped yet.</em></p>
+<p>Next, if the state is not <code>COMPLETED</code>, then we simply register the <code>waker</code> as the <code>awaiter</code> and return <code>Poll::Pending</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if state &amp; COMPLETED == 0 {
+    // Replace the waker with one associated with the current task.
+    (*header).register(cx.waker());
+
+    return Poll::Pending;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Finally, in the case that the task’s state is not <code>CLOSED</code> and <code>COMPLETED</code>, then we mark the task as <code>CLOSED</code> since the output has been consumed. We notify the awaiter. And we return <code>Poll::Ready(Some(output)</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>(*header).state |= CLOSED;
+
+// Notify the awaiter. Even though the awaiter is most likely the current
+// task, it could also be another task.
+(*header).notify(Some(cx.waker()));
+
+// Take the output from the task.
+let output = ((*header).vtable.get_output)(ptr) as *mut R;
+Poll::Ready(Some(output.read()))
+<span class="boring">}</span></code></pre></pre>
+<h3 id="cancel"><a class="header" href="#cancel">Cancel</a></h3>
+<p>Another responsibility of <code>JoinHandle</code> is that it’s a handle for the user to cancel a task. I won’t go into too much detail about how <code>cancel</code> works. But the general idea is that canceling a task means that the future will not be <code>poll</code>ed again. However, if the task is already <code>COMPLETED</code>, canceling a <code>JoinHandle</code> does nothing.</p>
+<h3 id="code-references"><a class="header" href="#code-references">Code References</a></h3>
+<p>To check out my toy implementation or Glommio’s implementation, check out:</p>
+<p><strong>Mini Async Runtime</strong></p>
+<ul>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/join_handle.rs#L14">JoinHandle</a></li>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/join_handle.rs#L25">JoinHandle::poll</a></li>
+</ul>
+<p><strong>Glommio</strong></p>
+<ul>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/join_handle.rs#L23">JoinHandle</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/join_handle.rs#L152">JoinHandle::poll</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/join_handle.rs#L40">JoinHandle::cancel</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../executor/local_executor.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../executor/life-of-a-task.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../executor/local_executor.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../executor/life-of-a-task.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

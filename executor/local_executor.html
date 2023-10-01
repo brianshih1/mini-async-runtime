@@ -1,0 +1,372 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Local Executor - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html" class="active"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Building a Thread-Per-Core, Asynchronous Framework like Glommio</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="localexecutor"><a class="header" href="#localexecutor">LocalExecutor</a></h1>
+<p>As a refresher, here’s an example of an executor running a task and spawning a task onto the executor.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let local_ex = LocalExecutor::default();
+let res = local_ex.run(async {
+    let handle = spawn_local(async_write_file());
+    handle.await;
+});
+<span class="boring">}</span></code></pre></pre>
+<h3 id="single-threaded"><a class="header" href="#single-threaded">Single Threaded</a></h3>
+<p>It’s important to understand that <code>LocalExecutor</code> is a single-threaded executor. This means that the executor can only be run on the thread that created it. <code>LocalExecutor</code> doesn’t implement the <code>Send</code> or <code>Sync</code> trait, so you cannot move a <code>LocalExecutor</code> across threads. This makes it easier to reason about the methods on <code>LocalExecutor</code> since it’s safe to assume that only one function invocation can be executing at any time. In other words, there won’t be two invocations of <code>run</code> on the same executor at once.</p>
+<p>Conceptually, the way to think about an executor is that it stores a collection of Task Queues. Each Task Queue has a collection of Tasks to execute. When <code>run</code> is called, the executor would choose one of the task queues to be the active executor. Then it will start looping and popping tasks off the Task Queue.</p>
+<h3 id="internals"><a class="header" href="#internals">Internals</a></h3>
+<p>Let’s look at the internals of an Executor:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct LocalExecutor {
+    pub(crate) id: usize,
+    pub(crate) queues: Rc&lt;RefCell&lt;QueueManager&gt;&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>A <code>LocalExecutor</code> contains a <code>QueueManager</code>. As explained earlier, a <code>QueueManager</code> contains all the <code>Task Queues</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) struct QueueManager {
+    pub active_queues: BinaryHeap&lt;Rc&lt;RefCell&lt;TaskQueue&gt;&gt;&gt;,
+    pub active_executing: Option&lt;Rc&lt;RefCell&lt;TaskQueue&gt;&gt;&gt;,
+    pub available_queues: AHashMap&lt;usize, Rc&lt;RefCell&lt;TaskQueue&gt;&gt;&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>At any time, a <code>QueueManager</code> is actively working on at most one <code>TaskQueue</code>. The <code>active_queues</code> property stores the <code>TaskQueues</code> that are not empty. Any <code>TaskQueue</code> inside <code>active_queues</code> is also inside <code>available_queues</code>. A <code>TaskQueue</code> is removed from <code>active_queues</code> whenever it’s empty.</p>
+<p>Now, we can finally look at <code>run</code>, the core method of a <code>LocalExecutor</code>.</p>
+<h3 id="deep-dive-into-run"><a class="header" href="#deep-dive-into-run">Deep Dive into Run</a></h3>
+<p>The <code>run</code> method runs the executor until the provided <code>future</code> completes. Here is its implementation:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn run&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt;) -&gt; T {
+    assert!(
+        !LOCAL_EX.is_set(),
+        &quot;There is already an LocalExecutor running on this thread&quot;
+    );
+    LOCAL_EX.set(self, || {
+				let join_handle = self.spawn(async move { future.await });
+        let waker = dummy_waker();
+        let cx = &amp;mut Context::from_waker(&amp;waker);
+        pin!(join_handle);
+        loop {
+            if let Poll::Ready(t) = join_handle.as_mut().poll(cx) {
+                // can't be canceled, and join handle is None only upon
+                // cancellation or panic. So in case of panic this just propagates
+                return t.unwrap();
+            }
+
+            // TODO: I/O work
+            self.run_task_queues();
+        }
+    })
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Let’s break down <code>run</code> line by line. First, <code>run</code> makes sure that no other executors are running on the same thread. <code>LOCAL_EX</code> is a thread local storage key defined as:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scoped_tls::scoped_thread_local!(static LOCAL_EX: LocalExecutor);
+<span class="boring">}</span></code></pre></pre>
+<p>Next, it calls  <code>spawn</code> to create and schedule the task onto the <code>TaskQueue</code>.</p>
+<p>It then loops until the <code>future</code> is completed. It’s super important to understand that the <code>poll</code> method here doesn’t actually <code>poll</code> the user-provided future. It simply <code>poll</code>s the <code>JoinHandle</code>, which checks if the <code>COMPLETED</code> flag on the task’s <code>state</code> is set.</p>
+<p>Since the <code>executor</code> is single-threaded, looping alone won’t actually progress the underlying future. Therefore, in each loop, the <code>executor</code> calls the <code>run_task_queues</code> method.</p>
+<p><code>run_task_queues</code> simply loops and calls <code>run_one_task_queue</code> until there are no more <code>task</code>s left in the <code>TaskQueue</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn run_task_queues(&amp;self) -&gt; bool {
+    let mut ran = false;
+    loop {
+        // TODO: Check if prempt
+        if !self.run_one_task_queue() {
+            return false;
+        } else {
+            ran = true;
+        }
+    }
+    ran
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>run_one_task_queue</code> sets the <code>active_executing</code> queue to one of the <code>active_queues</code>. It then loops until until there are no more tasks in that <code>TaskQueue</code>.</p>
+<p>In each loop, it calls <code>get_task</code> which pops a <code>task</code> from the <code>TaskQueue</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn run_one_task_queue(&amp;self) -&gt; bool {
+  let mut q_manager = self.queues.borrow_mut();
+  let size = q_manager.active_queues.len();
+  let tq = q_manager.active_queues.pop();
+  match tq {
+      Some(tq) =&gt; {
+          q_manager.active_executing = Some(tq.clone());
+          drop(q_manager);
+          loop {
+              // TODO: Break if pre-empted or yielded
+              let tq = tq.borrow_mut();
+
+              if let Some(task) = tq.get_task() {
+                  drop(tq);
+                  task.run();
+              } else {
+                  break;
+              }
+          }
+          true
+      }
+      None =&gt; {
+          false
+      }
+  }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>To summarize, <code>run</code> spawns a task onto one of the task queues. The executor then runs one <code>task_queue</code> at a time to completion until the spawned <code>task</code> is <code>COMPLETED</code>. The most important concept to remember here is that none of the task is <code>blocking</code>. Whenever one of the <code>task</code> is about to be run, it is popped from the <code>TaskQueue</code>. It won’t be scheduled back onto the <code>TaskQueue</code> until its <code>waker</code> is invoked, which is when the thing blocking it is no longer blocking. In other words, the <code>executor</code> will move from one <code>task</code> to another without waiting on any blocking code.</p>
+<h3 id="spawn_local"><a class="header" href="#spawn_local">spawn_local</a></h3>
+<p>The <code>spawn_local</code> method is how a user can spawn a task onto the executor.</p>
+<p><code>spawn_local</code> allows the developer to create two tasks that run concurrently instead of sequentially:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let res = local_ex.run(async {
+    let handle1 = spawn_local(async_write_file());
+		let handle2 = spawn_local(async_write_file());
+    handle1.await;
+		handle2.await;
+});
+<span class="boring">}</span></code></pre></pre>
+<p>This is the implementation of <code>spawn_local</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>	pub fn spawn_local&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt; + 'static) -&gt; JoinHandle&lt;T&gt;
+	where
+	    T: 'static,
+	{
+	    LOCAL_EX.with(|local_ex| local_ex.spawn(future))
+	}
+<span class="boring">}</span></code></pre></pre>
+<p><code>Spawn_local</code> simply finds the <code>LocalExecutor</code> on the current thread and calls <code>LocalExecutor::spawn</code>. Here is the implementation of <code>spawn</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub(crate) fn spawn&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt;) -&gt; JoinHandle&lt;T&gt; {
+    let active_executing = self.queues.borrow().active_executing.clone();
+    let tq = active_executing
+        .clone() // this clone is cheap because we clone an `Option&lt;Rc&lt;_&gt;&gt;`
+        .or_else(|| self.get_default_queue())
+        .unwrap();
+    let tq_executor = tq.borrow().ex.clone();
+    tq_executor.spawn_and_schedule(self.id, tq, future)
+}
+
+pub(crate) fn spawn_and_schedule&lt;T&gt;(
+    &amp;self,
+    executor_id: usize,
+    tq: Rc&lt;RefCell&lt;TaskQueue&gt;&gt;,
+    future: impl Future&lt;Output = T&gt;,
+) -&gt; JoinHandle&lt;T&gt; {
+    let (task, handle) = self.create_task(executor_id, tq, future);
+    task.schedule();
+    handle
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>Spawn</code> gets the active executing <code>TaskQueue</code>, creates a task and schedules the <code>Task</code> onto the <code>TaskQueue</code>.</p>
+<p>To summarize, <code>spawn_local</code> simply schedules a <code>Task</code> onto the <code>LocalExecutor</code>'s actively executing <code>TaskQueue</code>.</p>
+<h3 id="code-references"><a class="header" href="#code-references">Code References</a></h3>
+<p>To check out my toy implementation or Glommio’s implementation, check out:</p>
+<p><strong>Mini Async Runtime</strong></p>
+<ul>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L65">LocalExecutor::run</a></li>
+<li><a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L55">LocalExecutor::spawn</a></li>
+</ul>
+<p><strong>Glommio</strong></p>
+<ul>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/executor/mod.rs#L1429">LocalExecutor::run</a></li>
+<li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/executor/mod.rs#L632">LocalExecutor::spawn</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../executor/waker_implementation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../executor/join_handle.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../executor/waker_implementation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../executor/join_handle.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
