@@ -1,3 +1,5 @@
+# Motivation
+
 In this blog series, I will explore building a toy version of [Glommio](https://docs.rs/glommio/latest/glommio/), which is an `asynchronous` framework for building `thread-per-core` applications.
 
 ### What is Thread-Per-Core?

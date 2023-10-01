@@ -7,8 +7,20 @@
 # Phase 1 - The Executor
 - [What is an executor?](./executor/intro.md)
 - [API](./executor/api.md)
-- [Prerequisites - Rust Primitives]()
+- [Prerequisites - Rust Primitives](./executor/primitive-intro.md)
   - [Future](./executor/future.md)
+  - [Async/Await](./executor/async-await.md)
+  - [Waker](./executor/waker.md)
+- [Implementation Details](./executor/implementation-details.md)
+  - [Core abstractions](./executor/core-abstractions.md)
+  - [Task](./executor/task.md)
+  - [Running the Task](./executor/raw_task.md)
+  - [TaskQueue](./executor/task_queue.md)
+  - [Waker](./executor/waker_implementation.md)
+  - [Local Executor](./executor/local_executor.md)
+  - [Join Handle](./executor/join_handle.md)
+- [Life of a Task](./executor/life-of-a-task.md)
+- [Pinned Threads](./executor/pinned-threads.md)
 
 ---
 

@@ -6,7 +6,7 @@ An executor needs to decide when to switch between tasks. There are two main way
 
 In **preemptive multitasking**, the scheduler decides when to switch between tasks. It may have an internal timer that forces a task to give up control to the CPU to ensure that each task gets a fair share of the CPU.
 
-In **cooperative multitasking**, each task runs until it voluntarily gives up control to the scheduler. The type of multitasking Glommio supports is cooperative multitasking.
+In **cooperative multitasking**, the scheduler lets the task run until it voluntarily gives up control back to the scheduler. `Glommio` supports cooperative multitasking.
 
 So how might an executor run tasks? The most simple mechanism is with the event loop.
 
