@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,19 +144,20 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="motivation"><a class="header" href="#motivation">Motivation</a></h1>
-<p>In this blog series, I will explore building a toy version of <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a>, which is an <code>asynchronous</code> framework for building <code>thread-per-core</code> applications.</p>
+<p>I've always wondered how asynchronous runtimes like <a href="https://nodejs.org/en/about">Node.js</a>, <a href="https://seastar.io/">Seastar</a>, <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a>, and <a href="https://tokio.rs/">Tokio</a> work under the hood. I'm also curious how the <a href="https://seastar.io/shared-nothing/#:~:text=The%20Seastar%20Model%3A%20Shared%2Dnothing&amp;text=Seastar%20runs%20one%20application%20thread,cores%20must%20be%20handled%20explicitly.">shared-nothing</a>, thread-per-core architecture that powers systems like <a href="https://redpanda.com/">Redpanda</a> and <a href="https://www.scylladb.com/">ScyllaDB</a> works at a deeper level.</p>
+<p>In this blog series, I will explore building a toy version of <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a>, an <code>asynchronous</code> framework for building <code>thread-per-core</code> applications.</p>
 <h3 id="what-is-thread-per-core"><a class="header" href="#what-is-thread-per-core">What is Thread-Per-Core?</a></h3>
-<p>A complex application may have many tasks that it needs to execute. To speed up the application, some of these tasks can be performed in parallel. The ability of a system to execute multiple tasks concurrently is known as <strong>multitasking</strong>.</p>
-<p>Thread-based multitasking is one of the ways an operating system supports multitasking. In thread-based multitasking, an application can spawn a thread for each of its internal tasks. While the CPU can only run one thread at a time, the CPU scheduler can switch between threads to give the user the perception of two or more threads running simultaneously. The switching between threads is known as context switching. </p>
+<p>A complex application may have many tasks that it needs to execute. Some of these tasks can be performed in parallel to speed up the application. The ability of a system to execute multiple tasks concurrently is known as <strong>multitasking</strong>.</p>
+<p>Thread-based multitasking is one of the ways an operating system supports multitasking. In thread-based multitasking, an application can spawn a thread for each internal task. While the CPU can only run one thread at a time, the CPU scheduler can switch between threads to give the user the perception of two or more threads running simultaneously. The switching between threads is known as context switching. </p>
 <p>While thread-based multitasking may allow better usage of the CPU by switching threads when a thread is blocked or waiting, there are a few drawbacks:</p>
 <ul>
 <li>The developer has very little control over which thread is scheduled at any moment. Only a single thread can run on a CPU core at any moment. Once a thread is spawned, it is up to the OS to decide which thread to run on which CPU.</li>
-<li>When the OS switches threads to run on a CPU core, it needs to perform a context switch. A context switch is expensive and may take the kernel around 5 μs to perform.</li>
-<li>If multiple threads try to mutate the same data, they need to use locks to synchronize resource contention. Locks are expensive and threads are blocked while waiting for the lock to be released.</li>
+<li>When the OS switches threads to run on a CPU core, it performs a context switch. A context switch is expensive and may take the kernel around 5 μs to perform.</li>
+<li>If multiple threads try to mutate the same data, they need to use locks to synchronize resource contention. Locks are expensive, and threads are blocked while waiting for the lock to be released.</li>
 </ul>
 <p>Thread-per-core is an architecture that eliminates threads from the picture. In this programming paradigm, developers are not allowed to spawn new threads to run tasks. Instead, each core runs on a single thread.</p>
-<p><a href="https://seastar.io/">Seastar</a> (C++) and <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a> (Rust) are two frameworks that allow developers to write thread-per-core applications. Seastar is used in ScyllaDB and Redpanda while Glommio is used by Datadog.</p>
-<p>In this blog series, I will explore building a toy version of Glommio, which is an <code>asynchronous</code>, <code>thread-per-core</code> runtime based on <code>io_uring</code>. I will be building a minimal version of Glommio by extracting bits and pieces from it.</p>
+<p><a href="https://seastar.io/">Seastar</a> (C++) and <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a> (Rust) are two frameworks that allow developers to write thread-per-core applications. Seastar is used in ScyllaDB and Redpanda, while Glommio is used by Datadog.</p>
+<p>In this blog series, I will reimplement a light-weight version of Glommio by extracting bits and pieces from it. Throughout the blog, I will explain the different core abstractions that make up an asynchronous runtime.</p>
 <p>I’ve split up the blog series into four phases:</p>
 <ul>
 <li><strong>Phase 1</strong>: In phase 1, we will cover Rust’s asynchronous primitives like <code>Future</code>, <code>Async/Await</code>, and <code>Waker</code> which will serve as building blocks for the asynchronous runtime. We will then build a simple, single-threaded, executor that can run and spawn tasks.</li>
@@ -1520,6 +1521,91 @@ impl LocalExecutorBuilder {
 }
 <span class="boring">}</span></code></pre></pre>
 <p>When <code>Placement::Fixed(cpu)</code> is provided, the <code>LocalExecutorBuilder</code> simply creates the <code>LocalExecutor</code> with <code>vec![cpu]</code> as the specified CPU.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="what-is-asynchronous-io"><a class="header" href="#what-is-asynchronous-io">What is Asynchronous I/O?</a></h1>
+<p>In this phase, we will add I/O to our runtime.</p>
+<p>A simple approach to I/O would be to just wait for the I/O operation to complete. But such an approach, called <strong>synchronous I/O</strong> or <strong>blocking I/O</strong> would block the single-threaded executor from performing any other tasks concurrently.</p>
+<p>What we want instead is <strong>asynchronous I/O</strong>. In this approach, performing I/O won’t block the calling thread. This allows the executor to run other tasks and return to the original task once the I/O operation completes.</p>
+<p>Before we implement asynchronous I/O, we need to first look at two things: how to turn an I/O operation to non-blocking and <code>io_uring</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="prerequisites---building-blocks"><a class="header" href="#prerequisites---building-blocks">Prerequisites - Building Blocks</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="nonblocking-mode"><a class="header" href="#nonblocking-mode">Nonblocking Mode</a></h1>
+<p>In Rust, by default, many I/O operations, such as reading a file, are blocking. For example, in the code snippet below, the <code>TcpListener::accept</code> call will block the calling thread until a new TCP connection is established.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let listener = TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
+listener.accept();
+<span class="boring">}</span></code></pre></pre>
+<h3 id="nonblocking-io"><a class="header" href="#nonblocking-io">Nonblocking I/O</a></h3>
+<p>The first step towards asynchronous I/O is turning a blocking I/O operation into a non-blocking one.</p>
+<p>In Linux, it is possible to do nonblocking I/O on sockets and files by setting the <code>O_NONBLOCK</code> flag on the file descriptors.</p>
+<p>Here’s how you can set the file descriptor for a socket to be non-blocking:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let listener = std::net::TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
+let raw_fd = listener.as_raw_fd();
+fcntl(raw_fd, FcntlArg::F_SETFL(OFlag::O_NONBLOCK))
+<span class="boring">}</span></code></pre></pre>
+<p>Setting the file descriptor for the <code>TcpListener</code> to nonblocking means that the next I/O operation would immediately return. To check if the operation is complete, you have to manually <code>poll</code> the file descriptor.</p>
+<p>Rust’s std library has helper methods such as <code>Socket::set_blocking</code> to set a file descriptor to be nonblocking:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let l = std::net::TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
+l.set_nonblocking(true).unwrap();
+<span class="boring">}</span></code></pre></pre>
+<h3 id="polling"><a class="header" href="#polling">Polling</a></h3>
+<p>As mentioned above, after setting a socket’s file descriptor to be non-blocking, you have to manually poll the file descriptor to check if the I/O operation is completed. Under non-blocking mode, the <code>TcpListener::Accept</code> method returns <code>Ok</code> if the I/O operation is successful or an error with kind <code>io::ErrorKind::WouldBlock</code> is returned.</p>
+<p>In the following example, we <code>loop</code> until the I/O operation is ready by repeatedly calling <code>accept</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let l = std::net::TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
+l.set_nonblocking(true).unwrap();
+
+loop {
+		// the accept call
+    let res = l.accept();
+    match res {
+        Ok((stream, _)) =&gt; {
+						handle_connection(stream);
+						break;
+				}
+        Err(err) =&gt; if err.kind() == io::ErrorKind::WouldBlock {},
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>While this works, repeatedly calling <code>accept</code> in a loop is not ideal. Each call to <code>TcpListener::accept</code> is an expensive call to the kernel.</p>
+<p>This is where system calls like <a href="http://man7.org/linux/man-pages/man2/select.2.html">select</a>, <a href="http://man7.org/linux/man-pages/man2/poll.2.html">poll,</a> <a href="http://man7.org/linux/man-pages/man7/epoll.7.html">epoll</a>, <a href="https://man7.org/linux/man-pages/man7/aio.7.html">aio</a>, <a href="https://man.archlinux.org/man/io_uring.7.en">io_uring</a> come in. These calls let you register interest for file descriptors and let you know when one or more of them are ready. This reduces the need for constant polling and makes better use of system resources.</p>
+<p>Glommio uses <code>io_uring</code>. One of the things that make <code>io_uring</code> stand out compared to other system calls is that it presents a uniform interface for both sockets and files. This is a huge improvement from system calls like <code>epoll</code> that doesn’t support files while <code>aio</code> only works with a subset of files (linus-aio only supports <code>O_DIRECT</code> files). In the next page, we take a quick glance at how <code>io_uring</code> works.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="io_uring"><a class="header" href="#io_uring">Io_uring</a></h1>
+<p>On this page, I’ll provide a surface-level explanation of how <code>io_uring</code> works. If you want a more in-depth explanation, check out <a href="https://unixism.net/loti/what_is_io_uring.html">this tutorial</a> or [this article](https://developers.redhat.com/articles/2023/04/12/why-you-should-use-iouring-network-io#:~:text=io_uring is an asynchronous I,O requests to the kernel).</p>
+<p>As mentioned, <code>io_uring</code> manages file descriptors for the users and lets them know when one or more of them are ready.</p>
+<p>Each <code>io_uring</code> instance is composed of two ring buffers - the submission queue and the completion queue.</p>
+<p>To register interest in a file descriptor, you add an SQE to the tail of the submission queue.  Adding to the submission queue doesn’t automatically send the requests to the kernel, you need to submit it via the <code>io_uring_enter</code> system call. <code>Io_uring</code> supports batching by allowing you to add multiple SQEs to the ring before submitting.</p>
+<p>The kernel processes the submitted entries and adds completion queue events (CQEs) to the completion queue when it is ready. While the order of the CQEs might not match the order of the SQEs, there will be one CQE for each SQE, which you can identify by providing user data.</p>
+<p>The user can then check the CQE to see if there are any completed I/O operations.</p>
+<h3 id="using-io_uring-for-tcplistener"><a class="header" href="#using-io_uring-for-tcplistener">Using io_uring for TcpListener</a></h3>
+<p>Let’s look at how we can use <code>IoUring</code> to manage the <code>accept</code> operation for a <code>TcpListener</code>. We will be using the <code>iou</code> crate, a library built on top of <code>liburing</code>, to create and interact with <code>io_uring</code> instances.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let l = std::net::TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
+l.set_nonblocking(true).unwrap();
+let mut ring = iou::IoUring::new(2).unwrap();
+
+unsafe {
+    let mut sqe = ring.prepare_sqe().expect(&quot;failed to get sqe&quot;);
+    sqe.prep_poll_add(l.as_raw_fd(), iou::sqe::PollFlags::POLLIN);
+    sqe.set_user_data(0xDEADBEEF);
+    ring.submit_sqes().unwrap();
+}
+l.accept();
+let cqe = ring.wait_for_cqe().unwrap();
+assert_eq!(cqe.user_data(), 0xDEADBEEF);
+<span class="boring">}</span></code></pre></pre>
+<p>In this example, we first create a <code>[TcpListener](&lt;https://doc.rust-lang.org/stable/std/net/struct.TcpListener.html&gt;)</code> and set it to non-blocking. Next, we create an <code>io_uring</code> instance. We then register interest in the socket’s file descriptor by making a call to <code>prep_poll_add</code> (a wrapper around Linux’s <a href="https://man7.org/linux/man-pages/man3/io_uring_prep_poll_add.3.html">io_uring_prep_poll_add</a> call). This adds a <code>SQE</code> entry to the submission queue which will trigger a CQE to be posted <a href="https://github.com/nix-rust/nix/blob/e7c877abf73f7f74e358f260683b70ce46db13b0/src/poll.rs#L127">when there is data to be read</a>.</p>
+<p>We then call <code>accept</code> to accept any incoming TCP connections. Finally, we call <code>wait_for_cqe</code>, which returns the next CQE, blocking the thread until one is ready if necessary. If we wanted to avoid blocking the thread in this example, we could’ve called <code>peek_for_cqe</code> which peeks for any completed CQE without blocking.</p>
+<h3 id="efficiently-checking-the-cqe"><a class="header" href="#efficiently-checking-the-cqe">Efficiently Checking the CQE</a></h3>
+<p>You might be wondering - if we potentially need to call <code>peek_for_cqe()</code> repeatedly until it is ready, how is this different from calling <code>listener.accept()</code> repeatedly?</p>
+<p>The difference is that <code>accept</code> is a system call while <code>peek_for_cqe</code>, which calls <code>io_uring_peek_batch_cqe</code> under the hood, is not a system call. This is due to the unique property of <code>io_uring</code> such that the completion ring buffer is shared between the kernel and the user space. This allows you to efficiently check the status of completed I/O operations.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="api-2"><a class="header" href="#api-2">API</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="implementation-details-1"><a class="header" href="#implementation-details-1">Implementation Details</a></h1>
 
                     </main>
 

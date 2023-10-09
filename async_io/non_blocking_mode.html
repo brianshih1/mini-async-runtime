@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Future - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+        <title>Non-blocking I/O - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html" class="active"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html" class="active"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -142,37 +142,63 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="future"><a class="header" href="#future">Future</a></h1>
-<p>A future represents a value that might not be available yet. Each future implements the <code>std::future::Future</code> trait as follows:</p>
+                        <h1 id="nonblocking-mode"><a class="header" href="#nonblocking-mode">Nonblocking Mode</a></h1>
+<p>In Rust, by default, many I/O operations, such as reading a file, are blocking. For example, in the code snippet below, the <code>TcpListener::accept</code> call will block the calling thread until a new TCP connection is established.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>pub trait Future {
-    type Output;
+</span>let listener = TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
+listener.accept();
+<span class="boring">}</span></code></pre></pre>
+<h3 id="nonblocking-io"><a class="header" href="#nonblocking-io">Nonblocking I/O</a></h3>
+<p>The first step towards asynchronous I/O is turning a blocking I/O operation into a non-blocking one.</p>
+<p>In Linux, it is possible to do nonblocking I/O on sockets and files by setting the <code>O_NONBLOCK</code> flag on the file descriptors.</p>
+<p>Here’s how you can set the file descriptor for a socket to be non-blocking:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let listener = std::net::TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
+let raw_fd = listener.as_raw_fd();
+fcntl(raw_fd, FcntlArg::F_SETFL(OFlag::O_NONBLOCK))
+<span class="boring">}</span></code></pre></pre>
+<p>Setting the file descriptor for the <code>TcpListener</code> to nonblocking means that the next I/O operation would immediately return. To check if the operation is complete, you have to manually <code>poll</code> the file descriptor.</p>
+<p>Rust’s std library has helper methods such as <code>Socket::set_blocking</code> to set a file descriptor to be nonblocking:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let l = std::net::TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
+l.set_nonblocking(true).unwrap();
+<span class="boring">}</span></code></pre></pre>
+<h3 id="polling"><a class="header" href="#polling">Polling</a></h3>
+<p>As mentioned above, after setting a socket’s file descriptor to be non-blocking, you have to manually poll the file descriptor to check if the I/O operation is completed. Under non-blocking mode, the <code>TcpListener::Accept</code> method returns <code>Ok</code> if the I/O operation is successful or an error with kind <code>io::ErrorKind::WouldBlock</code> is returned.</p>
+<p>In the following example, we <code>loop</code> until the I/O operation is ready by repeatedly calling <code>accept</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let l = std::net::TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
+l.set_nonblocking(true).unwrap();
 
-    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context) -&gt; Poll&lt;Self::Output&gt;;
+loop {
+		// the accept call
+    let res = l.accept();
+    match res {
+        Ok((stream, _)) =&gt; {
+						handle_connection(stream);
+						break;
+				}
+        Err(err) =&gt; if err.kind() == io::ErrorKind::WouldBlock {},
+    }
 }
 <span class="boring">}</span></code></pre></pre>
-<p>The associated type, <code>Output</code>, represents the type of the output value.</p>
-<p>The <code>poll</code> method returns whether the value is ready or not. It’s also used to advance the <code>Future</code> towards completion. The <code>poll</code> method returns <code>Poll::Ready(value)</code> if it’s completed and <code>Poll::Pending</code> if it’s not complete yet. It’s important to understand that a <code>Future</code> does nothing until it’s <code>poll</code>ed. Polling a future forces it to make progress.</p>
-<p>The <code>Poll</code> enum looks like this:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub enum Poll&lt;T&gt; {
-    Ready(T),
-    Pending,
-}
-<span class="boring">}</span></code></pre></pre>
-<p>The <code>poll</code> method takes in a <code>Context</code> argument. As we will cover soon, the <code>Context</code> holds a <code>Waker</code> instance which notifies any interested tasks that are blocked by the current task.</p>
+<p>While this works, repeatedly calling <code>accept</code> in a loop is not ideal. Each call to <code>TcpListener::accept</code> is an expensive call to the kernel.</p>
+<p>This is where system calls like <a href="http://man7.org/linux/man-pages/man2/select.2.html">select</a>, <a href="http://man7.org/linux/man-pages/man2/poll.2.html">poll,</a> <a href="http://man7.org/linux/man-pages/man7/epoll.7.html">epoll</a>, <a href="https://man7.org/linux/man-pages/man7/aio.7.html">aio</a>, <a href="https://man.archlinux.org/man/io_uring.7.en">io_uring</a> come in. These calls let you register interest for file descriptors and let you know when one or more of them are ready. This reduces the need for constant polling and makes better use of system resources.</p>
+<p>Glommio uses <code>io_uring</code>. One of the things that make <code>io_uring</code> stand out compared to other system calls is that it presents a uniform interface for both sockets and files. This is a huge improvement from system calls like <code>epoll</code> that doesn’t support files while <code>aio</code> only works with a subset of files (linus-aio only supports <code>O_DIRECT</code> files). In the next page, we take a quick glance at how <code>io_uring</code> works.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../executor/primitive-intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../async_io/building_blocks.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../executor/async-await.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../async_io/io_uring.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -182,11 +208,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../executor/primitive-intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../async_io/building_blocks.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../executor/async-await.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../async_io/io_uring.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

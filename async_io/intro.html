@@ -3,8 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Page not found - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
-        <base href="/">
+        <title>What is Asynchronous I/O? - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
 
 
         <!-- Custom HTML head -->
@@ -13,21 +12,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
@@ -36,7 +35,7 @@
     <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
-            var path_to_root = "";
+            var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -82,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html" class="active"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -114,7 +113,7 @@
                     <h1 class="menu-title">Building a Thread-Per-Core, Asynchronous Framework like Glommio</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -143,14 +142,23 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="document-not-found-404"><a class="header" href="#document-not-found-404">Document not found (404)</a></h1>
-<p>This URL is invalid, sorry. Please use the navigation bar or search to continue.</p>
+                        <h1 id="what-is-asynchronous-io"><a class="header" href="#what-is-asynchronous-io">What is Asynchronous I/O?</a></h1>
+<p>In this phase, we will add I/O to our runtime.</p>
+<p>A simple approach to I/O would be to just wait for the I/O operation to complete. But such an approach, called <strong>synchronous I/O</strong> or <strong>blocking I/O</strong> would block the single-threaded executor from performing any other tasks concurrently.</p>
+<p>What we want instead is <strong>asynchronous I/O</strong>. In this approach, performing I/O won’t block the calling thread. This allows the executor to run other tasks and return to the original task once the I/O operation completes.</p>
+<p>Before we implement asynchronous I/O, we need to first look at two things: how to turn an I/O operation to non-blocking and <code>io_uring</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../executor/pinned-threads.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
+                            <a rel="next" href="../async_io/building_blocks.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -158,7 +166,13 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../executor/pinned-threads.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
+                    <a rel="next" href="../async_io/building_blocks.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
             </nav>
 
         </div>
@@ -171,13 +185,13 @@
         </script>
 
 
-        <script src="elasticlunr.min.js"></script>
-        <script src="mark.min.js"></script>
-        <script src="searcher.js"></script>
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
 
-        <script src="clipboard.min.js"></script>
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
 
         <!-- Custom JS scripts -->
 
