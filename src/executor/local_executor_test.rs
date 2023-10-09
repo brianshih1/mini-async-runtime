@@ -24,6 +24,7 @@ fn simple_spawn() {
 
 #[test]
 fn local_executor_builder_placement() {
+    // The LocalExecutor will now only run on Cpu 0
     let builder = LocalExecutorBuilder::new(Placement::Fixed(0));
     let local_ex = builder.build();
     let res = local_ex.run(async {

@@ -9,7 +9,6 @@ impl Async<TcpListener> {
     pub fn bind<A: Into<SocketAddr>>(addr: A) -> io::Result<Async<TcpListener>> {
         let addr = addr.into();
         let listener = TcpListener::bind(addr)?;
-        listener.set_nonblocking(true).unwrap();
         Ok(Async::new(listener)?)
     }
 

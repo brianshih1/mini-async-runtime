@@ -1,5 +1,7 @@
 use std::{io, os::fd::RawFd};
 
+use nix::fcntl::{self, fcntl, FcntlArg, OFlag};
+
 use crate::{
     executor::executor,
     sys::{self, source::Source, SourceType},
@@ -29,6 +31,7 @@ impl Reactor {
     }
 
     pub fn insert_pollable_io(&self, raw: RawFd) -> Source {
+        fcntl(raw, FcntlArg::F_SETFL(OFlag::O_NONBLOCK)).unwrap();
         self.new_source(raw, SourceType::PollableFd)
     }
 
