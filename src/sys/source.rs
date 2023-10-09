@@ -53,6 +53,20 @@ impl Source {
         .await
     }
 
+    /// Waits until the I/O source is writable.
+    pub(crate) async fn writable(&self) -> io::Result<()> {
+        future::poll_fn(|cx| {
+            if self.take_result().is_some() {
+                return Poll::Ready(Ok(()));
+            }
+
+            self.add_waiter(cx.waker().clone());
+            get_reactor().sys.interest(self, false, true);
+            Poll::Pending
+        })
+        .await
+    }
+
     pub(crate) fn take_result(&self) -> Option<io::Result<usize>> {
         self.inner.borrow_mut().wakers.result.take()
     }

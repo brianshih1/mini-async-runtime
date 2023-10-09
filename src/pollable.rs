@@ -14,7 +14,7 @@ pub struct Async<T> {
 impl<T: AsRawFd> Async<T> {
     pub fn new(io: T) -> io::Result<Async<T>> {
         Ok(Async {
-            source: get_reactor().insert_pollable_io(io.as_raw_fd()),
+            source: get_reactor().create_source(io.as_raw_fd()),
             io: Some(Box::new(io)),
         })
     }
@@ -38,7 +38,7 @@ impl<T> Async<T> {
                 }
                 res => return res,
             }
-            self.readable().await?;
+            self.source.readable().await?;
         }
     }
 }

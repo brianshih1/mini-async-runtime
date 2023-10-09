@@ -30,7 +30,7 @@ impl Reactor {
         Source::new(raw, stype, None)
     }
 
-    pub fn insert_pollable_io(&self, raw: RawFd) -> Source {
+    pub fn create_source(&self, raw: RawFd) -> Source {
         fcntl(raw, FcntlArg::F_SETFL(OFlag::O_NONBLOCK)).unwrap();
         self.new_source(raw, SourceType::PollableFd)
     }
