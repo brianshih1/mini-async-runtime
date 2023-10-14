@@ -101,7 +101,7 @@ fn create_task<T>(
 
 To check out my toy implementation or Glommio’s implementation, check out:
 
-**Mini Async Runtime**
+**My Toy Implementation**
 
 - [wake_by_ref](https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L168)
 - [RawTask::schedule](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L192)

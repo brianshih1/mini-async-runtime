@@ -193,7 +193,7 @@ To summarize, `spawn_local` simply schedules a `Task` onto the `LocalExecutor`'s
 
 To check out my toy implementation or Glommio’s implementation, check out:
 
-**Mini Async Runtime**
+**My Toy Implementation**
 
 - [LocalExecutor::run](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L65)
 - [LocalExecutor::spawn](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L55)

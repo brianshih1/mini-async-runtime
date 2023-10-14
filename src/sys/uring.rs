@@ -44,7 +44,7 @@ pub(crate) trait UringCommon {
     /// None if it wasn't possible to acquire an `sqe`. `Some(true)` if it was
     /// possible and there was something to dispatch. `Some(false)` if there
     /// was nothing to dispatch
-    fn submit_one_event(&mut self, queue: &mut VecDeque<UringDescriptor>) -> Option<bool>;
+    fn prep_one_event(&mut self, queue: &mut VecDeque<UringDescriptor>) -> Option<bool>;
     fn submit_sqes(&mut self) -> io::Result<usize>;
 
     fn submission_queue(&mut self) -> ReactorQueue;
@@ -61,7 +61,7 @@ pub(crate) trait UringCommon {
         mut dispatch: bool,
     ) -> io::Result<usize> {
         loop {
-            match self.submit_one_event(queue) {
+            match self.prep_one_event(queue) {
                 None => {
                     dispatch = true;
                     break;
@@ -108,7 +108,7 @@ struct SleepableRing {
 }
 
 impl UringCommon for SleepableRing {
-    fn submit_one_event(&mut self, queue: &mut VecDeque<UringDescriptor>) -> Option<bool> {
+    fn prep_one_event(&mut self, queue: &mut VecDeque<UringDescriptor>) -> Option<bool> {
         if queue.is_empty() {
             return Some(false);
         }

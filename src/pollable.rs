@@ -41,4 +41,17 @@ impl<T> Async<T> {
             self.source.readable().await?;
         }
     }
+
+    pub async fn write_with<R>(&self, op: impl FnMut(&T) -> io::Result<R>) -> io::Result<R> {
+        let mut op = op;
+        loop {
+            match op(self.get_ref()) {
+                Err(err) if err.kind() == io::ErrorKind::WouldBlock => {
+                    println!("would block");
+                }
+                res => return res,
+            }
+            self.source.writable().await?;
+        }
+    }
 }

@@ -81,7 +81,7 @@ pub(crate) fn spawn_and_schedule<T>(
 
 To check out my toy implementation or Glommio’s implementation, check out:
 
-**Mini Async Runtime**
+**My Toy Implementation**
 
 - [TaskQueue](https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L16)
 - [TaskQueueExecutor::create_task](https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L79)

@@ -186,7 +186,7 @@ The goal of this section is to showcase the type of challenges that one can expe
 
 To check out my toy implementation or Glommio’s implementation, check out:
 
-**Mini Async Runtime**
+**My Toy Implementation**
 
 - [RawTask::run](https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L297)
 

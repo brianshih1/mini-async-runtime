@@ -203,7 +203,7 @@ The `run` method is how the user-provided future gets `poll`ed. Since the `run` 
 
 To check out my toy implementation or Glommio’s implementation, check out:
 
-**Mini Async Runtime**
+**My Toy Implementation**
 
 - [Raw Task](https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/raw.rs#L39)
 - [State](https://github.com/brianshih1/mini-async-runtime/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/task/state.rs)
