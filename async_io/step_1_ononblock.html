@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>What is an executor? - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+        <title>Step 1 - Setting the O_NONBLOCK Flag - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html" class="active"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/core-abstractions.html"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../async_io/step_1_ononblock.html"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="../async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="../async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/core-abstractions.html"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../async_io/step_1_ononblock.html" class="active"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="../async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="../async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -142,38 +142,55 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="what-is-an-executor"><a class="header" href="#what-is-an-executor">What is an executor?</a></h1>
-<p>As we mentioned earlier, the thread-per-core architecture eliminates threads from the picture. Contrary to multithreading applications which let the OS’s CPU scheduler decide which thread to run, thread-per-core frameworks like Glommio built their own <strong>executors</strong> to decide which tasks to run. In other words, an executor is a task scheduler.</p>
-<p>An executor needs to decide when to switch between tasks. There are two main ways in which schedulers do that: preemptive multitasking and cooperative multitasking.</p>
-<p>In <strong>preemptive multitasking</strong>, the scheduler decides when to switch between tasks. It may have an internal timer that forces a task to give up control to the CPU to ensure that each task gets a fair share of the CPU.</p>
-<p>In <strong>cooperative multitasking</strong>, the scheduler lets the task run until it voluntarily gives up control back to the scheduler. <code>Glommio</code> supports cooperative multitasking.</p>
-<p>So how might an executor run tasks? The most simple mechanism is with the event loop.</p>
-<h3 id="the-event-loop"><a class="header" href="#the-event-loop">The Event Loop</a></h3>
-<p>The most simple way in which an executor runs tasks is to use a loop. In each iteration, the executor fetches the tasks and runs all of them sequentially.</p>
+                        <h1 id="step-1---setting-the-o_nonblock-flag"><a class="header" href="#step-1---setting-the-o_nonblock-flag">Step 1 - Setting the O_NONBLOCK Flag</a></h1>
+<p>The first step to asynchronous I/O is to change the I/O handle to be nonblocking by setting the <code>O_NONBLOCK</code> flag.</p>
+<h3 id="api"><a class="header" href="#api">API</a></h3>
+<p><code>Async::new(handle)</code> is responsible for setting the I/O handle to be nonblocking.</p>
+<h3 id="implementation"><a class="header" href="#implementation">Implementation</a></h3>
+<p><code>Async::new(handle)</code> is the constructor of the <code>Async</code> struct. For example, here is how you create an instance of <code>Async&lt;TcpListener&gt;</code>:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>loop {
-	let events = executor.get_tasks();
-	while !events.is_empty() {
-			let task = events.pop();
-			executor.process_event(task);
-	}
+</span>let listener = TcpListener::bind(addr)?;
+Async::new(listener);
+<span class="boring">}</span></code></pre></pre>
+<p>Here is the implementation of <code>Async::new</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T: AsRawFd&gt; Async&lt;T&gt; {
+    pub fn new(io: T) -&gt; io::Result&lt;Async&lt;T&gt;&gt; {
+        Ok(Async {
+            source: get_reactor().create_source(io.as_raw_fd()),
+            io: Some(Box::new(io)),
+        })
+    }
 }
 <span class="boring">}</span></code></pre></pre>
-<h3 id="asynchronous-tasks"><a class="header" href="#asynchronous-tasks">Asynchronous Tasks</a></h3>
-<p>As you may have noticed, the event loop example above does not support multitasking. It runs each task sequentially until the task is finished or yields control before running the next task. This is where <a href="https://en.wikipedia.org/wiki/Asynchronous_I/O">asynchronous operations</a> come into play.</p>
-<p>When an asynchronous operation is blocked, for example when the operation is waiting for a disk read, it returns a “pending” status to notify the executor that it’s blocked. The executor can then run another task instead of waiting for the blocked operation to complete, wasting its CPU cycles.</p>
-<p>In this section, we will build an executor that supports multitasking with the help of asynchronous operations through Rust’s Async / Await primitives.</p>
+<p>The <code>get_reactor()</code> method retrieves the <code>Reactor</code> for the executor running on the current thread. The <code>create_source</code> method, as shown below, sets the <code>O_NONBLOCK</code> flag for the handle with <a href="https://man7.org/linux/man-pages/man2/fcntl.2.html">fcntl</a>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Reactor {
+	...
+	pub fn create_source(&amp;self, raw: RawFd) -&gt; Source {
+      fcntl(raw, FcntlArg::F_SETFL(OFlag::O_NONBLOCK)).unwrap();
+      self.new_source(raw, SourceType::PollableFd)
+  }
+
+	fn new_source(&amp;self, raw: RawFd, stype: SourceType) -&gt; Source {
+        Source::new(raw, stype, None)
+    }
+
+}
+<span class="boring">}</span></code></pre></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../motivation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../async_io/core-abstractions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../executor/api.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../async_io/step_2_sqe.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -183,11 +200,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../motivation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../async_io/core-abstractions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../executor/api.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../async_io/step_2_sqe.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

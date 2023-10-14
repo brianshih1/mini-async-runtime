@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>API - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+        <title>Core abstractions - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html" class="active"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/core-abstractions.html"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../async_io/step_1_ononblock.html"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="../async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="../async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/core-abstractions.html" class="active"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../async_io/step_1_ononblock.html"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="../async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="../async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -142,68 +142,83 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="api"><a class="header" href="#api">API</a></h1>
-<p>As we mentioned earlier, an executor is a task scheduler. Therefore, it needs APIs to submit tasks to the executor as well as consume the output of the tasks.</p>
-<p>There are 3 main APIs that our executor supports:</p>
+                        <h1 id="core-abstractions"><a class="header" href="#core-abstractions">Core abstractions</a></h1>
+<p>In general, we can break down how the executor performs asynchronous I/O into 3 steps:</p>
 <ul>
-<li><strong>run</strong>: runs the task to completion</li>
-<li><strong>spawn_local</strong>: spawns a task onto the executor</li>
-<li><strong>spawn_local_into</strong>: spawns a task onto a specific task queue</li>
+<li>setting the I/O handle to be non-blocking by setting the <code>O_NONBLOCK</code> flag on the file descriptor</li>
+<li>performing the non-blocking operation and registering interest in <code>io_uring</code> by submitting a <code>SQE</code> to the <code>io_uring</code> instance's <code>submission_queue</code></li>
+<li>polling the <code>io_uring</code>'s completion queue to check if there is a corresponding <code>CQE</code>, which indicates that the I/O operation has been completed. If it's completed, process it by resuming the blocked task.</li>
 </ul>
-<p>Here is a simple example of using the APIs to run a simple task that performs arithmetics:</p>
+<p>To accomplish these, we will introduce a few new abstractions: <code>Async</code>, <code>Source</code>, and the <code>Reactor</code>.</p>
+<h3 id="async"><a class="header" href="#async">Async</a></h3>
+<p>Async is a wrapper around the I/O handle (e.g. TcpListener). It contains helper methods to make converting blocking operations into asynchronous operations easier.</p>
+<p>Here is the <code>Async</code> struct:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>let local_ex = LocalExecutor::default();
-let res = local_ex.run(async { 1 + 2 });
-assert_eq!(res, 3)
+</span>pub struct Async&lt;T&gt; {
+    /// A source registered in the reactor.
+    source: Source,
+
+    /// The inner I/O handle.
+    io: Option&lt;Box&lt;T&gt;&gt;,
+}
 <span class="boring">}</span></code></pre></pre>
-<h3 id="run"><a class="header" href="#run">Run</a></h3>
-<p>To run a task, you call the <code>run</code> method on the executor, which is a synchronous method and runs the task in the form of a Future (which we will cover next) until completion.</p>
-<p>Here is its signature:</p>
+<h3 id="source"><a class="header" href="#source">Source</a></h3>
+<p>The <code>Source</code> is a bridge between the executor and the I/O handle. It contains properties pertaining to the I/O handle that are relevant to the executor. For example, it contains tasks that are blocked by operations on the I/O handle.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>pub fn run&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt;) -&gt; T 
+</span>pub struct Source {
+    pub(crate) inner: Pin&lt;Rc&lt;RefCell&lt;InnerSource&gt;&gt;&gt;,
+}
+
+/// A registered source of I/O events.
+pub(crate) struct InnerSource {
+    /// Raw file descriptor on Unix platforms.
+    pub(crate) raw: RawFd,
+
+    /// Tasks interested in events on this source.
+    pub(crate) wakers: Wakers,
+
+    pub(crate) source_type: SourceType,
+		
+		...
+}
 <span class="boring">}</span></code></pre></pre>
-<h3 id="spawn_local"><a class="header" href="#spawn_local">spawn_local</a></h3>
-<p>To schedule a <code>task</code> onto the <code>executor</code>, use the <code>spawn_local</code> method:</p>
+<h3 id="reactor"><a class="header" href="#reactor">Reactor</a></h3>
+<p>Each executor has a <code>Reactor</code>. The <code>Reactor</code> is an abstraction around the <code>io_uring</code> instance. It provides simple APIs to interact with the <code>io_uring</code> instance.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>let local_ex = LocalExecutor::default();
-let res = local_ex.run(async {
-    let first = spawn_local(async_fetch_value());
-		let second = spawn_local(async_fetch_value_2());
-    first.await.unwrap() + second.await.unwrap()
-});
+</span>pub(crate) struct Reactor {
+		// the main_ring contains an io_uring instance
+    main_ring: RefCell&lt;SleepableRing&gt;,
+    source_map: Rc&lt;RefCell&lt;SourceMap&gt;&gt;,
+}
+
+struct SleepableRing {
+    ring: iou::IoUring,
+    in_kernel: usize,
+    submission_queue: ReactorQueue,
+    name: &amp;'static str,
+    source_map: Rc&lt;RefCell&lt;SourceMap&gt;&gt;,
+}
+
+struct SourceMap {
+    id: u64,
+    map: HashMap&lt;u64, Pin&lt;Rc&lt;RefCell&lt;InnerSource&gt;&gt;&gt;&gt;,
+}
 <span class="boring">}</span></code></pre></pre>
-<p>If <code>spawn_local</code> isn’t called from a local executor (i.e. inside a <code>LocalExecutor::run</code>), it will panic. Here is its signature:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub fn spawn_local&lt;T&gt;(future: impl Future&lt;Output = T&gt; + 'static) -&gt; JoinHandle&lt;T&gt;
-where
-    T: 'static
-<span class="boring">}</span></code></pre></pre>
-<p>The return type of <code>spawn_local</code> is a <code>JoinHandle</code>, which is a <code>Future</code> that awaits the result of a task. We will cover abstractions like <code>JoinHandle</code> in more depth later.</p>
-<h3 id="spawn_local_into"><a class="header" href="#spawn_local_into">spawn_local_into</a></h3>
-<p>One of the abstractions that we will cover later is a <code>TaskQueue</code>. <code>TaskQueue</code> is an abstraction of a collection of tasks. In phase 3, we will introduce more advanced scheduling mechanisms that dictate how much time an executor spends on each <code>TaskQueue</code>.</p>
-<p>A single executor can have many task queues. To specify which <code>TaskQueue</code> to spawn a task to, we can invoke the <code>spawn_local_into</code> method as follows:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>local_ex.run(async {
-		let task_queue_handle = executor().create_task_queue(...);
-		let task = spawn_local_into(async { write_file().await }, task_queue_handle);
-	}
-)
-<span class="boring">}</span></code></pre></pre>
+<p>As we can see, the <code>Reactor</code> holds a <code>SleepableRing</code>, which is just a wrapper around an <code>iou::IoUring</code> instance. Glommio uses the <code>[iou</code> crate](https://docs.rs/iou/latest/iou/) to interact with Linux kernel’s <code>io_uring</code> interface.</p>
+<p>The <code>Reactor</code> also contains a <code>SourceMap</code>, which contains a <code>HashMap</code> that maps a unique ID to a <code>Source</code>. The unique ID is the same ID used as the <code>SQE</code>'s user_data. This way, when a CQE is posted to the <code>io_uring</code>'s completion queue, we can tie it back to the corresponding <code>Source</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../executor/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../async_io/implementation_details.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../executor/primitive-intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../async_io/step_1_ononblock.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -213,11 +228,11 @@ where
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../executor/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../async_io/implementation_details.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../executor/primitive-intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../async_io/step_1_ononblock.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
