@@ -142,9 +142,10 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="pinned-threads"><a class="header" href="#pinned-threads">Pinned Threads</a></h1>
-<p>Our goal is to build a <code>thread-per-core</code> executor, but so far we’ve been building an executor that runs on the thread that creates it, which would run on whichever CPU the OS decides. Let’s fix that!</p>
-<p>On this page, we will build something like this:</p>
+                        <h1 id="thread-pinning"><a class="header" href="#thread-pinning">Thread Pinning</a></h1>
+<p>Our goal is to build a crate that enables developers to build a <code>thread-per-core</code> system. So far our executor runs on whichever core the thread that created the executor runs on. Since the OS can schedule multiple threads to run on that core, we currently don't support <code>thread-per-core</code> systems. Let's fix that!</p>
+<h3 id="api"><a class="header" href="#api">API</a></h3>
+<p>In this section, we will enable the developer to create a <code>LocalExecutor</code> that runs on a particular CPU with the <code>LocalExecutorBuilder</code>. In this code snippet below, we create an executor that only runs on <code>Cpu 0</code>. </p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// The LocalExecutor will now only run on Cpu 0
@@ -154,16 +155,12 @@ let res = local_ex.run(async {
    ...
 });
 <span class="boring">}</span></code></pre></pre>
-<p>In this code snippet, we’ve introduced two new abstractions:</p>
-<ul>
-<li><strong>LocalExecutorBuilder</strong>: A factory used to create a <code>LocalExecutor</code></li>
-<li><strong>Placement</strong>: Specifies a policy that determines the CPUs that the <code>LocalExecutor</code> runs on.</li>
-</ul>
-<p>We specify to the <code>LocalExecutorBuilder</code> that we want to create an executor that only runs on <code>CPU 0</code> by passing it <code>Placement::Fixed(0)</code>. Then the executor created from <code>builder.build()</code> would only run on Cpu 0.</p>
 <p>By creating N executors and binding each executor to a specific CPU, the developer can implement a thread-per-core system.</p>
 <h3 id="implementation"><a class="header" href="#implementation">Implementation</a></h3>
+<p><strong>sched_setaffinity</strong></p>
+<p>To force a thread to run on a particular CPU, we will be modifying the thread's CPU affinity mask by using Linux's <a href="https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html">sched_affinity</a> command. As specified in Linux’s manual page, <code>After a call to **sched_setaffinity**(), the set of CPUs on which the thread will actually run is the intersection of the set specified in the *mask* argument and the set of CPUs actually present on the system.</code>.</p>
 <p><strong>LocalExecutor</strong></p>
-<p>To limit the CPUs that the <code>LocalExecutor</code> can run on, it now takes a list of <code>CPU</code>s as its constructor parameters.</p>
+<p>We modify <code>LocalExecutor</code>'s constructor to take a list of <code>CPU</code>s as its parameter. It then calls <code>bind_to_cpu_set</code> </p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl LocalExecutor {
@@ -174,22 +171,19 @@ let res = local_ex.run(async {
         }
         LocalExecutor { ... }
     }
-<span class="boring">}</span></code></pre></pre>
-<p>So how can we constrain the <code>LocalExecutor</code> to only run on the specified CPUs? We use Linux’s <a href="https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html">sched_setaffinity</a> method.</p>
-<p>As specified in Linux’s manual page, <code>After a call to **sched_setaffinity**(), the set of CPUs on which the thread will actually run is the intersection of the set specified in the *mask* argument and the set of CPUs actually present on the system.</code>.</p>
-<p>The method <code>bind_to_cpu_set</code> that <code>LocalExecutor::new</code> calls basically calls the <code>sched_setaffinity</code> method:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub(crate) fn bind_to_cpu_set(cpus: impl IntoIterator&lt;Item = usize&gt;) {
-    let mut cpuset = nix::sched::CpuSet::new();
-    for cpu in cpus {
-        cpuset.set(cpu).unwrap();
+  
+  	pub(crate) fn bind_to_cpu_set(cpus: impl IntoIterator&lt;Item = usize&gt;) {
+        let mut cpuset = nix::sched::CpuSet::new();
+        for cpu in cpus {
+            cpuset.set(cpu).unwrap();
+        }
+        let pid = nix::unistd::Pid::from_raw(0);
+        nix::sched::sched_setaffinity(pid, &amp;cpuset).unwrap();
     }
-    let pid = nix::unistd::Pid::from_raw(0);
-    nix::sched::sched_setaffinity(pid, &amp;cpuset).unwrap();
+  ...
 }
 <span class="boring">}</span></code></pre></pre>
-<p>The <code>pid</code> is set to <code>0</code> because the manual page says that <code>If *pid* is zero, then the calling thread is used.</code></p>
+<p>In <code>bind_to_cpu_set</code>, the <code>pid</code> is set to <code>0</code> because the manual page says that <code>If *pid* is zero, then the calling thread is used.</code></p>
 <p><strong>Placement</strong></p>
 <p>Next, we introduce <code>Placement</code>s. A <code>Placement</code> is a policy that determines what CPUs the <code>LocalExecutor</code> will run on. Currently, there are two <code>Placement</code>s. We may add more in <em>Phase 4</em>.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
