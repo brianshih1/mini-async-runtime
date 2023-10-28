@@ -1,8 +1,10 @@
-# Pinned Threads
+# Thread Pinning
 
-Our goal is to build a `thread-per-core` executor, but so far we’ve been building an executor that runs on the thread that creates it, which would run on whichever CPU the OS decides. Let’s fix that!
+Our goal is to build a crate that enables developers to build a `thread-per-core` system. So far our executor runs on whichever core the thread that created the executor runs on. Since the OS can schedule multiple threads to run on that core, we currently don't support `thread-per-core` systems. Let's fix that!
 
-On this page, we will build something like this:
+### API
+
+In this section, we will enable the developer to create a `LocalExecutor` that runs on a particular CPU with the `LocalExecutorBuilder`. In this code snippet below, we create an executor that only runs on `Cpu 0`. 
 
 ```rust
 // The LocalExecutor will now only run on Cpu 0
@@ -13,20 +15,17 @@ let res = local_ex.run(async {
 });
 ```
 
-In this code snippet, we’ve introduced two new abstractions:
-
-- **LocalExecutorBuilder**: A factory used to create a `LocalExecutor`
-- **Placement**: Specifies a policy that determines the CPUs that the `LocalExecutor` runs on.
-
-We specify to the `LocalExecutorBuilder` that we want to create an executor that only runs on `CPU 0` by passing it `Placement::Fixed(0)`. Then the executor created from `builder.build()` would only run on Cpu 0.
-
 By creating N executors and binding each executor to a specific CPU, the developer can implement a thread-per-core system.
 
 ### Implementation
 
+**sched_setaffinity**
+
+To force a thread to run on a particular CPU, we will be modifying the thread's CPU affinity mask by using Linux's [sched_affinity](https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html) command. As specified in Linux’s manual page, `After a call to **sched_setaffinity**(), the set of CPUs on which the thread will actually run is the intersection of the set specified in the *mask* argument and the set of CPUs actually present on the system.`.
+
 **LocalExecutor**
 
-To limit the CPUs that the `LocalExecutor` can run on, it now takes a list of `CPU`s as its constructor parameters.
+We modify `LocalExecutor`'s constructor to take a list of `CPU`s as its parameter. It then calls `bind_to_cpu_set` 
 
 ```rust
 impl LocalExecutor {
@@ -37,26 +36,20 @@ impl LocalExecutor {
         }
         LocalExecutor { ... }
     }
-```
-
-So how can we constrain the `LocalExecutor` to only run on the specified CPUs? We use Linux’s [sched_setaffinity](https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html) method.
-
-As specified in Linux’s manual page, `After a call to **sched_setaffinity**(), the set of CPUs on which the thread will actually run is the intersection of the set specified in the *mask* argument and the set of CPUs actually present on the system.`.
-
-The method `bind_to_cpu_set` that `LocalExecutor::new` calls basically calls the `sched_setaffinity` method:
-
-```rust
-pub(crate) fn bind_to_cpu_set(cpus: impl IntoIterator<Item = usize>) {
-    let mut cpuset = nix::sched::CpuSet::new();
-    for cpu in cpus {
-        cpuset.set(cpu).unwrap();
+  
+  	pub(crate) fn bind_to_cpu_set(cpus: impl IntoIterator<Item = usize>) {
+        let mut cpuset = nix::sched::CpuSet::new();
+        for cpu in cpus {
+            cpuset.set(cpu).unwrap();
+        }
+        let pid = nix::unistd::Pid::from_raw(0);
+        nix::sched::sched_setaffinity(pid, &cpuset).unwrap();
     }
-    let pid = nix::unistd::Pid::from_raw(0);
-    nix::sched::sched_setaffinity(pid, &cpuset).unwrap();
+  ...
 }
 ```
 
-The `pid` is set to `0` because the manual page says that `If *pid* is zero, then the calling thread is used.`
+In `bind_to_cpu_set`, the `pid` is set to `0` because the manual page says that `If *pid* is zero, then the calling thread is used.`
 
 **Placement**
 

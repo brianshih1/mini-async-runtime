@@ -26,5 +26,5 @@ I’ve split up the blog series into four phases:
 
 - **Phase 1**: In phase 1, we will cover Rust’s asynchronous primitives like `Future`, `Async/Await`, and `Waker` which will serve as building blocks for the asynchronous runtime. We will then build a simple, single-threaded, executor that can run and spawn tasks.
 - **Phase 2**: In phase 2, we talk about `io_uring` and use it to add `asynchronous I/O` to our executor
-- **Phase 3**: In phase 3, we will implement more advanced features such as thread parking, task yielding, and scheduling tasks based on priority.
-- **Phase 4**: In phase 4, we will build abstractions that allow developers to create a pool of `LocalExecutor`s.
+- **Phase 3 [WIP]**: In phase 3, we will implement more advanced features such as thread parking, task yielding, and scheduling tasks based on priority.
+- **Phase 4 [WIP]**: In phase 4, we will build abstractions that allow developers to create a pool of `LocalExecutor`s.
