@@ -52,7 +52,7 @@ pub fn run<T>(&self, future: impl Future<Output = T>) -> T {
         "There is already an LocalExecutor running on this thread"
     );
     LOCAL_EX.set(self, || {
-				let join_handle = self.spawn(async move { future.await });
+        let join_handle = self.spawn(async move { future.await });
         let waker = dummy_waker();
         let cx = &mut Context::from_waker(&waker);
         pin!(join_handle);
@@ -76,7 +76,7 @@ Let’s break down `run` line by line. First, `run` makes sure that no other exe
 scoped_tls::scoped_thread_local!(static LOCAL_EX: LocalExecutor);
 ```
 
-Next, it calls  `spawn` to create and schedule the task onto the `TaskQueue`.
+Next, it calls `spawn` to create and schedule the task onto the `TaskQueue`.
 
 It then loops until the `future` is completed. It’s super important to understand that the `poll` method here doesn’t actually `poll` the user-provided future. It simply `poll`s the `JoinHandle`, which checks if the `COMPLETED` flag on the task’s `state` is set.
 

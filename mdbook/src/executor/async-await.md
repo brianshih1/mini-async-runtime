@@ -22,7 +22,7 @@ To gain a better intuition for how asynchronous code gets converted into a state
 async fn notify_user(user_id: u32) {
 	let user = async_fetch_user(user_id).await;
 	if user.group == 1 {
-			async_send_email(&user).await;
+		async_send_email(&user).await;
 	}
 }
 ```
@@ -72,7 +72,7 @@ Now that we have a state machine, let’s implement the `Future` trait:
 ```rust
 impl Future for NotifyUser {
 	type Output = ();
-	
+
 	fn poll(&mut self, cx: &mut Context) -> Poll<()> {
 		loop {
 			match self.state {
@@ -90,14 +90,14 @@ The `poll` method starts a `loop` because in the case that one of the states isn
 
 Now, let’s look at how each state performs the state transition.
 
-When we initialize `NotifyUser`,  its `state` is `State::Unpolled`, which represents the starting state. When we `poll` `NotifyUser` for the first time, it calls `async_fetch_user` to instantiate and store the `fetch_user_fut` state machine.
+When we initialize `NotifyUser`, its `state` is `State::Unpolled`, which represents the starting state. When we `poll` `NotifyUser` for the first time, it calls `async_fetch_user` to instantiate and store the `fetch_user_fut` state machine.
 
 It then transitions its `state` to `State::FetchingUser`. Note that this code block doesn’t return `Poll::Pending`. This is because none of the executed code is blocking, so we can go ahead and execute the handle for the next state transition.
 
 ```rust
 State::Unpolled => {
-		self.fetch_user_fut = Some(async_fetch_user(self.user_id));
-		self.state = State::FetchingUser;
+	self.fetch_user_fut = Some(async_fetch_user(self.user_id));
+	self.state = State::FetchingUser;
 }
 ```
 
@@ -105,18 +105,18 @@ When we get to the `FetchinUser` state, it `poll`s the `fetch_user_fut` to see i
 
 ```rust
 State::FetchingUser => {
-		match self.fetch_user_fut.unwrap().poll(cx) {
-				Poll::Pending => return Poll::Pending,
-				Poll::Ready(user) => {
-						self.user = Some(user);
-						if self.user.group == 1 {
-								self.fetch_user_fut = Some(async_send_email(&self.user));
-								self.state = State::SendingEmail;
-						} else {
-								self.state = State::Ready;
-						}
-				}
+	match self.fetch_user_fut.unwrap().poll(cx) {
+		Poll::Pending => return Poll::Pending,
+		Poll::Ready(user) => {
+			self.user = Some(user);
+			if self.user.group == 1 {
+				self.fetch_user_fut = Some(async_send_email(&self.user));
+				self.state = State::SendingEmail;
+			} else {
+				self.state = State::Ready;
+			}
 		}
+	}
 }
 ```
 
@@ -124,12 +124,12 @@ If the state is `SendingEmail`, it polls `send_email_fut` to check if it’s rea
 
 ```rust
 State::SendingEmail => {
-		match self.send_email_fut.unwrap().poll(cx) {
-				Poll::Pending => return Poll::Pending,
-				Poll::Ready(()) => {
-						self.state = State::Ready;
-				}
+	match self.send_email_fut.unwrap().poll(cx) {
+		Poll::Pending => return Poll::Pending,
+		Poll::Ready(()) => {
+			self.state = State::Ready;
 		}
+	}
 }
 ```
 
@@ -159,7 +159,7 @@ struct NotifyUser {
 
 impl Future for NotifyUser {
 	type Output = ();
-	
+
 	fn poll(&mut self, cx: &mut Context) -> Poll<()> {
 		loop {
 			match self.state {
@@ -169,25 +169,25 @@ impl Future for NotifyUser {
 				},
 				State::FetchingUser => {
 						match self.fetch_user_fut.unwrap().poll(cx) {
-								Poll::Pending => return Poll::Pending,
-								Poll::Ready(user) => {
-										self.user = Some(user);
-										if self.user.group == 1 {
-												self.fetch_user_fut = Some(async_send_email(&self.user));
-												self.state = State::SendingEmail;
-										} else {
-												self.state = State::Ready;
-										}
+							Poll::Pending => return Poll::Pending,
+							Poll::Ready(user) => {
+								self.user = Some(user);
+								if self.user.group == 1 {
+									self.fetch_user_fut = Some(async_send_email(&self.user));
+									self.state = State::SendingEmail;
+								} else {
+									self.state = State::Ready;
 								}
+							}
 						}
 				},
 				State::SendingEmail => {
-						match self.send_email_fut.unwrap().poll(cx) {
-								Poll::Pending => return Poll::Pending,
-								Poll::Ready(()) => {
-										self.state = State::Ready;
-								}
+					match self.send_email_fut.unwrap().poll(cx) {
+						Poll::Pending => return Poll::Pending,
+						Poll::Ready(()) => {
+							self.state = State::Ready;
 						}
+					}
 				},
 				State::Ready => return Poll::Ready(());
 			}
