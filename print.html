@@ -283,7 +283,7 @@ fn compiled_one_fn() -&gt; impl Future&lt;Output = u32&gt; {
 </span>async fn notify_user(user_id: u32) {
 	let user = async_fetch_user(user_id).await;
 	if user.group == 1 {
-			async_send_email(&amp;user).await;
+		async_send_email(&amp;user).await;
 	}
 }
 <span class="boring">}</span></code></pre></pre>
@@ -325,7 +325,7 @@ fn compiled_one_fn() -&gt; impl Future&lt;Output = u32&gt; {
 </span><span class="boring">fn main() {
 </span>impl Future for NotifyUser {
 	type Output = ();
-	
+
 	fn poll(&amp;mut self, cx: &amp;mut Context) -&gt; Poll&lt;()&gt; {
 		loop {
 			match self.state {
@@ -340,43 +340,43 @@ fn compiled_one_fn() -&gt; impl Future&lt;Output = u32&gt; {
 <span class="boring">}</span></code></pre></pre>
 <p>The <code>poll</code> method starts a <code>loop</code> because in the case that one of the states isn’t blocked, the state machine can perform multiple state transitions in a single <code>poll</code> call. This reduces the number of <code>poll</code> calls the executor needs to make.</p>
 <p>Now, let’s look at how each state performs the state transition.</p>
-<p>When we initialize <code>NotifyUser</code>,  its <code>state</code> is <code>State::Unpolled</code>, which represents the starting state. When we <code>poll</code> <code>NotifyUser</code> for the first time, it calls <code>async_fetch_user</code> to instantiate and store the <code>fetch_user_fut</code> state machine.</p>
+<p>When we initialize <code>NotifyUser</code>, its <code>state</code> is <code>State::Unpolled</code>, which represents the starting state. When we <code>poll</code> <code>NotifyUser</code> for the first time, it calls <code>async_fetch_user</code> to instantiate and store the <code>fetch_user_fut</code> state machine.</p>
 <p>It then transitions its <code>state</code> to <code>State::FetchingUser</code>. Note that this code block doesn’t return <code>Poll::Pending</code>. This is because none of the executed code is blocking, so we can go ahead and execute the handle for the next state transition.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>State::Unpolled =&gt; {
-		self.fetch_user_fut = Some(async_fetch_user(self.user_id));
-		self.state = State::FetchingUser;
+	self.fetch_user_fut = Some(async_fetch_user(self.user_id));
+	self.state = State::FetchingUser;
 }
 <span class="boring">}</span></code></pre></pre>
 <p>When we get to the <code>FetchinUser</code> state, it <code>poll</code>s the <code>fetch_user_fut</code> to see if it’s ready. If it’s <code>Pending</code>, we return <code>Poll::Pending</code>. Otherwise, <code>NotifyUser</code> can perform its next state transition. If <code>self.user.group == 1</code>, it needs to create and store the <code>fetch_user_fut</code> state machine and transition the state to <code>State::SendingEmail</code>. Otherwise, it can transition its state to <code>State::Ready</code>.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>State::FetchingUser =&gt; {
-		match self.fetch_user_fut.unwrap().poll(cx) {
-				Poll::Pending =&gt; return Poll::Pending,
-				Poll::Ready(user) =&gt; {
-						self.user = Some(user);
-						if self.user.group == 1 {
-								self.fetch_user_fut = Some(async_send_email(&amp;self.user));
-								self.state = State::SendingEmail;
-						} else {
-								self.state = State::Ready;
-						}
-				}
+	match self.fetch_user_fut.unwrap().poll(cx) {
+		Poll::Pending =&gt; return Poll::Pending,
+		Poll::Ready(user) =&gt; {
+			self.user = Some(user);
+			if self.user.group == 1 {
+				self.fetch_user_fut = Some(async_send_email(&amp;self.user));
+				self.state = State::SendingEmail;
+			} else {
+				self.state = State::Ready;
+			}
 		}
+	}
 }
 <span class="boring">}</span></code></pre></pre>
 <p>If the state is <code>SendingEmail</code>, it polls <code>send_email_fut</code> to check if it’s ready. If it is, it transitions the state to <code>State::Ready</code>. Otherwise, it returns <code>Poll::Pending</code>.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>State::SendingEmail =&gt; {
-		match self.send_email_fut.unwrap().poll(cx) {
-				Poll::Pending =&gt; return Poll::Pending,
-				Poll::Ready(()) =&gt; {
-						self.state = State::Ready;
-				}
+	match self.send_email_fut.unwrap().poll(cx) {
+		Poll::Pending =&gt; return Poll::Pending,
+		Poll::Ready(()) =&gt; {
+			self.state = State::Ready;
 		}
+	}
 }
 <span class="boring">}</span></code></pre></pre>
 <p>Finally, if the state is <code>Ready</code>, <code>NotifyUser</code> returns <code>Poll::Ready(())</code> to indicate that the state machine is complete.</p>
@@ -404,7 +404,7 @@ struct NotifyUser {
 
 impl Future for NotifyUser {
 	type Output = ();
-	
+
 	fn poll(&amp;mut self, cx: &amp;mut Context) -&gt; Poll&lt;()&gt; {
 		loop {
 			match self.state {
@@ -414,25 +414,25 @@ impl Future for NotifyUser {
 				},
 				State::FetchingUser =&gt; {
 						match self.fetch_user_fut.unwrap().poll(cx) {
-								Poll::Pending =&gt; return Poll::Pending,
-								Poll::Ready(user) =&gt; {
-										self.user = Some(user);
-										if self.user.group == 1 {
-												self.fetch_user_fut = Some(async_send_email(&amp;self.user));
-												self.state = State::SendingEmail;
-										} else {
-												self.state = State::Ready;
-										}
+							Poll::Pending =&gt; return Poll::Pending,
+							Poll::Ready(user) =&gt; {
+								self.user = Some(user);
+								if self.user.group == 1 {
+									self.fetch_user_fut = Some(async_send_email(&amp;self.user));
+									self.state = State::SendingEmail;
+								} else {
+									self.state = State::Ready;
 								}
+							}
 						}
 				},
 				State::SendingEmail =&gt; {
-						match self.send_email_fut.unwrap().poll(cx) {
-								Poll::Pending =&gt; return Poll::Pending,
-								Poll::Ready(()) =&gt; {
-										self.state = State::Ready;
-								}
+					match self.send_email_fut.unwrap().poll(cx) {
+						Poll::Pending =&gt; return Poll::Pending,
+						Poll::Ready(()) =&gt; {
+							self.state = State::Ready;
 						}
+					}
 				},
 				State::Ready =&gt; return Poll::Ready(());
 			}
@@ -1114,7 +1114,7 @@ let res = local_ex.run(async {
         &quot;There is already an LocalExecutor running on this thread&quot;
     );
     LOCAL_EX.set(self, || {
-				let join_handle = self.spawn(async move { future.await });
+        let join_handle = self.spawn(async move { future.await });
         let waker = dummy_waker();
         let cx = &amp;mut Context::from_waker(&amp;waker);
         pin!(join_handle);
@@ -1136,7 +1136,7 @@ let res = local_ex.run(async {
 </span><span class="boring">fn main() {
 </span>scoped_tls::scoped_thread_local!(static LOCAL_EX: LocalExecutor);
 <span class="boring">}</span></code></pre></pre>
-<p>Next, it calls  <code>spawn</code> to create and schedule the task onto the <code>TaskQueue</code>.</p>
+<p>Next, it calls <code>spawn</code> to create and schedule the task onto the <code>TaskQueue</code>.</p>
 <p>It then loops until the <code>future</code> is completed. It’s super important to understand that the <code>poll</code> method here doesn’t actually <code>poll</code> the user-provided future. It simply <code>poll</code>s the <code>JoinHandle</code>, which checks if the <code>COMPLETED</code> flag on the task’s <code>state</code> is set.</p>
 <p>Since the <code>executor</code> is single-threaded, looping alone won’t actually progress the underlying future. Therefore, in each loop, the <code>executor</code> calls the <code>run_task_queues</code> method.</p>
 <p><code>run_task_queues</code> simply loops and calls <code>run_one_task_queue</code> until there are no more <code>task</code>s left in the <code>TaskQueue</code>.</p>

@@ -185,7 +185,7 @@ let res = local_ex.run(async {
         &quot;There is already an LocalExecutor running on this thread&quot;
     );
     LOCAL_EX.set(self, || {
-				let join_handle = self.spawn(async move { future.await });
+        let join_handle = self.spawn(async move { future.await });
         let waker = dummy_waker();
         let cx = &amp;mut Context::from_waker(&amp;waker);
         pin!(join_handle);
@@ -207,7 +207,7 @@ let res = local_ex.run(async {
 </span><span class="boring">fn main() {
 </span>scoped_tls::scoped_thread_local!(static LOCAL_EX: LocalExecutor);
 <span class="boring">}</span></code></pre></pre>
-<p>Next, it calls  <code>spawn</code> to create and schedule the task onto the <code>TaskQueue</code>.</p>
+<p>Next, it calls <code>spawn</code> to create and schedule the task onto the <code>TaskQueue</code>.</p>
 <p>It then loops until the <code>future</code> is completed. It’s super important to understand that the <code>poll</code> method here doesn’t actually <code>poll</code> the user-provided future. It simply <code>poll</code>s the <code>JoinHandle</code>, which checks if the <code>COMPLETED</code> flag on the task’s <code>state</code> is set.</p>
 <p>Since the <code>executor</code> is single-threaded, looping alone won’t actually progress the underlying future. Therefore, in each loop, the <code>executor</code> calls the <code>run_task_queues</code> method.</p>
 <p><code>run_task_queues</code> simply loops and calls <code>run_one_task_queue</code> until there are no more <code>task</code>s left in the <code>TaskQueue</code>.</p>
