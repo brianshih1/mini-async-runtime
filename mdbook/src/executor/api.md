@@ -1,12 +1,42 @@
 # API
 
-As we mentioned earlier, an executor is a task scheduler. Therefore, it needs APIs to submit tasks to the executor as well as consume the output of the tasks.
+An asycnhronous runtime manages tasks. It manages tasks by creating an event loop (or task queue) and an executor which manages the event loop.
 
-There are 3 main APIs that our executor supports:
+Many asynchronous runtimes implicitly create an executor for you.
 
-- **run**: runs the task to completion
+For example, in Tokio you can create an executor through `#[tokio::main]`.
+
+```
+#[tokio::main]
+async fn main() {
+    println!("Hello world");
+}
+```
+
+Under the hood, it actually creates an executor via something like:
+
+```
+fn main() {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            println!("Hello world");
+        })
+}
+```
+
+In Node.js, the entire application runs in a single event loop, which is single threaded.
+
+In `mini-glommio`, we will not abstract away executors.
+
+The two main APIs that our executor are:
+
 - **spawn_local**: spawns a task onto the executor
-- **spawn_local_into**: spawns a task onto a specific task queue
+- **run**: runs the task to completion
+
+Pretty simple right? All we need is the ability to put a task onto the executor and wait for the executor to complete.
 
 Here is a simple example of using the APIs to run a simple task that performs arithmetics:
 
@@ -51,9 +81,12 @@ The return type of `spawn_local` is a `JoinHandle`, which is a `Future` that awa
 
 ### spawn_local_into
 
-One of the abstractions that we will cover later is a `TaskQueue`. `TaskQueue` is an abstraction of a collection of tasks. In phase 3, we will introduce more advanced scheduling mechanisms that dictate how much time an executor spends on each `TaskQueue`.
+This is a more advanced API that gives a developer more control over the priority of tasks. Instead of placing all the tasks onto a single 
+`TaskQueue` (which is just a collection of tasks), we can instead create different task queues and place each task into one of the queues.
 
-A single executor can have many task queues. To specify which `TaskQueue` to spawn a task to, we can invoke the `spawn_local_into` method as follows:
+The developer can then set configurations that control how much CPU share each task queue gets.
+
+To create a task queue and spawn a task onto that queue, we can invoke the `spawn_local_into` method as follows:
 
 ```rust
 local_ex.run(async {
@@ -63,3 +96,7 @@ local_ex.run(async {
 )
 ```
 
+
+Next, I will cover the Rust primitives that our executor uses - Future, Async/Await, and Waker. Feel free to skip if you are already familiar with these.
+However, if you are not familiar with them, even if you aren't interested in Rust, I strongly advice understanding them as those concepts are
+crucial in understanding how asynchronous runtimes work under the hood.
