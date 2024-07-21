@@ -27,8 +27,7 @@ fn main() {
 
 In Node.js, the entire application runs on a single event loop. The event loop is initialized when the `node` command is run. 
 
-In both Tokio and Node.js, the developer doesn't really think of the executor. In `mini-glommio`, we need to create the executor
-explicitly.
+In Tokio and Node.js, the developer can write asynchronous code without ever knowing the existence of the executor. With `mini-glommio`, developers need to create the executor explicitly.
 
 The two main APIs of our executor are:
 
