@@ -12,7 +12,7 @@ let res = local_ex.run(async {
 
 ### Spawning the Task
 
-When the `LocalExecutor` is created, a default `TaskQueue` [is created](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L28). When `local_ex.run(...)` is called, the executor [spawns a task](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L74) with the Future created from the `async` block. It [creates a task](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L116) and [schedules the task](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L117) onto the default TaskQueue. Let’s call this task `Task1`.
+When the `LocalExecutor` is created, a default `TaskQueue` [is created](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L28). When `local_ex.run(...)` is called, the executor [spawns a task](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L74) with the Future created from the `async` block. It [creates a task](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L116) and [schedules the task](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L117) onto the default TaskQueue. Let’s name this task as `Task1`.
 
 ### Running Task1
 

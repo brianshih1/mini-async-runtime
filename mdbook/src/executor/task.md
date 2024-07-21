@@ -1,16 +1,21 @@
 # Task
 
-A Task is the basic unit of work in an executor. A Task is created whenever a `Future` is spawned onto the Executor. You can think of a Task as a wrapper around the spawned `Future`.
+A Task is the basic unit of work in an executor. A Task is created whenever the developer spawns a `Future` onto the Executor. You can think of a Task as a wrapper around the spawned `Future`.
 
-To run the `Task`, the `Executor` `polls` the user-provided `Future`. The Future’s `poll` method would return `Poll::Ready` if it’s done. Otherwise, the Future returns `Poll::Pending`. In that case, the executor needs to repoll the Future when it is ready to make progress.
+Remember from earlier that a `Future` is a state machine that can be polled. To run the `Task`, the `Executor` `polls` the user-provided `Future`. The `poll` method would return `Poll::Ready` if it’s done. Otherwise, the Future returns `Poll::Pending`. In that case, the executor needs to repoll the Future when it is ready to make progress.
 
-Apart from the `Future`, the `Task` needs to keep track of a few other things. Let’s look at some of these properties:
+Apart from the `Future`, the `Task` needs to keep track of a few other things. Let’s look at some additional properties:
+- state
+- output
+- waker
+- references
 
 ### **State**
 
-A task needs to keep track of its `state` so that an executor knows if they are completed, canceled, etc.
+While the user-provided `Future` is already a state machine, there's a couple of additional `state` that the executor needs to keep
+track of. For example, whether the task is already scheduled or whether the task is cancelled.
 
-Here are the following states:
+Here are the following task states:
 
 - **SCHEDULED**: set if the task is scheduled for running
 - **RUNNING**: running is set when the future is polled.
@@ -24,7 +29,7 @@ Some of these states aren’t mutually exclusive. The state of the task is store
 
 ### **Output**
 
-The task needs to store the output of a Task.
+The task needs to store the output of a Task for the application to await.
 
 ```rust
 let handle = spawn_local(async { 1 + 2 });
@@ -35,24 +40,16 @@ In the example above, the task created from `spawn_local` may be completed befor
 
 ### **Waker**
 
-If the `Task`'s `Future` returns `Poll::Pending`, the `executor` eventually needs to `poll` the `Future` again. The question is - when should it be?
+If the `Task`'s `Future` returns `Poll::Pending`, the `executor` eventually needs to `poll` the `Future` again. The question is when should it?
 
-The `Task` could be blocked by a `file read` or a child `Task`. In either case, we would like to notify the `executor` that the blocked `Task` is ready to make progress when the `file read` operation is done or the child `Task` is completed. This is what the `Waker` is for.
+When a task is blocked, it is because it or one of its child tasks is performing I/O, i.e. reading a file from disk. When the I/O completes,
+we would like a mechanism to notify the `executor` that the `Task` is no longer blocked and can be polled again. This is what the `Waker` is for.
 
-Whenever the executor `poll`s a Task, it creates a `Waker` and passes it to the `poll` method as part of the `Context`. The blocking operation, such as a file read, needs to store the `Waker`. When the blocking operation is completed, it needs to call `Waker::wake` so that the executor can reschedule the blocked `Task` and eventually `poll` it.
+Whenever the executor `poll`s a Task, it creates a `Waker` and passes it to the `poll` method as part of the `Context`. The `Future` would
+call `waker::wake` when it is unblocked. 
 
-In the following example, a task is spawned onto the executor when `spawn_local` is called. Let’s call this the parent task.
 
-```rust
-spawn_local(async {
-	let child_handle = spawn_local(async {...});
-	child_handle.await;
-});
-```
-
-When the future is `polled`, there is an inner `spawn_local` that spawns the child task onto the executor. The parent task can’t make progress until the child task is `completed` or `closed`.
-
-The child task needs a way to notify the parent task that it’s done and that the parent task can be polled again. This is what a `waker` does and the `child task` stores the `waker` of the blocked task.
+The blocking operation, such as a file read, needs to store the `Waker`. When the blocking operation is completed, it needs to call `Waker::wake` so that the executor can reschedule the blocked `Task` and eventually `poll` it again.
 
 ### **References**
 

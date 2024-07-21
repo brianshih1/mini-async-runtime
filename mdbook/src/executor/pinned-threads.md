@@ -1,10 +1,13 @@
 # Thread Pinning
 
-Our goal is to build a crate that enables developers to build a `thread-per-core` system. So far our executor runs on whichever core the thread that created the executor runs on. Since the OS can schedule multiple threads to run on that core, we currently don't support `thread-per-core` systems. Let's fix that!
+Thread-per-core is a programming paradigm in which developers are not allowed to spawn new threads to run tasks. Instead, each
+core only runs a single thread. This is to avoid expensive context switches and avoid using synchronization primitives such as locks.
+Check out this excellent [blog](https://www.datadoghq.com/blog/engineering/introducing-glommio/) by Glommio to explain the benefits
+of the thread-per-core archicture.
 
 ### API
 
-In this section, we will enable the developer to create a `LocalExecutor` that runs on a particular CPU with the `LocalExecutorBuilder`. In this code snippet below, we create an executor that only runs on `Cpu 0`. 
+In this section, we will enable the developer to create a `LocalExecutor` that only runs on a particular CPU. In this code snippet below, we create an executor that only runs on `Cpu 0` with the help of the `LocalExecutorBuilder`. 
 
 ```rust
 // The LocalExecutor will now only run on Cpu 0
