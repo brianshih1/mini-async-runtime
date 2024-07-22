@@ -1,6 +1,6 @@
 # Io_uring
 
-On this page, I’ll provide a surface-level explanation of how `io_uring` works. If you want a more in-depth explanation, check out [this tutorial](https://unixism.net/loti/what_is_io_uring.html) or [this redhat article](https://developers.redhat.com/articles/2023/04/12/why-you-should-use-iouring-network-io#:~:text=io_uring).
+In this page, I’ll provide a surface-level explanation of how `io_uring` works. If you want a more in-depth explanation, check out [this tutorial](https://unixism.net/loti/what_is_io_uring.html) or [this redhat article](https://developers.redhat.com/articles/2023/04/12/why-you-should-use-iouring-network-io#:~:text=io_uring).
 
 As mentioned, `io_uring` manages file descriptors for the users and lets them know when one or more of them are ready.
 

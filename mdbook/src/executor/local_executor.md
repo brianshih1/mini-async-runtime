@@ -1,11 +1,14 @@
 # LocalExecutor
 
+Now that we know how the task and task queue is implemented, we can perform a deep dive 
+into how the `Executor::Run` and `Executor::spawn` methods are implemented.
+
 As a refresher, here’s an example of an executor running a task and spawning a task onto the executor.
 
 ```rust
 let local_ex = LocalExecutor::default();
 let res = local_ex.run(async {
-    let handle = spawn_local(async_write_file());
+    let handle = local_ex.spawn(async_write_file());
     handle.await;
 });
 ```
@@ -134,31 +137,22 @@ fn run_one_task_queue(&self) -> bool {
 
 To summarize, `run` spawns a task onto one of the task queues. The executor then runs one `task_queue` at a time to completion until the spawned `task` is `COMPLETED`. The most important concept to remember here is that none of the task is `blocking`. Whenever one of the `task` is about to be run, it is popped from the `TaskQueue`. It won’t be scheduled back onto the `TaskQueue` until its `waker` is invoked, which is when the thing blocking it is no longer blocking. In other words, the `executor` will move from one `task` to another without waiting on any blocking code.
 
-### spawn_local
+### spawn
 
-The `spawn_local` method is how a user can spawn a task onto the executor.
+The `spawn` method is how a user can spawn a task onto the executor.
 
-`spawn_local` allows the developer to create two tasks that run concurrently instead of sequentially:
+`spawn` allows the developer to create two tasks that run concurrently instead of sequentially:
 
 ```rust
 let res = local_ex.run(async {
-    let handle1 = spawn_local(async_write_file());
-		let handle2 = spawn_local(async_write_file());
+    let handle1 = local_ex.spawn(async_write_file());
+		let handle2 = local_ex.spawn(async_write_file());
     handle1.await;
-		handle2.await;
+    handle2.await;
 });
 ```
 
-This is the implementation of `spawn_local`:
-
-```rust
-	pub fn spawn_local<T>(&self, future: impl Future<Output = T> + 'static) -> JoinHandle<T>
-	where
-	    T: 'static,
-	{
-	    LOCAL_EX.with(|local_ex| local_ex.spawn(future))
-	}
-```
+This is the implementation of `spawn`:
 
 `Spawn_local` simply finds the `LocalExecutor` on the current thread and calls `LocalExecutor::spawn`. Here is the implementation of `spawn`:
 

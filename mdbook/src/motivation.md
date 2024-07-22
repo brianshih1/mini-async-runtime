@@ -1,9 +1,9 @@
 # Motivation
 
-I've always wondered how asynchronous runtimes like [Node.js](https://nodejs.org/en/about), [Seastar](https://seastar.io/), [Glommio](https://docs.rs/glommio/latest/glommio/), and [Tokio](https://tokio.rs/) work under the hood. Luckily, most async runtimes are open source.
-There is also a bunch of excellent blogs online such as the [Asychronous Programming in Rust blog series](https://rust-lang.github.io/async-book/) that I could learn from.
+I've always wondered how asynchronous runtimes like [Node.js](https://nodejs.org/en/about), [Seastar](https://seastar.io/), [Glommio](https://docs.rs/glommio/latest/glommio/), and [Tokio](https://tokio.rs/) work under the hood. Luckily, most asynchronous runtimes are open source.
+There is also a bunch of excellent blogs online such as the [Asychronous Programming in Rust blog series](https://rust-lang.github.io/async-book/) that I found super useful.
 
-In this blog series, I will unveil the magic behind asynchronous runtimes by performing a deep dive into `mini-async-runtime`, a toy asynchronous runtime I built by borrowing snippets from [Glommio](https://github.com/DataDog/glommio) and [async-io](https://github.com/smol-rs/async-io) and stripping them down into a simpler, more managable, async runtime.
+In this blog series, I will unveil the magic behind asynchronous runtimes by performing a deep dive into `mini-async-runtime`, a toy asynchronous runtime I built by borrowing snippets from [Glommio](https://github.com/DataDog/glommio) and [async-io](https://github.com/smol-rs/async-io) and stripping them down into a simpler, more lightweight, async runtime.
 
 Even though this blog series uses a Rust asynchronous runtime as an example, it is meant to be a language-agnostic blog post as most asynchronous runtimes used across different languages use a similar event-loop + reactor architecture. 
 

@@ -1,12 +1,15 @@
 # Life of a Task
 
-This page aims to explain the execution of a task, following the code paths through the various parts of the executor.
+This page illustrates the lifecycle of a task and how it interacts with the various parts
+of the executor.
+
+
 
 ```rust
 let local_ex = LocalExecutor::default();
-let res = local_ex.run(async {
-    let handle = spawn_local({ async_read_file(...).await });
-    handle.await
+let task1_result = local_ex.run(async {
+    let task2_handle = spawn_local({ async_read_file(...).await });
+    task2_handle.await
 });
 ```
 
@@ -26,8 +29,8 @@ Next, the executor [polls the user-provided Future](https://github.com/brianshih
 
 ```rust
 async {
-    let handle = spawn_local(async { async_read_file(...).await });
-    handle.await
+    let task2_handle = spawn_local(async { async_read_file(...).await });
+    task2_handle.await
 }
 ```
 

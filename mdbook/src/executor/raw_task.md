@@ -1,10 +1,29 @@
 # Running the Task
 
 To run the user-provided future, the executor needs to `poll` the future. This is what the `Task::run` function does.
-However, the `task` needs to do more than just polling the future. In this page, we will look at all the things the executor needs 
-to do when running a task.
+However, the `task` needs to do more than just polling the future. In this page, we will look at all the things the executor needs to do when running a task.
 
-Let’s break it down section by section.
+Here is the simplified pseudocode for the `run` method:
+
+```
+fn run(task) {
+	if the task is closed:
+		decrement the reference count
+		deallocate if reference is 0
+
+	poll the user-provided future
+	if future is ready:
+		store the output into the task
+		if there is no handle, then drop the output
+		notify the awaiter that the task has been completed
+	else:
+		if the task was closed while running, unschedule the task.
+
+}
+```
+
+The actual code is quite complicated. Feel free to skip if you are only interested in the higher level. Let's look at it section by section:
+
 
 ```rust
 unsafe fn run(ptr: *const ()) -> bool {
