@@ -1,10 +1,13 @@
 # Task
 
-A Task is the basic unit of work in an executor. A Task is created whenever the developer spawns a `Future` onto the Executor. You can think of a Task as a wrapper around the spawned `Future`.
+The programmer spawns a task by providing a future, for example:
 
-Remember from earlier that a `Future` is a state machine that can be polled. To run the `Task`, the `Executor` `polls` the user-provided `Future`. The `poll` method would return `Poll::Ready` if it’s done. Otherwise, the Future returns `Poll::Pending`. In that case, the executor needs to repoll the Future when it is ready to make progress.
+```
+let fut = async { 1 + 2 };
+local_ex.spawn(fut);
+```
 
-Apart from the `Future`, the `Task` needs to keep track of a few other things. Let’s look at some additional properties:
+The executor takes the future and creates a `task`. In addition to the `future`, the task also stores:
 - state
 - output
 - waker
@@ -12,10 +15,8 @@ Apart from the `Future`, the `Task` needs to keep track of a few other things. L
 
 ### **State**
 
-While the user-provided `Future` is already a state machine, there's a couple of additional `state` that the executor needs to keep
-track of. For example, whether the task is already scheduled or whether the task is cancelled.
-
-Here are the following task states:
+There's a couple of additional `state` that the executor needs to keep
+track of:
 
 - **SCHEDULED**: set if the task is scheduled for running
 - **RUNNING**: running is set when the future is polled.
@@ -25,7 +26,7 @@ Here are the following task states:
 
 For a more thorough explanation of the invariants of the state, check out [this code snippet](https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/state.rs).
 
-Some of these states aren’t mutually exclusive. The state of the task is stored as an `u8`. Each of the states is stored as a bit. For example, `SCHEDULED` is `1 << 0` while `HANDLE` is `HANDLE` is `1 << 4`. So a `state` of `17` means that the state is both `SCHEDULED` and `HANDLE`.
+The state of the task is stored as an `u8`. Each of the states is stored as a bit. For example, `SCHEDULED` is `1 << 0` while `HANDLE` is `HANDLE` is `1 << 4`. 
 
 ### **Output**
 
@@ -36,40 +37,20 @@ let handle = spawn_local(async { 1 + 2 });
 let res = future.await;
 ```
 
-In the example above, the task created from `spawn_local` may be completed before `await` is called. Therefore, the `Task` needs to store the output (which is 3 in this example) to be consumed by an `await`.
+In this example, the `Task` needs to store the output (which is 3 in this example) to be consumed by an `await`.
 
 ### **Waker**
 
-If the `Task`'s `Future` returns `Poll::Pending`, the `executor` eventually needs to `poll` the `Future` again. The question is when should it?
+When the `task` is blocked (e.g. it's blocked by an I/O operation), we want the executor to switch to another task.
+The question is when should the task be scheduled to be run by the executor again?
 
-When a task is blocked, it is because it or one of its child tasks is performing I/O, i.e. reading a file from disk. When the I/O completes,
-we would like a mechanism to notify the `executor` that the `Task` is no longer blocked and can be polled again. This is what the `Waker` is for.
-
-Whenever the executor `poll`s a Task, it creates a `Waker` and passes it to the `poll` method as part of the `Context`. The `Future` would
-call `waker::wake` when it is unblocked. 
-
-
-The blocking operation, such as a file read, needs to store the `Waker`. When the blocking operation is completed, it needs to call `Waker::wake` so that the executor can reschedule the blocked `Task` and eventually `poll` it again.
+This is what the `Waker` is for. The executor creates a `Waker` and passes it to the task each time it polls the task.
+The task stores the `waker` and invokes `Waker::wake` when it is unblocked. This will place the task back onto the task queue.
 
 ### **References**
 
-The `Task` needs to be deallocated when there is no more need for it. The `Task` is no longer needed if it’s canceled or when it’s completed and the output is consumed. In addition to the `state`, the `Task` also has a `references` counter. When the reference is 0, the task is deallocated.
+The `Task` needs to be deallocated when there is no more need for it. The `Task` is no longer needed if it’s canceled or when it’s completed and the output is consumed. The `task` has a `references` counter and the task is deallocated once the reference is `0`.
 
-### **Schedule**
-
-A task needs to know how to reschedule itself. This is because each time it’s executed, it’s popped from the executor’s Task Queue. If it’s blocked by another task, it needs to be scheduled again when the blocking task is completed.
-
-The `create_task` method takes a `schedule` function. The task stores the `schedule` method as a raw method. Here is a simplified version of how a task is created:
-
-```rust
-let schedule = move |task| {
-    let task_queue = tq.upgrade();
-    task_queue.local_queue.push(task);
-};
-create_task(executor_id, future, schedule)
-```
-
-All the `schedule` method does is that it pushes a task onto the Task Queue.
 
 ### Implementation
 
@@ -146,6 +127,17 @@ where
     };
     (task, handle)
 }
+```
+
+The `create_task` method takes a `schedule` function. Usually, the `schedule` method simply places the task onto
+the task queue.
+
+```rust
+let schedule = move |task| {
+    let task_queue = tq.upgrade();
+    task_queue.local_queue.push(task);
+};
+create_task(executor_id, future, schedule)
 ```
 
 The core of this function is the `allocate` method which allocates the `Task` onto the heap:

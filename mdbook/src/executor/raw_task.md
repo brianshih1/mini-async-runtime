@@ -1,6 +1,8 @@
 # Running the Task
 
-When the `Task` is run, the task doesn’t just `poll` the user-provided `Future`. It also needs to perform memory accounting and handle edge cases.
+To run the user-provided future, the executor needs to `poll` the future. This is what the `Task::run` function does.
+However, the `task` needs to do more than just polling the future. In this page, we will look at all the things the executor needs 
+to do when running a task.
 
 Let’s break it down section by section.
 

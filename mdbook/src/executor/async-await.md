@@ -1,7 +1,9 @@
 # Async/Await
 
-`Async/Await` is syntactic sugar for building state machines. It allows developers to write code that looks like synchronous code.
-The compiler then compiles any code block wrapped in the `async` keyword into a pollable state machine.
+`Async/Await` is syntactic sugar for building state machines. Any code wrapped around the `async ` block becomes a `future`.
+This allows the programmer to begin a task without waiting for it to complete. Only when the `future` is awaited does the task block the execution.
+
+During compilation, the compiler turns code wrapped in the `async` keyword into a pollable state machine.
 
 As a simple example, let's look at the following async function `f`:
 
