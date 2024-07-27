@@ -6,7 +6,6 @@ use crate::executor::get_reactor;
 #[derive(Debug)]
 
 pub(crate) struct Parker {
-    inner: Rc<Inner>,
 }
 
 impl Parker {
@@ -15,7 +14,6 @@ impl Parker {
         // Ensure `Reactor` is initialized now to prevent it from being initialized in
         // `Drop`.
         Parker {
-            inner: Rc::new(Inner {}),
         }
     }
 
@@ -30,15 +28,6 @@ impl Parker {
     /// this will be able to check if the timer has elapsed and yield the
     /// CPU if that is the case.
     pub(crate) fn poll_io(&self) -> io::Result<bool> {
-        self.inner.park()
-    }
-}
-
-#[derive(Debug)]
-struct Inner {}
-
-impl Inner {
-    fn park(&self) -> io::Result<bool> {
         get_reactor().react()
     }
 }

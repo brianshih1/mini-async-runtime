@@ -20,7 +20,6 @@ pub(crate) struct LocalExecutor {
     pub(crate) id: usize,
     pub(crate) queues: Rc<RefCell<QueueManager>>,
     reactor: Rc<Reactor>,
-    parker: parking::Parker,
 }
 
 pub(crate) const DEFAULT_RING_SUBMISSION_DEPTH: usize = 128;
@@ -34,7 +33,6 @@ impl LocalExecutor {
         LocalExecutor {
             id: 0,
             queues: Rc::new(RefCell::new(QueueManager::new())),
-            parker: parking::Parker::new(),
             reactor: Rc::new(Reactor::new(DEFAULT_RING_SUBMISSION_DEPTH)),
         }
     }
@@ -102,9 +100,9 @@ impl LocalExecutor {
                     return t.unwrap();
                 }
 
-                self.parker
-                    .poll_io()
-                    .expect("Failed to poll io! This is actually pretty bad!");
+                // this is what makes the reactor try to process events
+                // from the completion queue.
+                get_reactor().react();
 
                 // TODO: I/O work
                 self.run_task_queues();
