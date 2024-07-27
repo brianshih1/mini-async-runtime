@@ -28,6 +28,9 @@ impl<T: AsRawFd> Async<T> {
 }
 ```
 
+Note the importance of the `T: AsRawFd` trait. The reactor needs the raw file descriptor of the I/O source in order to check when the I/O operation
+is complete with the help of io_uring.
+
 The `get_reactor()` method retrieves the `Reactor` for the executor running on the current thread. The `create_source` method, as shown below, sets the `O_NONBLOCK` flag for the handle with [fcntl](https://man7.org/linux/man-pages/man2/fcntl.2.html).
 
 ```rust
