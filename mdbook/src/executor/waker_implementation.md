@@ -1,6 +1,6 @@
 # Waker
 
-Earlier, we saw that when `RawTask::run` is called, `run` creates a `waker` which is used to `poll` the user-provided `Future`. In this section, we look at how the `Waker` is implemented.
+Earlier, we saw that when `RawTask::run` is called, `run` creates a `waker` which is used to `poll` the user-provided `Future`. In this section, we look at how the `Waker` instance is created.
 
 To create a `waker` in Rust, we need to pass a `RawWakerVTable` to the `Waker` constructor.
 

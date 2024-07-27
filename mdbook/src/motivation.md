@@ -3,7 +3,7 @@
 I've always wondered how asynchronous runtimes like [Node.js](https://nodejs.org/en/about), [Seastar](https://seastar.io/), [Glommio](https://docs.rs/glommio/latest/glommio/), and [Tokio](https://tokio.rs/) work under the hood. Luckily, most asynchronous runtimes are open source.
 There is also a bunch of excellent blogs online such as the [Asychronous Programming in Rust blog series](https://rust-lang.github.io/async-book/).
 
-To better understand the internals of asynchronous runtimes, I built `mini-async-runtime`, a lightweight, toy asynchronous runtime written in Rust. I borrowed a lot of code from [Glommio](https://github.com/DataDog/glommio) and [async-io](https://github.com/smol-rs/async-io) to help myself prototype faster, since my goal was simply to gain a better intuition for how these systems really work. The [source code](https://github.com/brianshih1/mini-async-runtime) is available online.
+To better understand the internals of asynchronous runtimes, I built `mini-async-runtime`, a lightweight, toy asynchronous runtime written in Rust. I reused a lot of code from [Glommio](https://github.com/DataDog/glommio) and [async-io](https://github.com/smol-rs/async-io) to help myself prototype faster, since my goal was just to gain a better intuition for how these systems really work. The [source code](https://github.com/brianshih1/mini-async-runtime) is available online.
 
 In this blog series, I will deep dive into the internals of `mini-async-runtime`. Even though my implementation is in Rust, this blog is meant to 
 be language agnostic as most asynchronous runtimes, even in other languages, use a similar event-loop + reactor architecture. 
@@ -40,4 +40,4 @@ I’ve split up the blog series into four phases:
 
 As a teaser, here is the architecture of the async runtime that we are building:
 
-<img src="../images/architecture.png" width="110%">
+<img src="./images/architecture.png" width="110%">
