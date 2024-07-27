@@ -1,13 +1,15 @@
 # Task
 
-The programmer spawns a task by providing a future, for example:
+A `task` is the executor's internal representation for a unit of work submitted by the programmer.
+
+A task is created when a programmer spawns a task with a `future`. For example:
 
 ```
 let fut = async { 1 + 2 };
 local_ex.spawn(fut);
 ```
 
-The executor takes the future and creates a `task`. In addition to the `future`, the task also stores:
+When `spawn` is called, the executor takes the `future` and creates a `task`. The task stores these properties in addition to the `future`:
 - state
 - output
 - waker
@@ -26,7 +28,7 @@ track of:
 
 For a more thorough explanation of the invariants of the state, check out [this code snippet](https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/state.rs).
 
-The state of the task is stored as an `u8`. Each of the states is stored as a bit. For example, `SCHEDULED` is `1 << 0` while `HANDLE` is `HANDLE` is `1 << 4`. 
+The state of the task is stored as an `u8`. Each of the states is stored as a bit. For example, `SCHEDULED` is `1 << 0` while `HANDLE` is `1 << 4`. 
 
 ### **Output**
 
@@ -39,13 +41,16 @@ let res = future.await;
 
 In this example, the `Task` needs to store the output (which is 3 in this example) to be consumed by an `await`.
 
-### **Waker**
+### **Awaiter (Waker)**
 
 When the `task` is blocked (e.g. it's blocked by an I/O operation), we want the executor to switch to another task.
-The question is when should the task be scheduled to be run by the executor again?
+But when should the task be scheduled to be run by the executor again?
 
 This is what the `Waker` is for. The executor creates a `Waker` and passes it to the task each time it polls the task.
 The task stores the `waker` and invokes `Waker::wake` when it is unblocked. This will place the task back onto the task queue.
+
+The task stores the `Waker` inside the `awaiter` property:
+`pub(crate) awaiter: Option<Waker>`
 
 ### **References**
 
@@ -63,7 +68,7 @@ pub struct Task {
 }
 ```
 
-Here is the `RawTask`:
+Here is the implementation of `RawTask`. It uses raw pointers 
 
 ```rust
 pub(crate) struct RawTask<F, R, S> {

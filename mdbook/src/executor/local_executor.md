@@ -15,9 +15,7 @@ let res = local_ex.run(async {
 
 ### Single Threaded
 
-It’s important to understand that `LocalExecutor` is a single-threaded executor. This means that the executor can only be run on the thread that created it. `LocalExecutor` doesn’t implement the `Send` or `Sync` trait, so you cannot move a `LocalExecutor` across threads. This makes it easier to reason about the methods on `LocalExecutor` since it’s safe to assume that only one function invocation can be executing at any time. In other words, there won’t be two invocations of `run` on the same executor at once.
-
-Conceptually, the way to think about an executor is that it stores a collection of Task Queues. Each Task Queue has a collection of Tasks to execute. When `run` is called, the executor would choose one of the task queues to be the active executor. Then it will start looping and popping tasks off the Task Queue.
+It’s important to understand that the `LocalExecutor` is single-threaded. This means that the executor can only be run on the thread that created it. `LocalExecutor` doesn’t implement the `Send` or `Sync` trait, so you cannot move a `LocalExecutor` across threads. This makes it easier to reason about the methods on `LocalExecutor` since it’s safe to assume that only one function invocation can be executing at any time. In other words, there won’t be two invocations of `run` on the same executor at once.
 
 ### Internals
 

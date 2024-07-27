@@ -1,16 +1,17 @@
 # Motivation
 
 I've always wondered how asynchronous runtimes like [Node.js](https://nodejs.org/en/about), [Seastar](https://seastar.io/), [Glommio](https://docs.rs/glommio/latest/glommio/), and [Tokio](https://tokio.rs/) work under the hood. Luckily, most asynchronous runtimes are open source.
-There is also a bunch of excellent blogs online such as the [Asychronous Programming in Rust blog series](https://rust-lang.github.io/async-book/) that I found super useful.
+There is also a bunch of excellent blogs online such as the [Asychronous Programming in Rust blog series](https://rust-lang.github.io/async-book/).
 
-In this blog series, I will unveil the magic behind asynchronous runtimes by performing a deep dive into `mini-async-runtime`, a toy asynchronous runtime I built by borrowing snippets from [Glommio](https://github.com/DataDog/glommio) and [async-io](https://github.com/smol-rs/async-io) and stripping them down into a simpler, more lightweight, async runtime.
+To better understand the internals of asynchronous runtimes, I built `mini-async-runtime`, a lightweight, toy asynchronous runtime written in Rust. I borrowed a lot of code from [Glommio](https://github.com/DataDog/glommio) and [async-io](https://github.com/smol-rs/async-io) to help myself prototype faster, since my goal was simply to gain a better intuition for how these systems really work. The [source code](https://github.com/brianshih1/mini-async-runtime) is available online.
 
-Even though this blog series uses a Rust asynchronous runtime as an example, it is meant to be a language-agnostic blog post as most asynchronous runtimes used across different languages use a similar event-loop + reactor architecture. 
+In this blog series, I will deep dive into the internals of `mini-async-runtime`. Even though my implementation is in Rust, this blog is meant to 
+be language agnostic as most asynchronous runtimes, even in other languages, use a similar event-loop + reactor architecture. 
 
 ## What is an asynchronous runtime?
 
-Synchronous programming is a programming paradigm in which each line of code won't execute until the previous line has completed.
-In contrary, asynchronous programming allows the developer to run multiple tasks in parallel through simple primitives such as async/await and futures (or promises in Javascript).
+Synchronous programming is a programming paradigm in which each line of code executes sequentially, one after the other.
+In contrary, asynchronous programming allows multiple tasks to run in parallel through simple primitives such as async/await and futures (or Promises in Javascript).
 
 One way that a developer can achieve multitasking without an asynchronous runtime is to use multithreading - just spawn a thread for each task. However, creating a new thread for each task will introduce a bunch of overhead to the system. Each CPU core can only run a task at any given moment. So  the OS will start performing expensive context switches between the threads as the number of threads grow. Also, imagine if you are building a server that can serve millions of request per second. Creating a new thread for each connection will overwhelm the system quickly.
 

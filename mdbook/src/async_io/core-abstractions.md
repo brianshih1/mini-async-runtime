@@ -26,7 +26,7 @@ pub struct Async<T> {
 
 ### Source
 
-The `Source` is a bridge between the executor and the I/O handle. It contains properties pertaining to the I/O handle that are relevant to the executor. For example, it contains tasks that are blocked by operations on the I/O handle.
+The `Source` is a bridge between the executor and the I/O handle. It contains the rwa file descriptor for the I/O event as well as properties that are relevant to the executor. For example, it contains wakers for blocked tasks waiting for the I/O operation to complete.
 
 ```rust
 pub struct Source {

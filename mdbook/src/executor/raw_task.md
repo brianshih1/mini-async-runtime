@@ -18,9 +18,13 @@ fn run(task) {
 		notify the awaiter that the task has been completed
 	else:
 		if the task was closed while running, unschedule the task.
-
 }
 ```
+
+In general, the executor needs to perform the following tasks:
+- deallocate the task/task output when necessary
+- create the waker that notifies the `executor` to reschedule the `task` when the future is no longer blocking
+- track the state of the task and terminate early if the task is cancelled or completed
 
 The actual code is quite complicated. Feel free to skip if you are only interested in the higher level. Let's look at it section by section:
 
