@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Local Executor - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+        <title>Local Executor - Building an Asynchronous Runtime like Glommio</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html" class="active"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/core-abstractions.html"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../async_io/step_1_ononblock.html"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="../async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="../async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/architecture.html"><strong aria-hidden="true">4.1.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="../executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html" class="active"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/core-abstractions.html"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../async_io/step_1_ononblock.html"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="../async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="../async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -110,7 +110,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">Building a Thread-Per-Core, Asynchronous Framework like Glommio</h1>
+                    <h1 class="menu-title">Building an Asynchronous Runtime like Glommio</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -143,18 +143,19 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="localexecutor"><a class="header" href="#localexecutor">LocalExecutor</a></h1>
+<p>Now that we know how the task and task queue is implemented, we can perform a deep dive 
+into how the <code>Executor::Run</code> and <code>Executor::spawn</code> methods are implemented.</p>
 <p>As a refresher, here’s an example of an executor running a task and spawning a task onto the executor.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let local_ex = LocalExecutor::default();
 let res = local_ex.run(async {
-    let handle = spawn_local(async_write_file());
+    let handle = local_ex.spawn(async_write_file());
     handle.await;
 });
 <span class="boring">}</span></code></pre></pre>
 <h3 id="single-threaded"><a class="header" href="#single-threaded">Single Threaded</a></h3>
-<p>It’s important to understand that <code>LocalExecutor</code> is a single-threaded executor. This means that the executor can only be run on the thread that created it. <code>LocalExecutor</code> doesn’t implement the <code>Send</code> or <code>Sync</code> trait, so you cannot move a <code>LocalExecutor</code> across threads. This makes it easier to reason about the methods on <code>LocalExecutor</code> since it’s safe to assume that only one function invocation can be executing at any time. In other words, there won’t be two invocations of <code>run</code> on the same executor at once.</p>
-<p>Conceptually, the way to think about an executor is that it stores a collection of Task Queues. Each Task Queue has a collection of Tasks to execute. When <code>run</code> is called, the executor would choose one of the task queues to be the active executor. Then it will start looping and popping tasks off the Task Queue.</p>
+<p>It’s important to understand that the <code>LocalExecutor</code> is single-threaded. This means that the executor can only be run on the thread that created it. <code>LocalExecutor</code> doesn’t implement the <code>Send</code> or <code>Sync</code> trait, so you cannot move a <code>LocalExecutor</code> across threads. This makes it easier to reason about the methods on <code>LocalExecutor</code> since it’s safe to assume that only one function invocation can be executing at any time. In other words, there won’t be two invocations of <code>run</code> on the same executor at once.</p>
 <h3 id="internals"><a class="header" href="#internals">Internals</a></h3>
 <p>Let’s look at the internals of an Executor:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -258,28 +259,19 @@ let res = local_ex.run(async {
 }
 <span class="boring">}</span></code></pre></pre>
 <p>To summarize, <code>run</code> spawns a task onto one of the task queues. The executor then runs one <code>task_queue</code> at a time to completion until the spawned <code>task</code> is <code>COMPLETED</code>. The most important concept to remember here is that none of the task is <code>blocking</code>. Whenever one of the <code>task</code> is about to be run, it is popped from the <code>TaskQueue</code>. It won’t be scheduled back onto the <code>TaskQueue</code> until its <code>waker</code> is invoked, which is when the thing blocking it is no longer blocking. In other words, the <code>executor</code> will move from one <code>task</code> to another without waiting on any blocking code.</p>
-<h3 id="spawn_local"><a class="header" href="#spawn_local">spawn_local</a></h3>
-<p>The <code>spawn_local</code> method is how a user can spawn a task onto the executor.</p>
-<p><code>spawn_local</code> allows the developer to create two tasks that run concurrently instead of sequentially:</p>
+<h3 id="spawn"><a class="header" href="#spawn">spawn</a></h3>
+<p>The <code>spawn</code> method is how a user can spawn a task onto the executor.</p>
+<p><code>spawn</code> allows the developer to create two tasks that run concurrently instead of sequentially:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let res = local_ex.run(async {
-    let handle1 = spawn_local(async_write_file());
-		let handle2 = spawn_local(async_write_file());
+    let handle1 = local_ex.spawn(async_write_file());
+		let handle2 = local_ex.spawn(async_write_file());
     handle1.await;
-		handle2.await;
+    handle2.await;
 });
 <span class="boring">}</span></code></pre></pre>
-<p>This is the implementation of <code>spawn_local</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>	pub fn spawn_local&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt; + 'static) -&gt; JoinHandle&lt;T&gt;
-	where
-	    T: 'static,
-	{
-	    LOCAL_EX.with(|local_ex| local_ex.spawn(future))
-	}
-<span class="boring">}</span></code></pre></pre>
+<p>This is the implementation of <code>spawn</code>:</p>
 <p><code>Spawn_local</code> simply finds the <code>LocalExecutor</code> on the current thread and calls <code>LocalExecutor::spawn</code>. Here is the implementation of <code>spawn</code>:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {

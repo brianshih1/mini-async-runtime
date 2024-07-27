@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Task - Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+        <title>Task - Building an Asynchronous Runtime like Glommio</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../executor/task.html" class="active"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/core-abstractions.html"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../async_io/step_1_ononblock.html"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="../async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="../async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="../executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="../executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="../executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="../executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="../executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../executor/architecture.html"><strong aria-hidden="true">4.1.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="../executor/task.html" class="active"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="../executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="../executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="../executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="../executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="../executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="../executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="../executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="../async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="../async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="../async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="../async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="../async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async_io/core-abstractions.html"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="../async_io/step_1_ononblock.html"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="../async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="../async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -110,7 +110,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">Building a Thread-Per-Core, Asynchronous Framework like Glommio</h1>
+                    <h1 class="menu-title">Building an Asynchronous Runtime like Glommio</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -143,12 +143,21 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="task"><a class="header" href="#task">Task</a></h1>
-<p>A Task is the basic unit of work in an executor. A Task is created whenever a <code>Future</code> is spawned onto the Executor. You can think of a Task as a wrapper around the spawned <code>Future</code>.</p>
-<p>To run the <code>Task</code>, the <code>Executor</code> <code>polls</code> the user-provided <code>Future</code>. The Future’s <code>poll</code> method would return <code>Poll::Ready</code> if it’s done. Otherwise, the Future returns <code>Poll::Pending</code>. In that case, the executor needs to repoll the Future when it is ready to make progress.</p>
-<p>Apart from the <code>Future</code>, the <code>Task</code> needs to keep track of a few other things. Let’s look at some of these properties:</p>
+<p>A <code>task</code> is the executor's internal representation for a unit of work submitted by the programmer.</p>
+<p>A task is created when a programmer spawns a task with a <code>future</code>. For example:</p>
+<pre><code>let fut = async { 1 + 2 };
+local_ex.spawn(fut);
+</code></pre>
+<p>When <code>spawn</code> is called, the executor takes the <code>future</code> and creates a <code>task</code>. The task stores these properties in addition to the <code>future</code>:</p>
+<ul>
+<li>state</li>
+<li>output</li>
+<li>waker</li>
+<li>references</li>
+</ul>
 <h3 id="state"><a class="header" href="#state"><strong>State</strong></a></h3>
-<p>A task needs to keep track of its <code>state</code> so that an executor knows if they are completed, canceled, etc.</p>
-<p>Here are the following states:</p>
+<p>There's a couple of additional <code>state</code> that the executor needs to keep
+track of:</p>
 <ul>
 <li><strong>SCHEDULED</strong>: set if the task is scheduled for running</li>
 <li><strong>RUNNING</strong>: running is set when the future is polled.</li>
@@ -157,43 +166,24 @@
 <li><strong>HANDLE</strong>: set if the JoinHandle still exists.</li>
 </ul>
 <p>For a more thorough explanation of the invariants of the state, check out <a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/state.rs">this code snippet</a>.</p>
-<p>Some of these states aren’t mutually exclusive. The state of the task is stored as an <code>u8</code>. Each of the states is stored as a bit. For example, <code>SCHEDULED</code> is <code>1 &lt;&lt; 0</code> while <code>HANDLE</code> is <code>HANDLE</code> is <code>1 &lt;&lt; 4</code>. So a <code>state</code> of <code>17</code> means that the state is both <code>SCHEDULED</code> and <code>HANDLE</code>.</p>
+<p>The state of the task is stored as an <code>u8</code>. Each of the states is stored as a bit. For example, <code>SCHEDULED</code> is <code>1 &lt;&lt; 0</code> while <code>HANDLE</code> is <code>1 &lt;&lt; 4</code>. </p>
 <h3 id="output"><a class="header" href="#output"><strong>Output</strong></a></h3>
-<p>The task needs to store the output of a Task.</p>
+<p>The task needs to store the output of a Task for the application to await.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let handle = spawn_local(async { 1 + 2 });
 let res = future.await;
 <span class="boring">}</span></code></pre></pre>
-<p>In the example above, the task created from <code>spawn_local</code> may be completed before <code>await</code> is called. Therefore, the <code>Task</code> needs to store the output (which is 3 in this example) to be consumed by an <code>await</code>.</p>
-<h3 id="waker"><a class="header" href="#waker"><strong>Waker</strong></a></h3>
-<p>If the <code>Task</code>'s <code>Future</code> returns <code>Poll::Pending</code>, the <code>executor</code> eventually needs to <code>poll</code> the <code>Future</code> again. The question is - when should it be?</p>
-<p>The <code>Task</code> could be blocked by a <code>file read</code> or a child <code>Task</code>. In either case, we would like to notify the <code>executor</code> that the blocked <code>Task</code> is ready to make progress when the <code>file read</code> operation is done or the child <code>Task</code> is completed. This is what the <code>Waker</code> is for.</p>
-<p>Whenever the executor <code>poll</code>s a Task, it creates a <code>Waker</code> and passes it to the <code>poll</code> method as part of the <code>Context</code>. The blocking operation, such as a file read, needs to store the <code>Waker</code>. When the blocking operation is completed, it needs to call <code>Waker::wake</code> so that the executor can reschedule the blocked <code>Task</code> and eventually <code>poll</code> it.</p>
-<p>In the following example, a task is spawned onto the executor when <code>spawn_local</code> is called. Let’s call this the parent task.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>spawn_local(async {
-	let child_handle = spawn_local(async {...});
-	child_handle.await;
-});
-<span class="boring">}</span></code></pre></pre>
-<p>When the future is <code>polled</code>, there is an inner <code>spawn_local</code> that spawns the child task onto the executor. The parent task can’t make progress until the child task is <code>completed</code> or <code>closed</code>.</p>
-<p>The child task needs a way to notify the parent task that it’s done and that the parent task can be polled again. This is what a <code>waker</code> does and the <code>child task</code> stores the <code>waker</code> of the blocked task.</p>
+<p>In this example, the <code>Task</code> needs to store the output (which is 3 in this example) to be consumed by an <code>await</code>.</p>
+<h3 id="awaiter-waker"><a class="header" href="#awaiter-waker"><strong>Awaiter (Waker)</strong></a></h3>
+<p>When the <code>task</code> is blocked (e.g. it's blocked by an I/O operation), we want the executor to switch to another task.
+But when should the task be scheduled to be run by the executor again?</p>
+<p>This is what the <code>Waker</code> is for. The executor creates a <code>Waker</code> and passes it to the task each time it polls the task.
+The task stores the <code>waker</code> and invokes <code>Waker::wake</code> when it is unblocked. This will place the task back onto the task queue.</p>
+<p>The task stores the <code>Waker</code> inside the <code>awaiter</code> property:
+<code>pub(crate) awaiter: Option&lt;Waker&gt;</code></p>
 <h3 id="references"><a class="header" href="#references"><strong>References</strong></a></h3>
-<p>The <code>Task</code> needs to be deallocated when there is no more need for it. The <code>Task</code> is no longer needed if it’s canceled or when it’s completed and the output is consumed. In addition to the <code>state</code>, the <code>Task</code> also has a <code>references</code> counter. When the reference is 0, the task is deallocated.</p>
-<h3 id="schedule"><a class="header" href="#schedule"><strong>Schedule</strong></a></h3>
-<p>A task needs to know how to reschedule itself. This is because each time it’s executed, it’s popped from the executor’s Task Queue. If it’s blocked by another task, it needs to be scheduled again when the blocking task is completed.</p>
-<p>The <code>create_task</code> method takes a <code>schedule</code> function. The task stores the <code>schedule</code> method as a raw method. Here is a simplified version of how a task is created:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>let schedule = move |task| {
-    let task_queue = tq.upgrade();
-    task_queue.local_queue.push(task);
-};
-create_task(executor_id, future, schedule)
-<span class="boring">}</span></code></pre></pre>
-<p>All the <code>schedule</code> method does is that it pushes a task onto the Task Queue.</p>
+<p>The <code>Task</code> needs to be deallocated when there is no more need for it. The <code>Task</code> is no longer needed if it’s canceled or when it’s completed and the output is consumed. The <code>task</code> has a <code>references</code> counter and the task is deallocated once the reference is <code>0</code>.</p>
 <h3 id="implementation"><a class="header" href="#implementation">Implementation</a></h3>
 <p>The raw task is allocated on the heap as follows:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -203,7 +193,7 @@ create_task(executor_id, future, schedule)
     pub raw_task: NonNull&lt;()&gt;,
 }
 <span class="boring">}</span></code></pre></pre>
-<p>Here is the <code>RawTask</code>:</p>
+<p>Here is the implementation of <code>RawTask</code>. It uses raw pointers </p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub(crate) struct RawTask&lt;F, R, S&gt; {
@@ -263,6 +253,16 @@ where
     };
     (task, handle)
 }
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>create_task</code> method takes a <code>schedule</code> function. Usually, the <code>schedule</code> method simply places the task onto
+the task queue.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let schedule = move |task| {
+    let task_queue = tq.upgrade();
+    task_queue.local_queue.push(task);
+};
+create_task(executor_id, future, schedule)
 <span class="boring">}</span></code></pre></pre>
 <p>The core of this function is the <code>allocate</code> method which allocates the <code>Task</code> onto the heap:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -327,7 +327,7 @@ where
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../executor/core-abstractions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../executor/architecture.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -341,7 +341,7 @@ where
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../executor/core-abstractions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../executor/architecture.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 

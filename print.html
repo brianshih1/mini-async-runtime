@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Building a Thread-Per-Core, Asynchronous Framework like Glommio</title>
+        <title>Building an Asynchronous Runtime like Glommio</title>
         <meta name="robots" content="noindex" />
 
 
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/core-abstractions.html"><strong aria-hidden="true">4.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="async_io/core-abstractions.html"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="async_io/step_1_ononblock.html"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="motivation.html">Motivation</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 1 - The Executor</li><li class="chapter-item expanded "><a href="executor/intro.html"><strong aria-hidden="true">1.</strong> What is an executor?</a></li><li class="chapter-item expanded "><a href="executor/api.html"><strong aria-hidden="true">2.</strong> API</a></li><li class="chapter-item expanded "><a href="executor/primitive-intro.html"><strong aria-hidden="true">3.</strong> Prerequisites - Rust Primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/future.html"><strong aria-hidden="true">3.1.</strong> Future</a></li><li class="chapter-item expanded "><a href="executor/async-await.html"><strong aria-hidden="true">3.2.</strong> Async/Await</a></li><li class="chapter-item expanded "><a href="executor/waker.html"><strong aria-hidden="true">3.3.</strong> Waker</a></li></ol></li><li class="chapter-item expanded "><a href="executor/implementation-details.html"><strong aria-hidden="true">4.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="executor/architecture.html"><strong aria-hidden="true">4.1.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="executor/task.html"><strong aria-hidden="true">4.2.</strong> Task</a></li><li class="chapter-item expanded "><a href="executor/raw_task.html"><strong aria-hidden="true">4.3.</strong> Running the Task</a></li><li class="chapter-item expanded "><a href="executor/task_queue.html"><strong aria-hidden="true">4.4.</strong> TaskQueue</a></li><li class="chapter-item expanded "><a href="executor/waker_implementation.html"><strong aria-hidden="true">4.5.</strong> Waker</a></li><li class="chapter-item expanded "><a href="executor/local_executor.html"><strong aria-hidden="true">4.6.</strong> Local Executor</a></li><li class="chapter-item expanded "><a href="executor/join_handle.html"><strong aria-hidden="true">4.7.</strong> Join Handle</a></li></ol></li><li class="chapter-item expanded "><a href="executor/life-of-a-task.html"><strong aria-hidden="true">5.</strong> Life of a Task</a></li><li class="chapter-item expanded "><a href="executor/pinned-threads.html"><strong aria-hidden="true">6.</strong> Pinned Threads</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Phase 2 - Asynchronous I/O</li><li class="chapter-item expanded "><a href="async_io/intro.html"><strong aria-hidden="true">7.</strong> What is Asynchronous I/O?</a></li><li class="chapter-item expanded "><a href="async_io/building_blocks.html"><strong aria-hidden="true">8.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="async_io/non_blocking_mode.html"><strong aria-hidden="true">8.1.</strong> Non-blocking I/O</a></li><li class="chapter-item expanded "><a href="async_io/io_uring.html"><strong aria-hidden="true">8.2.</strong> Io_uring</a></li></ol></li><li class="chapter-item expanded "><a href="async_io/api.html"><strong aria-hidden="true">9.</strong> API</a></li><li class="chapter-item expanded "><a href="async_io/implementation_details.html"><strong aria-hidden="true">10.</strong> Implementation Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="async_io/core-abstractions.html"><strong aria-hidden="true">10.1.</strong> Core abstractions</a></li><li class="chapter-item expanded "><a href="async_io/step_1_ononblock.html"><strong aria-hidden="true">10.2.</strong> Step 1 - Setting the O_NONBLOCK Flag</a></li><li class="chapter-item expanded "><a href="async_io/step_2_sqe.html"><strong aria-hidden="true">10.3.</strong> Step 2 - Submitting a SQE</a></li><li class="chapter-item expanded "><a href="async_io/step_3_cqe.html"><strong aria-hidden="true">10.4.</strong> Step 3 - Processing the CQE</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -111,7 +111,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">Building a Thread-Per-Core, Asynchronous Framework like Glommio</h1>
+                    <h1 class="menu-title">Building an Asynchronous Runtime like Glommio</h1>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -144,57 +144,84 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="motivation"><a class="header" href="#motivation">Motivation</a></h1>
-<p>I've always wondered how asynchronous runtimes like <a href="https://nodejs.org/en/about">Node.js</a>, <a href="https://seastar.io/">Seastar</a>, <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a>, and <a href="https://tokio.rs/">Tokio</a> work under the hood. I'm also curious how the <a href="https://seastar.io/shared-nothing/#:~:text=The%20Seastar%20Model%3A%20Shared%2Dnothing&amp;text=Seastar%20runs%20one%20application%20thread,cores%20must%20be%20handled%20explicitly.">shared-nothing</a>, thread-per-core architecture that powers systems like <a href="https://redpanda.com/">Redpanda</a> and <a href="https://www.scylladb.com/">ScyllaDB</a> works at a deeper level.</p>
-<p>In this blog series, I will explore building a toy version of <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a>, an <code>asynchronous</code> framework for building <code>thread-per-core</code> applications.</p>
-<h3 id="what-is-thread-per-core"><a class="header" href="#what-is-thread-per-core">What is Thread-Per-Core?</a></h3>
-<p>A complex application may have many tasks that it needs to execute. Some of these tasks can be performed in parallel to speed up the application. The ability of a system to execute multiple tasks concurrently is known as <strong>multitasking</strong>.</p>
-<p>Thread-based multitasking is one of the ways an operating system supports multitasking. In thread-based multitasking, an application can spawn a thread for each internal task. While the CPU can only run one thread at a time, the CPU scheduler can switch between threads to give the user the perception of two or more threads running simultaneously. The switching between threads is known as context switching. </p>
-<p>While thread-based multitasking may allow better usage of the CPU by switching threads when a thread is blocked or waiting, there are a few drawbacks:</p>
-<ul>
-<li>The developer has very little control over which thread is scheduled at any moment. Only a single thread can run on a CPU core at any moment. Once a thread is spawned, it is up to the OS to decide which thread to run on which CPU.</li>
-<li>The OS performs a context switch when it switches threads to run on a CPU core. A context switch is expensive and may take the kernel around 5 μs to perform.</li>
-<li>If multiple threads try to mutate the same data, they need to use locks to synchronize resource contention. Locks are expensive, and threads are blocked while waiting for the lock to be released.</li>
-</ul>
-<p>Thread-per-core is an architecture that eliminates threads from the picture. In this programming paradigm, developers are not allowed to spawn new threads to run tasks. Instead, each core runs on a single thread.</p>
-<p><a href="https://seastar.io/">Seastar</a> (C++) and <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a> (Rust) are two frameworks that allow developers to write thread-per-core applications. Seastar is used in ScyllaDB and Redpanda, while Glommio is used by Datadog.</p>
-<p>In this blog series, I will reimplement a lightweight version of Glommio by extracting bits and pieces from it. Throughout the blog, I will explain the different core abstractions that make up an asynchronous runtime.</p>
+<p>I've always wondered how asynchronous runtimes like <a href="https://nodejs.org/en/about">Node.js</a>, <a href="https://seastar.io/">Seastar</a>, <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a>, and <a href="https://tokio.rs/">Tokio</a> work under the hood. Luckily, most asynchronous runtimes are open source.
+There is also a bunch of excellent blogs online such as the <a href="https://rust-lang.github.io/async-book/">Asychronous Programming in Rust blog series</a>.</p>
+<p>To better understand the internals of asynchronous runtimes, I built <code>mini-async-runtime</code>, a lightweight, toy asynchronous runtime written in Rust. I borrowed a lot of code from <a href="https://github.com/DataDog/glommio">Glommio</a> and <a href="https://github.com/smol-rs/async-io">async-io</a> to help myself prototype faster, since my goal was simply to gain a better intuition for how these systems really work. The <a href="https://github.com/brianshih1/mini-async-runtime">source code</a> is available online.</p>
+<p>In this blog series, I will deep dive into the internals of <code>mini-async-runtime</code>. Even though my implementation is in Rust, this blog is meant to 
+be language agnostic as most asynchronous runtimes, even in other languages, use a similar event-loop + reactor architecture. </p>
+<h2 id="what-is-an-asynchronous-runtime"><a class="header" href="#what-is-an-asynchronous-runtime">What is an asynchronous runtime?</a></h2>
+<p>Synchronous programming is a programming paradigm in which each line of code executes sequentially, one after the other.
+In contrary, asynchronous programming allows multiple tasks to run in parallel through simple primitives such as async/await and futures (or Promises in Javascript).</p>
+<p>One way that a developer can achieve multitasking without an asynchronous runtime is to use multithreading - just spawn a thread for each task. However, creating a new thread for each task will introduce a bunch of overhead to the system. Each CPU core can only run a task at any given moment. So  the OS will start performing expensive context switches between the threads as the number of threads grow. Also, imagine if you are building a server that can serve millions of request per second. Creating a new thread for each connection will overwhelm the system quickly.</p>
+<p>Furthermore, look at how much simpler it is to write concurrent program like the one below as opposed to having to manually create a thread for each task:</p>
+<pre><code>async function f() {
+    const promiseOne = writeToFile()
+    const promiseTwo = writeToExternalServer()
+    await Promise.all([promise1, promise2, promise3])
+}
+</code></pre>
+<p>In this example, the two I/O calls are run in parallel. The function will then wait until the two calls complete before exiting.</p>
+<p>In other words, an asynchronous runtime is a library that enables multitasking without creating a new thread for each task. It multiplexes multiple
+tasks onto a single thread or a thread pool, depending on the implementation.</p>
+<h2 id="what-are-we-building"><a class="header" href="#what-are-we-building">What are we building?</a></h2>
 <p>I’ve split up the blog series into four phases:</p>
 <ul>
-<li><strong>Phase 1</strong>: In phase 1, we will cover Rust’s asynchronous primitives like <code>Future</code>, <code>Async/Await</code>, and <code>Waker</code> which will serve as building blocks for the asynchronous runtime. We will then build a simple, single-threaded, executor that can run and spawn tasks.</li>
+<li><strong>Phase 1</strong>: In phase 1, we will build an executor. We will first cover Rust’s asynchronous primitives like <code>Future</code>, <code>Async/Await</code>, and <code>Waker</code> which will serve as building blocks for the asynchronous runtime.</li>
 <li><strong>Phase 2</strong>: In phase 2, we talk about <code>io_uring</code> and use it to add <code>asynchronous I/O</code> to our executor</li>
 <li><strong>Phase 3 [WIP]</strong>: In phase 3, we will implement more advanced features such as thread parking, task yielding, and scheduling tasks based on priority.</li>
-<li><strong>Phase 4 [WIP]</strong>: In phase 4, we will build abstractions that allow developers to create a pool of <code>LocalExecutor</code>s.</li>
+<li><strong>Phase 4 [WIP]</strong>: In phase 4, we will build more advanced abstractions such as Executor Pools.</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="what-is-an-executor"><a class="header" href="#what-is-an-executor">What is an executor?</a></h1>
-<p>As we mentioned earlier, the thread-per-core architecture eliminates threads from the picture. Contrary to multithreading applications which let the OS’s CPU scheduler decide which thread to run, thread-per-core frameworks like Glommio built their own <strong>executors</strong> to decide which tasks to run. In other words, an executor is a task scheduler.</p>
-<p>An executor needs to decide when to switch between tasks. There are two main ways in which schedulers do that: preemptive multitasking and cooperative multitasking.</p>
-<p>In <strong>preemptive multitasking</strong>, the scheduler decides when to switch between tasks. It may have an internal timer that forces a task to give up control to the CPU to ensure that each task gets a fair share of the CPU.</p>
-<p>In <strong>cooperative multitasking</strong>, the scheduler lets the task run until it voluntarily gives up control back to the scheduler. <code>Glommio</code> supports cooperative multitasking.</p>
-<p>So how might an executor run tasks? The most simple mechanism is with the event loop.</p>
-<h3 id="the-event-loop"><a class="header" href="#the-event-loop">The Event Loop</a></h3>
-<p>The most simple way in which an executor runs tasks is to use a loop. In each iteration, the executor fetches the tasks and runs all of them sequentially.</p>
+<p>As a teaser, here is the architecture of the async runtime that we are building:</p>
+<img src="../images/architecture.png" width="110%"><div style="break-before: page; page-break-before: always;"></div><h1 id="what-is-an-executor"><a class="header" href="#what-is-an-executor">What is an executor?</a></h1>
+<p>As we mentioned earlier, asynchronous programming allows multiple tasks to run on a single thread (or a thread pool). To do that, we need a scheduler
+that figures out which task to run at any moment and when to switch tasks. That is what an <strong>executor</strong> does.</p>
+<p>There are two categories for how an executor schedules task:</p>
+<ul>
+<li>In <strong>preemptive multitasking</strong>, the executor decides when to switch between tasks. It may have an internal timer that forces a task to give up control to the CPU to ensure that each task gets a fair share of the CPU.</li>
+<li>In <strong>cooperative multitasking</strong>, the executor lets the task run until it voluntarily gives up control back to the scheduler.</li>
+</ul>
+<p>In this section, we will build an executor that performs cooperative multitasking. Through that,
+we will answer the following questions:</p>
+<ul>
+<li>How is a task represented?</li>
+<li>How are the tasks stored in an executor?</li>
+<li>How does a task &quot;give up control&quot; back to the scheduler?</li>
+</ul>
+<p>Now, let's look at the API of the executor.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="api"><a class="header" href="#api">API</a></h1>
+<p>Each asynchronous runtime needs an executor to manage tasks. Most asynchronous runtimes implicitly create an executor for you.</p>
+<p>For example, in Tokio an executor is created implicitly through <code>#[tokio::main]</code>.</p>
+<pre><code>#[tokio::main]
+async fn main() {
+    println!(&quot;Hello world&quot;);
+}
+</code></pre>
+<p>Under the hood, the annotation actually creates the excutor with something like:</p>
+<pre><code>fn main() {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            println!(&quot;Hello world&quot;);
+        })
+}
+</code></pre>
+<p>In Node.js, the entire application runs on a single event loop. The event loop is initialized when the <code>node</code> command is run. </p>
+<p>In Tokio and Node.js, the developer can write asynchronous code without ever knowing the existence of the executor. With <code>mini-glommio</code>, developers need to create the executor explicitly.</p>
+<p>The two main APIs of our executor are:</p>
+<ul>
+<li><strong>run</strong>: spawns a task onto the executor and wait until it completes</li>
+<li><strong>spawn</strong>: spawns a task onto the executor</li>
+</ul>
+<p>Pretty simple right? All we need is the ability to put a task onto the executor and to run the task until completion.</p>
+<h3 id="run"><a class="header" href="#run">Run</a></h3>
+<p>To run a task, you call the <code>run</code> method, which is a synchronous method and runs the task until completion.</p>
+<p>Here is its signature:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>loop {
-	let events = executor.get_tasks();
-	while !events.is_empty() {
-			let task = events.pop();
-			executor.process_event(task);
-	}
-}
+</span>pub fn run&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt;) -&gt; T 
 <span class="boring">}</span></code></pre></pre>
-<h3 id="asynchronous-tasks"><a class="header" href="#asynchronous-tasks">Asynchronous Tasks</a></h3>
-<p>As you may have noticed, the event loop example above does not support multitasking. It runs each task sequentially until the task is finished or yields control before running the next task. This is where <a href="https://en.wikipedia.org/wiki/Asynchronous_I/O">asynchronous operations</a> come into play.</p>
-<p>When an asynchronous operation is blocked, for example when the operation is waiting for a disk read, it returns a “pending” status to notify the executor that it’s blocked. The executor can then run another task instead of waiting for the blocked operation to complete, wasting its CPU cycles.</p>
-<p>In this section, we will build an executor that supports multitasking with the help of asynchronous operations through Rust’s Async / Await primitives.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="api"><a class="header" href="#api">API</a></h1>
-<p>As we mentioned earlier, an executor is a task scheduler. Therefore, it needs APIs to submit tasks to the executor as well as consume the output of the tasks.</p>
-<p>There are 3 main APIs that our executor supports:</p>
-<ul>
-<li><strong>run</strong>: runs the task to completion</li>
-<li><strong>spawn_local</strong>: spawns a task onto the executor</li>
-<li><strong>spawn_local_into</strong>: spawns a task onto a specific task queue</li>
-</ul>
 <p>Here is a simple example of using the APIs to run a simple task that performs arithmetics:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -202,46 +229,46 @@
 let res = local_ex.run(async { 1 + 2 });
 assert_eq!(res, 3)
 <span class="boring">}</span></code></pre></pre>
-<h3 id="run"><a class="header" href="#run">Run</a></h3>
-<p>To run a task, you call the <code>run</code> method on the executor, which is a synchronous method and runs the task in the form of a Future (which we will cover next) until completion.</p>
-<p>Here is its signature:</p>
+<h3 id="spawn"><a class="header" href="#spawn">spawn</a></h3>
+<p>The whole point of an asynchronous runtime is to perform multitasking. The <code>spawn</code> method
+allows the programmer to spawn a task onto the executor without waiting for it to complete.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>pub fn run&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt;) -&gt; T 
+</span> pub(crate) fn spawn&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt;) -&gt; JoinHandle&lt;T&gt;
 <span class="boring">}</span></code></pre></pre>
-<h3 id="spawn_local"><a class="header" href="#spawn_local">spawn_local</a></h3>
-<p>To schedule a <code>task</code> onto the <code>executor</code>, use the <code>spawn_local</code> method:</p>
+<p>The <code>spawn</code> method returns a <code>JoinHandle</code> which is a future that returns the output of the task
+when it completes.</p>
+<p>Note that the <code>spawn</code> method can technically be run outside a <code>run</code> block. However, that means
+the programmer would need to manually <code>poll</code> the <code>JoinHandle</code> to wait until it completes or use another
+executor to poll the <code>JoinHandle</code>.</p>
+<p>Running <code>spawn</code> inside the <code>run</code> block allows the programmer to just <code>await</code> the <code>JoinHandle</code>.</p>
+<p>Here is an example for how to use <code>spawn</code>.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let local_ex = LocalExecutor::default();
 let res = local_ex.run(async {
-    let first = spawn_local(async_fetch_value());
-		let second = spawn_local(async_fetch_value_2());
+    let first = local_ex.spawn(async_fetch_value());
+		let second = local_ex.spawn(async_fetch_value_2());
     first.await.unwrap() + second.await.unwrap()
 });
 <span class="boring">}</span></code></pre></pre>
-<p>If <code>spawn_local</code> isn’t called from a local executor (i.e. inside a <code>LocalExecutor::run</code>), it will panic. Here is its signature:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub fn spawn_local&lt;T&gt;(future: impl Future&lt;Output = T&gt; + 'static) -&gt; JoinHandle&lt;T&gt;
-where
-    T: 'static
-<span class="boring">}</span></code></pre></pre>
-<p>The return type of <code>spawn_local</code> is a <code>JoinHandle</code>, which is a <code>Future</code> that awaits the result of a task. We will cover abstractions like <code>JoinHandle</code> in more depth later.</p>
 <h3 id="spawn_local_into"><a class="header" href="#spawn_local_into">spawn_local_into</a></h3>
-<p>One of the abstractions that we will cover later is a <code>TaskQueue</code>. <code>TaskQueue</code> is an abstraction of a collection of tasks. In phase 3, we will introduce more advanced scheduling mechanisms that dictate how much time an executor spends on each <code>TaskQueue</code>.</p>
-<p>A single executor can have many task queues. To specify which <code>TaskQueue</code> to spawn a task to, we can invoke the <code>spawn_local_into</code> method as follows:</p>
+<p>This is a more advanced API that gives a developer more control over the priority of tasks. Instead of placing all the tasks onto a single <code>TaskQueue</code> (which is just a collection of tasks), we can instead create different task queues and place each task into one of the queues.</p>
+<p>The developer can then set configurations that control how much CPU share each task queue gets.</p>
+<p>To create a task queue and spawn a task onto that queue, we can invoke the <code>spawn_into</code> method as follows:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>local_ex.run(async {
 		let task_queue_handle = executor().create_task_queue(...);
-		let task = spawn_local_into(async { write_file().await }, task_queue_handle);
+		let task = local_ex.spawn_into(async { write_file().await }, task_queue_handle);
 	}
 )
 <span class="boring">}</span></code></pre></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="prerequisites---rust-primitives"><a class="header" href="#prerequisites---rust-primitives">Prerequisites - Rust Primitives</a></h1>
-<p>We will be using Rust primitives heavily to support asynchronous operations. In this section, I will perform a quick summary of Rust primitives including <code>Future</code>, <code>Async/Await</code>, and <code>Waker</code>.</p>
-<p>If you are already familiar with these primitives, feel free to skip this section. If you want a more thorough explanation of these primitives, I recommend these two blogs: <a href="https://rust-lang.github.io/async-book/01_getting_started/04_async_await_primer.html">async/.await Primer</a> and Philipp Oppermann’s <a href="https://os.phil-opp.com/async-await/">Async/Await blog</a>.</p>
+<p>Next, I will cover the Rust primitives that our executor uses - Future, Async/Await, and Waker. Feel free to skip if you are already familiar with these.
+However, if you are not familiar with them, even if you aren't interested in Rust, I strongly advice understanding them as those concepts are
+crucial in understanding how asynchronous runtimes work under the hood.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="prerequisites---primitives"><a class="header" href="#prerequisites---primitives">Prerequisites - Primitives</a></h1>
+<p>If you are already familiar with these primitives, feel free to skip this section. If you want a more thorough explanation of these primitives, I recommend Philipp Oppermann’s <a href="https://os.phil-opp.com/async-await/">Async/Await blog</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="future"><a class="header" href="#future">Future</a></h1>
 <p>A future represents a value that might not be available yet. Each future implements the <code>std::future::Future</code> trait as follows:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -264,20 +291,22 @@ where
 <span class="boring">}</span></code></pre></pre>
 <p>The <code>poll</code> method takes in a <code>Context</code> argument. As we will cover soon, the <code>Context</code> holds a <code>Waker</code> instance which notifies any interested tasks that are blocked by the current task.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="asyncawait"><a class="header" href="#asyncawait">Async/Await</a></h1>
-<p><code>Async/Await</code> lets the programmer write code that looks like normal synchronous code. But the compiler then turns the code into asynchronous code. The <code>async</code> keyword can be used in a function signature to turn a synchronous function into an asynchronous function that returns a future:</p>
-<p>The way <code>async/await</code> works is that programmers write code that looks like synchronous code. But the compiler then turns the code into asynchronous code. <code>Async/Await</code> is based on two keywords: <code>async</code> and <code>await</code>. During compilation, any code block wrapped inside the <code>async</code> keyword is converted into a state machine in the form of a <code>Future</code>.</p>
-<p>As a simple example, the following async function <code>one_fn</code> may be compiled into <code>compiled_one_fn</code>, which is a function that returns a <code>Future</code>.</p>
+<p><code>Async/Await</code> is syntactic sugar for building state machines. Any code wrapped around the <code>async </code> block becomes a <code>future</code>.
+This allows the programmer to begin a task without waiting for it to complete. Only when the <code>future</code> is awaited does the task block the execution.</p>
+<p>During compilation, the compiler turns code wrapped in the <code>async</code> keyword into a pollable state machine.</p>
+<p>As a simple example, let's look at the following async function <code>f</code>:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>async fn one_fn() -&gt; u32 {
+</span>async fn f() -&gt; u32 {
     1
 }
-
-fn compiled_one_fn() -&gt; impl Future&lt;Output = u32&gt; {
+<span class="boring">}</span></code></pre></pre>
+<p>The compiler may compile <code>f</code> to something like:</p>
+<pre><code>fn compiled_f() -&gt; impl Future&lt;Output = u32&gt; {
     future::ready(1)
 }
-<span class="boring">}</span></code></pre></pre>
-<p>To gain a better intuition for how asynchronous code gets converted into a state machine, let’s look at a more complex <code>async</code> function. We are going to convert the <code>notify_user</code> method below into a state machine that implements the <code>Future</code> trait.</p>
+</code></pre>
+<p>Let's look at a more complex example:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>async fn notify_user(user_id: u32) {
@@ -287,7 +316,7 @@ fn compiled_one_fn() -&gt; impl Future&lt;Output = u32&gt; {
 	}
 }
 <span class="boring">}</span></code></pre></pre>
-<p>The method above first fetches the user’s information. It then sends an email if the user’s group matches <code>1</code>.</p>
+<p>The function above first fetches the user's data, and conditionally sends an email to that user.</p>
 <p>If we think about the function as a state machine, here are its possible states:</p>
 <ul>
 <li><strong>Unpolled</strong>: the start state of the function</li>
@@ -441,96 +470,96 @@ impl Future for NotifyUser {
 }
 <span class="boring">}</span></code></pre></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="waker"><a class="header" href="#waker">Waker</a></h1>
-<p>When <code>poll</code>ed, a <code>Future</code> returns <code>Poll::Pending</code> if it’s blocked by another operation (e.g. waiting for a disk read to complete). The executor can keep polling the <code>Future</code> at regular intervals to check if it’s ready yet. But that’s inefficient and wastes CPU cycles.</p>
-<p>A more efficient solution is to poll again when the operation blocking the <code>Future</code> from making progress is finished (e.g. when the disk read is complete). Ideally, the blocking operation notifies the executor that the <code>Future</code> is ready to be <code>poll</code>ed again. This is what the <code>Waker</code> is for.</p>
-<p>The <code>poll</code> method of the <code>Future</code> contains a <code>Context</code>:</p>
+<p>When the executor polls a future, it returns <code>Poll::Pending</code> if it's blocked by another operation, i.e. waiting for the kernel to finish
+reading from disk. The question is when should the executor poll again?</p>
+<p>A dumb solution is to have the executor periodically poll the <code>Future</code> to check if it's ready yet. But that’s inefficient and wastes CPU cycles.</p>
+<p>Instead, a more efficient solution is to pass a callback to the <code>Future</code> and have the <code>Future</code> invoke the callback when it is unblocked. This is what the <code>Waker</code> is for.</p>
+<p>The <code>Waker</code> is passed to the <code>Future</code> each time it's <code>poll</code>ed. As a refresher, here is the function signature for <code>poll</code>:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;
 <span class="boring">}</span></code></pre></pre>
-<p>Each <code>Context</code> has a waker that can be retrieved with <code>cx.waker()</code>. Each <code>waker</code> has a <code>wake()</code> method, which notifies the executor that the <code>Future</code> is ready to be <code>poll</code>ed again.</p>
-<p>So what exactly is a <code>Waker</code>? The <code>Waker</code> is a <code>struct</code> that contains function pointers. However, what the functions do is totally up to the executor that polls the <code>Future</code>.</p>
+<p>Each <code>Context</code> struct contains a <code>waker</code> that can be retrieved with <code>cx.waker()</code>. Each <code>waker</code> has a <code>wake()</code> method, which notifies the executor that the <code>Future</code> is ready to be <code>poll</code>ed again.</p>
 <p>To create a <code>Waker</code>, we can use the <code>from_raw</code> constructor:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub const unsafe fn from_raw(waker: RawWaker) -&gt; Waker
 <span class="boring">}</span></code></pre></pre>
-<p>The <code>RawWaker</code> contains a <code>RawWakerVTable</code> which contains pointers to methods like <code>wake</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub struct RawWaker {
-		...
-    /// Virtual function pointer table that customizes the behavior of this waker.
-    vtable: &amp;'static RawWakerVTable,
+<p>Each <code>waker</code> has a <code>wake</code> method that can be called when it is done.</p>
+<p>Here is an example borrowed from the <a href="https://rust-lang.github.io/async-book/02_execution/03_wakeups.html">async book</a>
+that implements a timer with the waker:</p>
+<pre><code>pub struct TimerFuture {
+    shared_state: Arc&lt;Mutex&lt;SharedState&gt;&gt;,
 }
 
-pub struct RawWakerVTable {
-    clone: unsafe fn(*const ()) -&gt; RawWaker,
-    wake: unsafe fn(*const ()),
-    wake_by_ref: unsafe fn(*const ()),
-    drop: unsafe fn(*const ()),
+struct SharedState {
+    completed: bool,
+    waker: Option&lt;Waker&gt;,
 }
-<span class="boring">}</span></code></pre></pre>
-<p>When <code>Waker::wake</code> is called, the <code>RawWakerVTable</code>'s <code>wake</code> method is called. Below is the implementation of <code>Waker::wake()</code>. We can see that it simply calls the virtual function implemented by the executor.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub fn wake(self) {
-  // The actual wakeup call is delegated through a virtual function call
-  // to the implementation which is defined by the executor.
-  let wake = self.waker.vtable.wake;
-  let data = self.waker.data;
 
-  // Don't call `drop` -- the waker will be consumed by `wake`.
-  crate::mem::forget(self);
+impl Future for TimerFuture {
+    type Output = ();
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        let mut shared_state = self.shared_state.lock().unwrap();
+        if shared_state.completed {
+            Poll::Ready(())
+        } else {
+            shared_state.waker = Some(cx.waker().clone());
+            Poll::Pending
+        }
+    }
+}
 
-  // SAFETY: This is safe because `Waker::from_raw` is the only way
-  // to initialize `wake` and `data` requiring the user to acknowledge
-  // that the contract of `RawWaker` is upheld.
-  unsafe { (wake)(data) };
+impl TimerFuture {
+    pub fn new(duration: Duration) -&gt; Self {
+        let shared_state = Arc::new(Mutex::new(SharedState {
+            completed: false,
+            waker: None,
+        }));
+
+        // Spawn the new thread
+        let thread_shared_state = shared_state.clone();
+        thread::spawn(move || {
+            thread::sleep(duration);
+            let mut shared_state = thread_shared_state.lock().unwrap();
+            shared_state.completed = true;
+            if let Some(waker) = shared_state.waker.take() {
+                waker.wake()
+            }
+        });
+
+        TimerFuture { shared_state }
+    }
 }
-<span class="boring">}</span></code></pre></pre>
-<p>A common pattern is that the <code>wake</code> method adds the <code>Future</code> back to a queue. The executor can then loop over the queue of <code>Future</code>s that are ready to be <code>poll</code>ed again.</p>
-<p>Let’s look at an example:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>async fn send_email() {
-    async_send_email(...).await;
-}
-<span class="boring">}</span></code></pre></pre>
-<p>In this example, when <code>send_email</code> is <code>poll</code>ed, it returns <code>Poll::pending</code> because making a network request to send the email takes time. However, the <code>cx.waker()</code> is stored by the email client. When the email client finishes sending the email, it calls <code>waker.wake()</code> to notify the executor that the <code>Future</code> is ready to be <code>poll</code>ed again.</p>
+</code></pre>
+<p>In this example, a thread is created when the <code>TimerFuture</code> is created. The thread simply performs <code>thread::sleep</code> which acts as the timer.
+When the future is polled, the <code>waker</code> is stored. When the <code>thread::sleep</code> completes, the <code>waker::wake</code> method is called to notify the poller that it can be polled again.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="implementation-details"><a class="header" href="#implementation-details">Implementation Details</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="core-abstractions"><a class="header" href="#core-abstractions">Core abstractions</a></h1>
-<p>Here are the core abstractions that make up our executor:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="architecture"><a class="header" href="#architecture">Architecture</a></h1>
+<p>Here is the asynchronous runtime's architecture:</p>
+<img src="executor/../images/architecture.png" width="110%">
+<p>When the programmer spawns a <code>future</code> onto the executor, a <code>task</code> is created and a <code>JoinHandle</code> is returned to the user. 
+The user can use the <code>JoinHandle</code> to consume the output of the completed task or cancel the task.</p>
+<p>The spawned task is placed onto one of the task queues that the executor has. Each task queue holds a queue of tasks. 
+A queue manager decides which task queue to run. In our V1, the queue manager will simply pick an arbitrary task queue to run at any moment.</p>
+<p>We will cover asynchronous I/O and io_uring in Phase 2.</p>
+<p>Next, let's perform a deep dive into the implementation details.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="task"><a class="header" href="#task">Task</a></h1>
+<p>A <code>task</code> is the executor's internal representation for a unit of work submitted by the programmer.</p>
+<p>A task is created when a programmer spawns a task with a <code>future</code>. For example:</p>
+<pre><code>let fut = async { 1 + 2 };
+local_ex.spawn(fut);
+</code></pre>
+<p>When <code>spawn</code> is called, the executor takes the <code>future</code> and creates a <code>task</code>. The task stores these properties in addition to the <code>future</code>:</p>
 <ul>
-<li>Local Executor</li>
-<li>Task</li>
-<li>TaskQueue</li>
-<li>Queue Manager</li>
-<li>JoinHandle</li>
+<li>state</li>
+<li>output</li>
+<li>waker</li>
+<li>references</li>
 </ul>
-<h3 id="task"><a class="header" href="#task">Task</a></h3>
-<p>A Task is the basic unit of work in an executor. A task is created by the <code>run</code> and <code>spawn_local</code> methods. The task keeps track of whether the provided <code>Future</code> is completed. It also tracks if the task is <code>canceled</code> or <code>closed</code> and deallocates itself from the memory if it’s no longer needed.</p>
-<h3 id="local-executor"><a class="header" href="#local-executor">Local Executor</a></h3>
-<p>The <code>Local Executor</code> is responsible for tracking and running a collection of <code>task</code>s. It’s responsible for switching between different tasks and performing multitasking.</p>
-<h3 id="task-queue"><a class="header" href="#task-queue">Task Queue</a></h3>
-<p>Each TaskQueue holds a queue of <code>Task</code>. Right now, <code>TaskQueue</code> simply holds a list of Tasks. But in <code>Phase 4</code>, we will expose more advanced APIs that allow developers to specify roughly how the single-threaded executor should split up the CPU amongst the different task queues through the <code>shares</code> property.</p>
-<h3 id="queue-manager"><a class="header" href="#queue-manager">Queue Manager</a></h3>
-<p>A Queue Manager decides which Task Queue to run. At any point, the queue manager keeps track of which Task Queue is running. In this phase, the queue manager will simply pick an arbitrary task queue to run.</p>
-<h3 id="joinhandle"><a class="header" href="#joinhandle">JoinHandle</a></h3>
-<p>When a task is spawned, the user needs a way to consume the output. This is what the <code>JoinHandle</code> does - it allows the user to consume the output of the task by calling <code>await</code>. The user can also cancel the task with the handle.</p>
-<p>As shown in the example below, <code>spawn_local</code> returns a <code>JoinHandle</code> which can be <code>await</code>ed.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>let handle = spawn_local(async { 1 + 3 });
-let output = handle.await;
-<span class="boring">}</span></code></pre></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="task-1"><a class="header" href="#task-1">Task</a></h1>
-<p>A Task is the basic unit of work in an executor. A Task is created whenever a <code>Future</code> is spawned onto the Executor. You can think of a Task as a wrapper around the spawned <code>Future</code>.</p>
-<p>To run the <code>Task</code>, the <code>Executor</code> <code>polls</code> the user-provided <code>Future</code>. The Future’s <code>poll</code> method would return <code>Poll::Ready</code> if it’s done. Otherwise, the Future returns <code>Poll::Pending</code>. In that case, the executor needs to repoll the Future when it is ready to make progress.</p>
-<p>Apart from the <code>Future</code>, the <code>Task</code> needs to keep track of a few other things. Let’s look at some of these properties:</p>
 <h3 id="state"><a class="header" href="#state"><strong>State</strong></a></h3>
-<p>A task needs to keep track of its <code>state</code> so that an executor knows if they are completed, canceled, etc.</p>
-<p>Here are the following states:</p>
+<p>There's a couple of additional <code>state</code> that the executor needs to keep
+track of:</p>
 <ul>
 <li><strong>SCHEDULED</strong>: set if the task is scheduled for running</li>
 <li><strong>RUNNING</strong>: running is set when the future is polled.</li>
@@ -539,43 +568,24 @@ let output = handle.await;
 <li><strong>HANDLE</strong>: set if the JoinHandle still exists.</li>
 </ul>
 <p>For a more thorough explanation of the invariants of the state, check out <a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/state.rs">this code snippet</a>.</p>
-<p>Some of these states aren’t mutually exclusive. The state of the task is stored as an <code>u8</code>. Each of the states is stored as a bit. For example, <code>SCHEDULED</code> is <code>1 &lt;&lt; 0</code> while <code>HANDLE</code> is <code>HANDLE</code> is <code>1 &lt;&lt; 4</code>. So a <code>state</code> of <code>17</code> means that the state is both <code>SCHEDULED</code> and <code>HANDLE</code>.</p>
+<p>The state of the task is stored as an <code>u8</code>. Each of the states is stored as a bit. For example, <code>SCHEDULED</code> is <code>1 &lt;&lt; 0</code> while <code>HANDLE</code> is <code>1 &lt;&lt; 4</code>. </p>
 <h3 id="output"><a class="header" href="#output"><strong>Output</strong></a></h3>
-<p>The task needs to store the output of a Task.</p>
+<p>The task needs to store the output of a Task for the application to await.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let handle = spawn_local(async { 1 + 2 });
 let res = future.await;
 <span class="boring">}</span></code></pre></pre>
-<p>In the example above, the task created from <code>spawn_local</code> may be completed before <code>await</code> is called. Therefore, the <code>Task</code> needs to store the output (which is 3 in this example) to be consumed by an <code>await</code>.</p>
-<h3 id="waker-1"><a class="header" href="#waker-1"><strong>Waker</strong></a></h3>
-<p>If the <code>Task</code>'s <code>Future</code> returns <code>Poll::Pending</code>, the <code>executor</code> eventually needs to <code>poll</code> the <code>Future</code> again. The question is - when should it be?</p>
-<p>The <code>Task</code> could be blocked by a <code>file read</code> or a child <code>Task</code>. In either case, we would like to notify the <code>executor</code> that the blocked <code>Task</code> is ready to make progress when the <code>file read</code> operation is done or the child <code>Task</code> is completed. This is what the <code>Waker</code> is for.</p>
-<p>Whenever the executor <code>poll</code>s a Task, it creates a <code>Waker</code> and passes it to the <code>poll</code> method as part of the <code>Context</code>. The blocking operation, such as a file read, needs to store the <code>Waker</code>. When the blocking operation is completed, it needs to call <code>Waker::wake</code> so that the executor can reschedule the blocked <code>Task</code> and eventually <code>poll</code> it.</p>
-<p>In the following example, a task is spawned onto the executor when <code>spawn_local</code> is called. Let’s call this the parent task.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>spawn_local(async {
-	let child_handle = spawn_local(async {...});
-	child_handle.await;
-});
-<span class="boring">}</span></code></pre></pre>
-<p>When the future is <code>polled</code>, there is an inner <code>spawn_local</code> that spawns the child task onto the executor. The parent task can’t make progress until the child task is <code>completed</code> or <code>closed</code>.</p>
-<p>The child task needs a way to notify the parent task that it’s done and that the parent task can be polled again. This is what a <code>waker</code> does and the <code>child task</code> stores the <code>waker</code> of the blocked task.</p>
+<p>In this example, the <code>Task</code> needs to store the output (which is 3 in this example) to be consumed by an <code>await</code>.</p>
+<h3 id="awaiter-waker"><a class="header" href="#awaiter-waker"><strong>Awaiter (Waker)</strong></a></h3>
+<p>When the <code>task</code> is blocked (e.g. it's blocked by an I/O operation), we want the executor to switch to another task.
+But when should the task be scheduled to be run by the executor again?</p>
+<p>This is what the <code>Waker</code> is for. The executor creates a <code>Waker</code> and passes it to the task each time it polls the task.
+The task stores the <code>waker</code> and invokes <code>Waker::wake</code> when it is unblocked. This will place the task back onto the task queue.</p>
+<p>The task stores the <code>Waker</code> inside the <code>awaiter</code> property:
+<code>pub(crate) awaiter: Option&lt;Waker&gt;</code></p>
 <h3 id="references"><a class="header" href="#references"><strong>References</strong></a></h3>
-<p>The <code>Task</code> needs to be deallocated when there is no more need for it. The <code>Task</code> is no longer needed if it’s canceled or when it’s completed and the output is consumed. In addition to the <code>state</code>, the <code>Task</code> also has a <code>references</code> counter. When the reference is 0, the task is deallocated.</p>
-<h3 id="schedule"><a class="header" href="#schedule"><strong>Schedule</strong></a></h3>
-<p>A task needs to know how to reschedule itself. This is because each time it’s executed, it’s popped from the executor’s Task Queue. If it’s blocked by another task, it needs to be scheduled again when the blocking task is completed.</p>
-<p>The <code>create_task</code> method takes a <code>schedule</code> function. The task stores the <code>schedule</code> method as a raw method. Here is a simplified version of how a task is created:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>let schedule = move |task| {
-    let task_queue = tq.upgrade();
-    task_queue.local_queue.push(task);
-};
-create_task(executor_id, future, schedule)
-<span class="boring">}</span></code></pre></pre>
-<p>All the <code>schedule</code> method does is that it pushes a task onto the Task Queue.</p>
+<p>The <code>Task</code> needs to be deallocated when there is no more need for it. The <code>Task</code> is no longer needed if it’s canceled or when it’s completed and the output is consumed. The <code>task</code> has a <code>references</code> counter and the task is deallocated once the reference is <code>0</code>.</p>
 <h3 id="implementation"><a class="header" href="#implementation">Implementation</a></h3>
 <p>The raw task is allocated on the heap as follows:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -585,7 +595,7 @@ create_task(executor_id, future, schedule)
     pub raw_task: NonNull&lt;()&gt;,
 }
 <span class="boring">}</span></code></pre></pre>
-<p>Here is the <code>RawTask</code>:</p>
+<p>Here is the implementation of <code>RawTask</code>. It uses raw pointers </p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub(crate) struct RawTask&lt;F, R, S&gt; {
@@ -646,6 +656,16 @@ where
     (task, handle)
 }
 <span class="boring">}</span></code></pre></pre>
+<p>The <code>create_task</code> method takes a <code>schedule</code> function. Usually, the <code>schedule</code> method simply places the task onto
+the task queue.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let schedule = move |task| {
+    let task_queue = tq.upgrade();
+    task_queue.local_queue.push(task);
+};
+create_task(executor_id, future, schedule)
+<span class="boring">}</span></code></pre></pre>
 <p>The core of this function is the <code>allocate</code> method which allocates the <code>Task</code> onto the heap:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -705,8 +725,30 @@ where
 <li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/task_impl.rs#L98">Task::run</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="running-the-task"><a class="header" href="#running-the-task">Running the Task</a></h1>
-<p>When the <code>Task</code> is run, the task doesn’t just <code>poll</code> the user-provided <code>Future</code>. It also needs to perform memory accounting and handle edge cases.</p>
-<p>Let’s break it down section by section.</p>
+<p>To run the user-provided future, the executor needs to <code>poll</code> the future. This is what the <code>Task::run</code> function does.
+However, the <code>task</code> needs to do more than just polling the future. In this page, we will look at all the things the executor needs to do when running a task.</p>
+<p>Here is the simplified pseudocode for the <code>run</code> method:</p>
+<pre><code>fn run(task) {
+	if the task is closed:
+		decrement the reference count
+		deallocate if reference is 0
+
+	poll the user-provided future
+	if future is ready:
+		store the output into the task
+		if there is no handle, then drop the output
+		notify the awaiter that the task has been completed
+	else:
+		if the task was closed while running, unschedule the task.
+}
+</code></pre>
+<p>In general, the executor needs to perform the following tasks:</p>
+<ul>
+<li>deallocate the task/task output when necessary</li>
+<li>create the waker that notifies the <code>executor</code> to reschedule the <code>task</code> when the future is no longer blocking</li>
+<li>track the state of the task and terminate early if the task is cancelled or completed</li>
+</ul>
+<p>The actual code is quite complicated. Feel free to skip if you are only interested in the higher level. Let's look at it section by section:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>unsafe fn run(ptr: *const ()) -&gt; bool {
@@ -886,6 +928,7 @@ let poll = &lt;F as Future&gt;::poll(Pin::new_unchecked(&amp;mut *raw.future), c
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="taskqueue"><a class="header" href="#taskqueue">TaskQueue</a></h1>
 <p>An <code>executor</code> needs to store a list of scheduled <code>Task</code>s. This is what the <code>TaskQueue</code> is for, it holds a collection of managed tasks.</p>
+<p>Here is the implemnetation for the <code>TaskQueue</code>:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub(crate) struct TaskQueue {
@@ -969,22 +1012,11 @@ fn create_task&lt;T&gt;(
 <li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/executor/mod.rs#L126">TaskQueue</a></li>
 <li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/executor/multitask.rs#L114">LocalExecutor</a> - My toy implementation calls the <code>LocalExecutor</code> the <code>TaskQueueExecutor</code></li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="waker-2"><a class="header" href="#waker-2">Waker</a></h1>
-<p>Earlier, we saw that when <code>RawTask::run</code> is called, the method creates a <code>waker</code> when <code>poll</code>ing the user-provided <code>Future</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>let waker = ManuallyDrop::new(Waker::from_raw(RawWaker::new(ptr, &amp;Self::RAW_WAKER_VTABLE)));
-let cx = &amp;mut Context::from_waker(&amp;waker);
-
-let poll = &lt;F as Future&gt;::poll(Pin::new_unchecked(&amp;mut *raw.future), cx);
-<span class="boring">}</span></code></pre></pre>
-<p>So what does the <code>Waker</code> need to do? When <code>Waker::wake()</code> is called, the <code>Waker</code> needs to notify the executor that the <code>Task</code> is ready to be <code>run</code> again. Therefore, <code>Waker::wake()</code> needs to <code>schedule</code> the <code>Task</code> by pushing it back to the <code>TaskQueue</code>. Let’s look at how we can add a <code>Task</code> back to the <code>TaskQueue</code> when <code>Waker::wake</code> is called.</p>
-<p>To create a <code>Waker</code>, you need to pass it a <code>RAW_WAKER_VTABLE</code>. The <code>Waker</code> is created with <code>Waker::from_raw(RawWaker::new(ptr, &amp;Self::RAW_WAKER_VTABLE))</code>. The <code>RAW_WAKER_VTABLE</code> is just a virtual function pointer table to methods like <code>wake</code>.</p>
-<p>When <code>Waker::wake()</code> is called, the actual wakeup call is delegated through a virtual function call to the implementation which is defined by the executor.</p>
-<p><code>RAW_WAKER_VTABLE</code> is defined as a <code>constant</code> variable in the <code>RawTask</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>impl&lt;F, R, S&gt; RawTask&lt;F, R, S&gt;
+<div style="break-before: page; page-break-before: always;"></div><h1 id="waker-1"><a class="header" href="#waker-1">Waker</a></h1>
+<p>Earlier, we saw that when <code>RawTask::run</code> is called, <code>run</code> creates a <code>waker</code> which is used to <code>poll</code> the user-provided <code>Future</code>. In this section, we look at how the <code>Waker</code> is implemented.</p>
+<p>To create a <code>waker</code> in Rust, we need to pass a <code>RawWakerVTable</code> to the <code>Waker</code> constructor.</p>
+<p>Here is the vtable for the task:</p>
+<pre><code>impl&lt;F, R, S&gt; RawTask&lt;F, R, S&gt;
 where
     F: Future&lt;Output = R&gt;,
     S: Fn(Task),
@@ -995,8 +1027,9 @@ where
         Self::wake_by_ref,
         Self::drop_waker,
     );
-<span class="boring">}</span></code></pre></pre>
-<p>Here is the implementation of <code>wake</code> and <code>wake_by_ref</code>:</p>
+</code></pre>
+<p>The most important method here is the <code>wake</code> method, which is invoked when <code>Waker::wake</code> is called.</p>
+<p>The <code>Waker::wake()</code> simply reschedules the task by pushing it onto the <code>TaskQueue</code>. Here is the implementation of <code>wake</code> and <code>wake_by_ref</code>:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>unsafe fn wake(ptr: *const ()) {
@@ -1023,40 +1056,20 @@ unsafe fn wake_by_ref(ptr: *const ()) {
 	  }
 }
 <span class="boring">}</span></code></pre></pre>
-<p><code>Wake</code> simply calls <code>Self::schedule</code> if the task is not completed, not closed, and not scheduled.</p>
-<p><code>RawTask::schedule</code> simply calls <code>raw.schedule</code>, which is a property on the <code>RawTask</code> provided by the executor during the creation of the <code>RawTask</code>.</p>
+<p>The schedule method is passed to the <code>task</code> when the task is created and it looks something like:</p>
+<pre><code>let schedule = move |task| {
+    let task_queue = tq.upgrade();
+    task_queue.local_queue.push(task);
+};
+create_task(executor_id, future, schedule)
+</code></pre>
+<p>Finally, here is the code that actually creates the <code>waker</code> which is used to poll the user-defined future.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>unsafe fn schedule(ptr: *const ()) {
-    let raw = Self::from_ptr(ptr);
+</span>let waker = ManuallyDrop::new(Waker::from_raw(RawWaker::new(ptr, &amp;Self::RAW_WAKER_VTABLE)));
+let cx = &amp;mut Context::from_waker(&amp;waker);
 
-		...
-    let task = Task {
-        raw_task: NonNull::new_unchecked(ptr as *mut ()),
-    };
-
-    (*raw.schedule)(task);
-}
-<span class="boring">}</span></code></pre></pre>
-<p>In <code>create_task</code> below, we can see that the executor provides a <code>schedule</code> callback that simply pushes the task back onto the <code>local_queue</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>fn create_task&lt;T&gt;(
-    &amp;self,
-    executor_id: usize,
-    tq: Rc&lt;RefCell&lt;TaskQueue&gt;&gt;,
-    future: impl Future&lt;Output = T&gt;,
-) -&gt; (Task, JoinHandle&lt;T&gt;) {
-    ...
-    let schedule = move |task| {
-	      ...
-        if let Some(tq) = tq {
-          tq.borrow().ex.as_ref().local_queue.push(task);
-          ...
-        }
-    };
-    create_task(executor_id, future, schedule)
-}
+let poll = &lt;F as Future&gt;::poll(Pin::new_unchecked(&amp;mut *raw.future), cx);
 <span class="boring">}</span></code></pre></pre>
 <h3 id="code-references-3"><a class="header" href="#code-references-3">Code References</a></h3>
 <p>To check out my toy implementation or Glommio’s implementation, check out:</p>
@@ -1072,18 +1085,19 @@ unsafe fn wake_by_ref(ptr: *const ()) {
 <li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/raw.rs#L363">RawTask::schedule</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="localexecutor"><a class="header" href="#localexecutor">LocalExecutor</a></h1>
+<p>Now that we know how the task and task queue is implemented, we can perform a deep dive 
+into how the <code>Executor::Run</code> and <code>Executor::spawn</code> methods are implemented.</p>
 <p>As a refresher, here’s an example of an executor running a task and spawning a task onto the executor.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let local_ex = LocalExecutor::default();
 let res = local_ex.run(async {
-    let handle = spawn_local(async_write_file());
+    let handle = local_ex.spawn(async_write_file());
     handle.await;
 });
 <span class="boring">}</span></code></pre></pre>
 <h3 id="single-threaded"><a class="header" href="#single-threaded">Single Threaded</a></h3>
-<p>It’s important to understand that <code>LocalExecutor</code> is a single-threaded executor. This means that the executor can only be run on the thread that created it. <code>LocalExecutor</code> doesn’t implement the <code>Send</code> or <code>Sync</code> trait, so you cannot move a <code>LocalExecutor</code> across threads. This makes it easier to reason about the methods on <code>LocalExecutor</code> since it’s safe to assume that only one function invocation can be executing at any time. In other words, there won’t be two invocations of <code>run</code> on the same executor at once.</p>
-<p>Conceptually, the way to think about an executor is that it stores a collection of Task Queues. Each Task Queue has a collection of Tasks to execute. When <code>run</code> is called, the executor would choose one of the task queues to be the active executor. Then it will start looping and popping tasks off the Task Queue.</p>
+<p>It’s important to understand that the <code>LocalExecutor</code> is single-threaded. This means that the executor can only be run on the thread that created it. <code>LocalExecutor</code> doesn’t implement the <code>Send</code> or <code>Sync</code> trait, so you cannot move a <code>LocalExecutor</code> across threads. This makes it easier to reason about the methods on <code>LocalExecutor</code> since it’s safe to assume that only one function invocation can be executing at any time. In other words, there won’t be two invocations of <code>run</code> on the same executor at once.</p>
 <h3 id="internals"><a class="header" href="#internals">Internals</a></h3>
 <p>Let’s look at the internals of an Executor:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -1187,28 +1201,19 @@ let res = local_ex.run(async {
 }
 <span class="boring">}</span></code></pre></pre>
 <p>To summarize, <code>run</code> spawns a task onto one of the task queues. The executor then runs one <code>task_queue</code> at a time to completion until the spawned <code>task</code> is <code>COMPLETED</code>. The most important concept to remember here is that none of the task is <code>blocking</code>. Whenever one of the <code>task</code> is about to be run, it is popped from the <code>TaskQueue</code>. It won’t be scheduled back onto the <code>TaskQueue</code> until its <code>waker</code> is invoked, which is when the thing blocking it is no longer blocking. In other words, the <code>executor</code> will move from one <code>task</code> to another without waiting on any blocking code.</p>
-<h3 id="spawn_local-1"><a class="header" href="#spawn_local-1">spawn_local</a></h3>
-<p>The <code>spawn_local</code> method is how a user can spawn a task onto the executor.</p>
-<p><code>spawn_local</code> allows the developer to create two tasks that run concurrently instead of sequentially:</p>
+<h3 id="spawn-1"><a class="header" href="#spawn-1">spawn</a></h3>
+<p>The <code>spawn</code> method is how a user can spawn a task onto the executor.</p>
+<p><code>spawn</code> allows the developer to create two tasks that run concurrently instead of sequentially:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let res = local_ex.run(async {
-    let handle1 = spawn_local(async_write_file());
-		let handle2 = spawn_local(async_write_file());
+    let handle1 = local_ex.spawn(async_write_file());
+		let handle2 = local_ex.spawn(async_write_file());
     handle1.await;
-		handle2.await;
+    handle2.await;
 });
 <span class="boring">}</span></code></pre></pre>
-<p>This is the implementation of <code>spawn_local</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>	pub fn spawn_local&lt;T&gt;(&amp;self, future: impl Future&lt;Output = T&gt; + 'static) -&gt; JoinHandle&lt;T&gt;
-	where
-	    T: 'static,
-	{
-	    LOCAL_EX.with(|local_ex| local_ex.spawn(future))
-	}
-<span class="boring">}</span></code></pre></pre>
+<p>This is the implementation of <code>spawn</code>:</p>
 <p><code>Spawn_local</code> simply finds the <code>LocalExecutor</code> on the current thread and calls <code>LocalExecutor::spawn</code>. Here is the implementation of <code>spawn</code>:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1402,17 +1407,18 @@ Poll::Ready(Some(output.read()))
 <li><a href="https://github.com/DataDog/glommio/blob/d93c460c3def6b11a224892657a6a6a80edf6311/glommio/src/task/join_handle.rs#L40">JoinHandle::cancel</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="life-of-a-task"><a class="header" href="#life-of-a-task">Life of a Task</a></h1>
-<p>This page aims to explain the execution of a task, following the code paths through the various parts of the executor.</p>
+<p>This page illustrates the lifecycle of a task and how it interacts with the various parts
+of the executor.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let local_ex = LocalExecutor::default();
-let res = local_ex.run(async {
-    let handle = spawn_local({ async_read_file(...).await });
-    handle.await
+let task1_result = local_ex.run(async {
+    let task2_handle = spawn_local({ async_read_file(...).await });
+    task2_handle.await
 });
 <span class="boring">}</span></code></pre></pre>
 <h3 id="spawning-the-task"><a class="header" href="#spawning-the-task">Spawning the Task</a></h3>
-<p>When the <code>LocalExecutor</code> is created, a default <code>TaskQueue</code> <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L28">is created</a>. When <code>local_ex.run(...)</code> is called, the executor <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L74">spawns a task</a> with the Future created from the <code>async</code> block. It <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L116">creates a task</a> and <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L117">schedules the task</a> onto the default TaskQueue. Let’s call this task <code>Task1</code>.</p>
+<p>When the <code>LocalExecutor</code> is created, a default <code>TaskQueue</code> <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L28">is created</a>. When <code>local_ex.run(...)</code> is called, the executor <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L74">spawns a task</a> with the Future created from the <code>async</code> block. It <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L116">creates a task</a> and <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/task_queue.rs#L117">schedules the task</a> onto the default TaskQueue. Let’s name this task as <code>Task1</code>.</p>
 <h3 id="running-task1"><a class="header" href="#running-task1">Running Task1</a></h3>
 <p>Spawning the task would <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L74C13-L74C71">create a JoinHandle</a> for <code>Task1</code>. The <code>LocalExecutor</code> creates a loop that will only exit when <code>Task1</code> is completed. The executor verifies when the task is completed by <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L77C41-L77C52">polling the JoinHandle</a>. If it’s completed, the loop exits, and the output of the task is returned. Otherwise, the executor begins <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L84">running tasks from active task queues</a>.</p>
 <p>To run the task, the executor would go through all the <code>TaskQueue</code>s and execute all the tasks in them. It does so by <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L99">creating an outer loop that loops through the<code>TaskQueue</code>s</a> and <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L123">creating an inner loop that runs all the tasks</a> in each TaskQueue.</p>
@@ -1421,8 +1427,8 @@ let res = local_ex.run(async {
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>async {
-    let handle = spawn_local(async { async_read_file(...).await });
-    handle.await
+    let task2_handle = spawn_local(async { async_read_file(...).await });
+    task2_handle.await
 }
 <span class="boring">}</span></code></pre></pre>
 <p>When the Future is <code>poll</code>ed, it would first spawn a task with the Future created from <code>async { async_read_file(...).await }</code>. Let’s call the spawned task <code>Task2</code>. Spawning <code>Task2</code> would also create a <code>JoinHandle</code> for it.</p>
@@ -1435,9 +1441,12 @@ let res = local_ex.run(async {
 <p>We are back to <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L123">the loop</a> that runs the default TaskQueue. It would pop <code>Task1</code> from the <code>TaskQueue</code> and run it. It would <code>poll</code> the <code>Future</code> which would return <code>Poll::Ready</code>. Finally, we can exit both the <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L123">inner loop</a> and <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L99">the outer loop</a> since there are no more tasks in any of the <code>TaskQueue</code>s to run.</p>
 <p>After <code>run_task_queues</code> <a href="https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L84">finishes executing</a>, the executor would <code>[poll</code> <code>Task1</code>'s <code>JoinHandle</code> again](https://github.com/brianshih1/mini-glommio/blob/7025a02d91f19e258d69e966f8dfc98eeeed4ecc/src/executor/local_executor.rs#L77), which would return <code>Poll::Pending</code>. Then the executor can finally return the output result.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="thread-pinning"><a class="header" href="#thread-pinning">Thread Pinning</a></h1>
-<p>Our goal is to build a crate that enables developers to build a <code>thread-per-core</code> system. So far our executor runs on whichever core the thread that created the executor runs on. Since the OS can schedule multiple threads to run on that core, we currently don't support <code>thread-per-core</code> systems. Let's fix that!</p>
+<p>Thread-per-core is a programming paradigm in which developers are not allowed to spawn new threads to run tasks. Instead, each
+core only runs a single thread. This is to avoid expensive context switches and avoid using synchronization primitives such as locks.
+Check out this excellent <a href="https://www.datadoghq.com/blog/engineering/introducing-glommio/">blog</a> by Glommio to explain the benefits
+of the thread-per-core archicture.</p>
 <h3 id="api-2"><a class="header" href="#api-2">API</a></h3>
-<p>In this section, we will enable the developer to create a <code>LocalExecutor</code> that runs on a particular CPU with the <code>LocalExecutorBuilder</code>. In this code snippet below, we create an executor that only runs on <code>Cpu 0</code>. </p>
+<p>In this section, we will enable the developer to create a <code>LocalExecutor</code> that only runs on a particular CPU. In this code snippet below, we create an executor that only runs on <code>Cpu 0</code> with the help of the <code>LocalExecutorBuilder</code>. </p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// The LocalExecutor will now only run on Cpu 0
@@ -1516,13 +1525,15 @@ impl LocalExecutorBuilder {
 <span class="boring">}</span></code></pre></pre>
 <p>When <code>Placement::Fixed(cpu)</code> is provided, the <code>LocalExecutorBuilder</code> simply creates the <code>LocalExecutor</code> with <code>vec![cpu]</code> as the specified CPU.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="what-is-asynchronous-io"><a class="header" href="#what-is-asynchronous-io">What is Asynchronous I/O?</a></h1>
-<p>In this phase, we will add I/O to our runtime.</p>
+<p>So far, we have built an executor that can spawn and run tasks. However, we haven't talked about how it can perform I/O, such as 
+making a network call or reading from disk.</p>
 <p>A simple approach to I/O would be to just wait for the I/O operation to complete. But such an approach, called <strong>synchronous I/O</strong> or <strong>blocking I/O</strong> would block the single-threaded executor from performing any other tasks concurrently.</p>
-<p>What we want instead is <strong>asynchronous I/O</strong>. In this approach, performing I/O won’t block the calling thread. This allows the executor to run other tasks and return to the original task once the I/O operation completes.</p>
-<p>Before we implement asynchronous I/O, we need to first look at two things: how to turn an I/O operation to non-blocking and <code>io_uring</code>.</p>
+<p>What we want instead is <strong>asynchronous I/O</strong>. In this approach, performing I/O won’t block the calling thread. Instead, the executor switches to other tasks after making nonblocking I/O call and only resume the task when the kernel notifies the executor that the 
+I/O operation is complete.</p>
+<p>In this section, we discuss how our executor can perform asynchronous I/O. First, let's look at the primitives that enable to do that.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="prerequisites---building-blocks"><a class="header" href="#prerequisites---building-blocks">Prerequisites - Building Blocks</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nonblocking-mode"><a class="header" href="#nonblocking-mode">Nonblocking Mode</a></h1>
-<p>In Rust, by default, many I/O operations, such as reading a file, are blocking. For example, in the code snippet below, the <code>TcpListener::accept</code> call will block the calling thread until a new TCP connection is established.</p>
+<p>In most programming languages, I/O operations are blocking by default. For example, in the following example the <code>TcpListener::accept</code> call will block the thread until a new TCP connection is established.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let listener = TcpListener::bind(&quot;127.0.0.1:8080&quot;).unwrap();
@@ -1569,7 +1580,7 @@ loop {
 <p>This is where system calls like <a href="http://man7.org/linux/man-pages/man2/select.2.html">select</a>, <a href="http://man7.org/linux/man-pages/man2/poll.2.html">poll,</a> <a href="http://man7.org/linux/man-pages/man7/epoll.7.html">epoll</a>, <a href="https://man7.org/linux/man-pages/man7/aio.7.html">aio</a>, <a href="https://man.archlinux.org/man/io_uring.7.en">io_uring</a> come in. These calls allow you to monitor a bunch of file descriptors and notify you when one or more of them are ready. This reduces the need for constant polling and makes better use of system resources.</p>
 <p>Glommio uses <code>io_uring</code>. One of the things that make <code>io_uring</code> stand out compared to other system calls is that it presents a uniform interface for both sockets and files. This is a huge improvement from system calls like <code>epoll</code> that doesn’t support files while <code>aio</code> only works with a subset of files (linus-aio only supports <code>O_DIRECT</code> files). In the next page, we take a quick glance at how <code>io_uring</code> works.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="io_uring"><a class="header" href="#io_uring">Io_uring</a></h1>
-<p>On this page, I’ll provide a surface-level explanation of how <code>io_uring</code> works. If you want a more in-depth explanation, check out <a href="https://unixism.net/loti/what_is_io_uring.html">this tutorial</a> or [this article](https://developers.redhat.com/articles/2023/04/12/why-you-should-use-iouring-network-io#:~:text=io_uring is an asynchronous I,O requests to the kernel).</p>
+<p>In this page, I’ll provide a surface-level explanation of how <code>io_uring</code> works. If you want a more in-depth explanation, check out <a href="https://unixism.net/loti/what_is_io_uring.html">this tutorial</a> or <a href="https://developers.redhat.com/articles/2023/04/12/why-you-should-use-iouring-network-io#:~:text=io_uring">this redhat article</a>.</p>
 <p>As mentioned, <code>io_uring</code> manages file descriptors for the users and lets them know when one or more of them are ready.</p>
 <p>Each <code>io_uring</code> instance is composed of two ring buffers - the submission queue and the completion queue.</p>
 <p>To register interest in a file descriptor, you add an SQE to the tail of the submission queue.  Adding to the submission queue doesn’t automatically send the requests to the kernel, you need to submit it via the <code>io_uring_enter</code> system call. <code>Io_uring</code> supports batching by allowing you to add multiple SQEs to the ring before submitting.</p>
@@ -1599,13 +1610,13 @@ assert_eq!(cqe.user_data(), 0xDEADBEEF);
 <p>You might be wondering - if we potentially need to call <code>peek_for_cqe()</code> repeatedly until it is ready, how is this different from calling <code>listener.accept()</code> repeatedly?</p>
 <p>The difference is that <code>accept</code> is a system call while <code>peek_for_cqe</code>, which calls <code>io_uring_peek_batch_cqe</code> under the hood, is not a system call. This is due to the unique property of <code>io_uring</code> such that the completion ring buffer is shared between the kernel and the user space. This allows you to efficiently check the status of completed I/O operations.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="api-3"><a class="header" href="#api-3">API</a></h1>
-<p>Our goal here is to implement a set of internal APIs to make it easy to convert synchronous operations into asynchronous ones.</p>
-<p>Whether we’re dealing with sockets or files, converting a synchronous operation to an asynchronous one roughly follows these steps:</p>
+<p>Our goal here is to implement a set of internal APIs to make it easy to convert synchronous I/O operations into asynchronous ones.</p>
+<p>Here are the rough steps to convert a blocking I/O operation into an asynchronous one:</p>
 <ul>
-<li>we need to set the file descriptor to non-blocking</li>
-<li>we need to perform the non-blocking operation</li>
-<li>we need to tell <code>io_uring</code> to monitor the file descriptor by submitting an <code>SQE</code></li>
-<li>since the operation is asynchronous, we need to store the poller’s <code>waker</code> and invoke <code>wake()</code> when the I/O operation is complete. We detect when an I/O operation is complete when the corresponding <code>CQE</code> is posted to the <code>io_uring</code>'s completion queue.</li>
+<li>we set the file descriptor to non-blocking</li>
+<li>we perform the non-blocking operation</li>
+<li>we tell <code>io_uring</code> to monitor the file descriptor by submitting an <code>SQE</code></li>
+<li>we store the poller’s <code>waker</code> and invoke <code>wake()</code> when the I/O operation is complete. We detect when an I/O operation is complete when the corresponding <code>CQE</code> is posted to the <code>io_uring</code>'s completion queue.</li>
 </ul>
 <p>To make it easier to implement new asynchronous operations, we introduce <code>Async</code>, an adapter for I/O types inspired by the <a href="https://docs.rs/async-io/latest/async_io/">async_io crate</a>. <code>Async</code> abstracts away the steps listed above so that developers who build on top of <code>Async</code> don’t have to worry about things like <code>io_uring</code>, <code>Waker</code>, <code>O_NONBLOCK</code>, etc.</p>
 <p>Here is how you use the <code>Async</code> adapter to implement an asynchronous <code>TcpListener</code> with an asynchronous <code>accept</code> method:</p>
@@ -1634,9 +1645,10 @@ let res = local_ex.run(async {
     handle_connection(stream);
 });
 <span class="boring">}</span></code></pre></pre>
+<p>Next, let's look at what the <code>Async</code> adapter actually does.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="implementation-details-1"><a class="header" href="#implementation-details-1">Implementation Details</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="core-abstractions-1"><a class="header" href="#core-abstractions-1">Core abstractions</a></h1>
-<p>In general, we can break down how the executor performs asynchronous I/O into 3 steps:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="core-abstractions"><a class="header" href="#core-abstractions">Core abstractions</a></h1>
+<p>We can break down how the executor performs asynchronous I/O into 3 steps:</p>
 <ul>
 <li>setting the I/O handle to be non-blocking by setting the <code>O_NONBLOCK</code> flag on the file descriptor</li>
 <li>performing the non-blocking operation and registering interest in <code>io_uring</code> by submitting a <code>SQE</code> to the <code>io_uring</code> instance's <code>submission_queue</code></li>
@@ -1657,7 +1669,7 @@ let res = local_ex.run(async {
 }
 <span class="boring">}</span></code></pre></pre>
 <h3 id="source"><a class="header" href="#source">Source</a></h3>
-<p>The <code>Source</code> is a bridge between the executor and the I/O handle. It contains properties pertaining to the I/O handle that are relevant to the executor. For example, it contains tasks that are blocked by operations on the I/O handle.</p>
+<p>The <code>Source</code> is a bridge between the executor and the I/O handle. It contains the rwa file descriptor for the I/O event as well as properties that are relevant to the executor. For example, it contains wakers for blocked tasks waiting for the I/O operation to complete.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct Source {
@@ -1700,7 +1712,7 @@ struct SourceMap {
     map: HashMap&lt;u64, Pin&lt;Rc&lt;RefCell&lt;InnerSource&gt;&gt;&gt;&gt;,
 }
 <span class="boring">}</span></code></pre></pre>
-<p>As we can see, the <code>Reactor</code> holds a <code>SleepableRing</code>, which is just a wrapper around an <code>iou::IoUring</code> instance. Glommio uses the <code>[iou</code> crate](https://docs.rs/iou/latest/iou/) to interact with Linux kernel’s <code>io_uring</code> interface.</p>
+<p>As we can see, the <code>Reactor</code> holds a <code>SleepableRing</code>, which is just a wrapper around an <code>iou::IoUring</code> instance. Glommio uses the <a href="https://docs.rs/iou/latest/iou/">iou crate</a> to interact with Linux kernel’s <code>io_uring</code> interface.</p>
 <p>The <code>Reactor</code> also contains a <code>SourceMap</code>, which contains a <code>HashMap</code> that maps a unique ID to a <code>Source</code>. The unique ID is the same ID used as the <code>SQE</code>'s user_data. This way, when a CQE is posted to the <code>io_uring</code>'s completion queue, we can tie it back to the corresponding <code>Source</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="step-1---setting-the-o_nonblock-flag"><a class="header" href="#step-1---setting-the-o_nonblock-flag">Step 1 - Setting the O_NONBLOCK Flag</a></h1>
 <p>The first step to asynchronous I/O is to change the I/O handle to be nonblocking by setting the <code>O_NONBLOCK</code> flag.</p>
