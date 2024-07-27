@@ -12,7 +12,7 @@
   - [Async/Await](./executor/async-await.md)
   - [Waker](./executor/waker.md)
 - [Implementation Details](./executor/implementation-details.md)
-  - [Core abstractions](./executor/core-abstractions.md)
+  - [Architecture](./executor/architecture.md)
   - [Task](./executor/task.md)
   - [Running the Task](./executor/raw_task.md)
   - [TaskQueue](./executor/task_queue.md)

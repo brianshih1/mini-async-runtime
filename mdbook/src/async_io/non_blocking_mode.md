@@ -1,6 +1,6 @@
 # Nonblocking Mode
 
-In Rust, by default, many I/O operations, such as reading a file, are blocking. For example, in the code snippet below, the `TcpListener::accept` call will block the calling thread until a new TCP connection is established.
+In most programming languages, I/O operations are blocking by default. For example, in the following example the `TcpListener::accept` call will block the thread until a new TCP connection is established.
 
 ```rust
 let listener = TcpListener::bind("127.0.0.1:8080").unwrap();

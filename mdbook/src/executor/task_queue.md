@@ -2,6 +2,8 @@
 
 An `executor` needs to store a list of scheduled `Task`s. This is what the `TaskQueue` is for, it holds a collection of managed tasks.
 
+Here is the implemnetation for the `TaskQueue`:
+
 ```rust
 pub(crate) struct TaskQueue {
     // contains the actual queue of Tasks

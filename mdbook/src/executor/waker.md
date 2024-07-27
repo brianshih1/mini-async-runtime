@@ -1,18 +1,19 @@
 # Waker
 
-When `poll`ed, a `Future` returns `Poll::Pending` if it’s blocked by another operation (e.g. waiting for a disk read to complete). The executor can keep polling the `Future` at regular intervals to check if it’s ready yet. But that’s inefficient and wastes CPU cycles.
+When the executor polls a future, it returns `Poll::Pending` if it's blocked by another operation, i.e. waiting for the kernel to finish
+reading from disk. The question is when should the executor poll again?
 
-A more efficient solution is to poll again when the operation blocking the `Future` from making progress is finished (e.g. when the disk read is complete). Ideally, the blocking operation notifies the executor that the `Future` is ready to be `poll`ed again. This is what the `Waker` is for.
+A dumb solution is to have the executor periodically poll the `Future` to check if it's ready yet. But that’s inefficient and wastes CPU cycles.
 
-The `poll` method of the `Future` contains a `Context`:
+Instead, a more efficient solution is to pass a callback to the `Future` and have the `Future` invoke the callback when it is unblocked. This is what the `Waker` is for.
+
+The `Waker` is passed to the `Future` each time it's `poll`ed. As a refresher, here is the function signature for `poll`:
 
 ```rust
 fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output>
 ```
 
-Each `Context` has a waker that can be retrieved with `cx.waker()`. Each `waker` has a `wake()` method, which notifies the executor that the `Future` is ready to be `poll`ed again.
-
-So what exactly is a `Waker`? The `Waker` is a `struct` that contains function pointers. However, what the functions do is totally up to the executor that polls the `Future`.
+Each `Context` struct contains a `waker` that can be retrieved with `cx.waker()`. Each `waker` has a `wake()` method, which notifies the executor that the `Future` is ready to be `poll`ed again.
 
 To create a `Waker`, we can use the `from_raw` constructor:
 
@@ -20,50 +21,56 @@ To create a `Waker`, we can use the `from_raw` constructor:
 pub const unsafe fn from_raw(waker: RawWaker) -> Waker
 ```
 
-The `RawWaker` contains a `RawWakerVTable` which contains pointers to methods like `wake`.
+Each `waker` has a `wake` method that can be called when it is done.
 
-```rust
-pub struct RawWaker {
-		...
-    /// Virtual function pointer table that customizes the behavior of this waker.
-    vtable: &'static RawWakerVTable,
+Here is an example borrowed from the [async book](https://rust-lang.github.io/async-book/02_execution/03_wakeups.html)
+that implements a timer with the waker:
+
+```
+pub struct TimerFuture {
+    shared_state: Arc<Mutex<SharedState>>,
 }
 
-pub struct RawWakerVTable {
-    clone: unsafe fn(*const ()) -> RawWaker,
-    wake: unsafe fn(*const ()),
-    wake_by_ref: unsafe fn(*const ()),
-    drop: unsafe fn(*const ()),
+struct SharedState {
+    completed: bool,
+    waker: Option<Waker>,
+}
+
+impl Future for TimerFuture {
+    type Output = ();
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        let mut shared_state = self.shared_state.lock().unwrap();
+        if shared_state.completed {
+            Poll::Ready(())
+        } else {
+            shared_state.waker = Some(cx.waker().clone());
+            Poll::Pending
+        }
+    }
+}
+
+impl TimerFuture {
+    pub fn new(duration: Duration) -> Self {
+        let shared_state = Arc::new(Mutex::new(SharedState {
+            completed: false,
+            waker: None,
+        }));
+
+        // Spawn the new thread
+        let thread_shared_state = shared_state.clone();
+        thread::spawn(move || {
+            thread::sleep(duration);
+            let mut shared_state = thread_shared_state.lock().unwrap();
+            shared_state.completed = true;
+            if let Some(waker) = shared_state.waker.take() {
+                waker.wake()
+            }
+        });
+
+        TimerFuture { shared_state }
+    }
 }
 ```
 
-When `Waker::wake` is called, the `RawWakerVTable`'s `wake` method is called. Below is the implementation of `Waker::wake()`. We can see that it simply calls the virtual function implemented by the executor.
-
-```rust
-pub fn wake(self) {
-  // The actual wakeup call is delegated through a virtual function call
-  // to the implementation which is defined by the executor.
-  let wake = self.waker.vtable.wake;
-  let data = self.waker.data;
-
-  // Don't call `drop` -- the waker will be consumed by `wake`.
-  crate::mem::forget(self);
-
-  // SAFETY: This is safe because `Waker::from_raw` is the only way
-  // to initialize `wake` and `data` requiring the user to acknowledge
-  // that the contract of `RawWaker` is upheld.
-  unsafe { (wake)(data) };
-}
-```
-
-A common pattern is that the `wake` method adds the `Future` back to a queue. The executor can then loop over the queue of `Future`s that are ready to be `poll`ed again.
-
-Let’s look at an example:
-
-```rust
-async fn send_email() {
-    async_send_email(...).await;
-}
-```
-
-In this example, when `send_email` is `poll`ed, it returns `Poll::pending` because making a network request to send the email takes time. However, the `cx.waker()` is stored by the email client. When the email client finishes sending the email, it calls `waker.wake()` to notify the executor that the `Future` is ready to be `poll`ed again.
+In this example, a thread is created when the `TimerFuture` is created. The thread simply performs `thread::sleep` which acts as the timer.
+When the future is polled, the `waker` is stored. When the `thread::sleep` completes, the `waker::wake` method is called to notify the poller that it can be polled again.

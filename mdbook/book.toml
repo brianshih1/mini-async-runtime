@@ -3,4 +3,4 @@ authors = ["Brian Shih"]
 language = "en"
 multilingual = false
 src = "src"
-title = "Building a Thread-Per-Core, Asynchronous Framework like Glommio"
+title = "Building an Asynchronous Runtime like Glommio"

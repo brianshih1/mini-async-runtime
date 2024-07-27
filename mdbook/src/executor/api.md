@@ -1,12 +1,52 @@
 # API
 
-As we mentioned earlier, an executor is a task scheduler. Therefore, it needs APIs to submit tasks to the executor as well as consume the output of the tasks.
+Each asynchronous runtime needs an executor to manage tasks. Most asynchronous runtimes implicitly create an executor for you.
 
-There are 3 main APIs that our executor supports:
+For example, in Tokio an executor is created implicitly through `#[tokio::main]`.
 
-- **run**: runs the task to completion
-- **spawn_local**: spawns a task onto the executor
-- **spawn_local_into**: spawns a task onto a specific task queue
+```
+#[tokio::main]
+async fn main() {
+    println!("Hello world");
+}
+```
+
+Under the hood, the annotation actually creates the excutor with something like:
+
+```
+fn main() {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            println!("Hello world");
+        })
+}
+```
+
+In Node.js, the entire application runs on a single event loop. The event loop is initialized when the `node` command is run. 
+
+In Tokio and Node.js, the developer can write asynchronous code without ever knowing the existence of the executor. With `mini-glommio`, developers need to create the executor explicitly.
+
+The two main APIs of our executor are:
+
+- **run**: spawns a task onto the executor and wait until it completes
+- **spawn**: spawns a task onto the executor
+
+
+Pretty simple right? All we need is the ability to put a task onto the executor and to run the task until completion.
+
+
+### Run
+
+To run a task, you call the `run` method, which is a synchronous method and runs the task until completion.
+
+Here is its signature:
+
+```rust
+pub fn run<T>(&self, future: impl Future<Output = T>) -> T 
+```
 
 Here is a simple example of using the APIs to run a simple task that performs arithmetics:
 
@@ -16,50 +56,51 @@ let res = local_ex.run(async { 1 + 2 });
 assert_eq!(res, 3)
 ```
 
-### Run
+### spawn
 
-To run a task, you call the `run` method on the executor, which is a synchronous method and runs the task in the form of a Future (which we will cover next) until completion.
-
-Here is its signature:
+The whole point of an asynchronous runtime is to perform multitasking. The `spawn` method
+allows the programmer to spawn a task onto the executor without waiting for it to complete.
 
 ```rust
-pub fn run<T>(&self, future: impl Future<Output = T>) -> T 
+ pub(crate) fn spawn<T>(&self, future: impl Future<Output = T>) -> JoinHandle<T>
 ```
 
-### spawn_local
+The `spawn` method returns a `JoinHandle` which is a future that returns the output of the task
+when it completes.
 
-To schedule a `task` onto the `executor`, use the `spawn_local` method:
+Note that the `spawn` method can technically be run outside a `run` block. However, that means
+the programmer would need to manually `poll` the `JoinHandle` to wait until it completes or use another
+executor to poll the `JoinHandle`.
+
+Running `spawn` inside the `run` block allows the programmer to just `await` the `JoinHandle`.
+
+Here is an example for how to use `spawn`.
 
 ```rust
 let local_ex = LocalExecutor::default();
 let res = local_ex.run(async {
-    let first = spawn_local(async_fetch_value());
-		let second = spawn_local(async_fetch_value_2());
+    let first = local_ex.spawn(async_fetch_value());
+		let second = local_ex.spawn(async_fetch_value_2());
     first.await.unwrap() + second.await.unwrap()
 });
 ```
 
-If `spawn_local` isn’t called from a local executor (i.e. inside a `LocalExecutor::run`), it will panic. Here is its signature:
-
-```rust
-pub fn spawn_local<T>(future: impl Future<Output = T> + 'static) -> JoinHandle<T>
-where
-    T: 'static
-```
-
-The return type of `spawn_local` is a `JoinHandle`, which is a `Future` that awaits the result of a task. We will cover abstractions like `JoinHandle` in more depth later.
-
 ### spawn_local_into
 
-One of the abstractions that we will cover later is a `TaskQueue`. `TaskQueue` is an abstraction of a collection of tasks. In phase 3, we will introduce more advanced scheduling mechanisms that dictate how much time an executor spends on each `TaskQueue`.
+This is a more advanced API that gives a developer more control over the priority of tasks. Instead of placing all the tasks onto a single `TaskQueue` (which is just a collection of tasks), we can instead create different task queues and place each task into one of the queues.
 
-A single executor can have many task queues. To specify which `TaskQueue` to spawn a task to, we can invoke the `spawn_local_into` method as follows:
+The developer can then set configurations that control how much CPU share each task queue gets.
+
+To create a task queue and spawn a task onto that queue, we can invoke the `spawn_into` method as follows:
 
 ```rust
 local_ex.run(async {
 		let task_queue_handle = executor().create_task_queue(...);
-		let task = spawn_local_into(async { write_file().await }, task_queue_handle);
+		let task = local_ex.spawn_into(async { write_file().await }, task_queue_handle);
 	}
 )
 ```
 
+Next, I will cover the Rust primitives that our executor uses - Future, Async/Await, and Waker. Feel free to skip if you are already familiar with these.
+However, if you are not familiar with them, even if you aren't interested in Rust, I strongly advice understanding them as those concepts are
+crucial in understanding how asynchronous runtimes work under the hood.

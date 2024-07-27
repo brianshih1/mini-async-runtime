@@ -1,22 +1,27 @@
 # Async/Await
 
-`Async/Await` lets the programmer write code that looks like normal synchronous code. But the compiler then turns the code into asynchronous code. The `async` keyword can be used in a function signature to turn a synchronous function into an asynchronous function that returns a future:
+`Async/Await` is syntactic sugar for building state machines. Any code wrapped around the `async ` block becomes a `future`.
+This allows the programmer to begin a task without waiting for it to complete. Only when the `future` is awaited does the task block the execution.
 
-The way `async/await` works is that programmers write code that looks like synchronous code. But the compiler then turns the code into asynchronous code. `Async/Await` is based on two keywords: `async` and `await`. During compilation, any code block wrapped inside the `async` keyword is converted into a state machine in the form of a `Future`.
+During compilation, the compiler turns code wrapped in the `async` keyword into a pollable state machine.
 
-As a simple example, the following async function `one_fn` may be compiled into `compiled_one_fn`, which is a function that returns a `Future`.
+As a simple example, let's look at the following async function `f`:
 
 ```rust
-async fn one_fn() -> u32 {
+async fn f() -> u32 {
     1
 }
+```
 
-fn compiled_one_fn() -> impl Future<Output = u32> {
+The compiler may compile `f` to something like:
+
+```
+fn compiled_f() -> impl Future<Output = u32> {
     future::ready(1)
 }
 ```
 
-To gain a better intuition for how asynchronous code gets converted into a state machine, let’s look at a more complex `async` function. We are going to convert the `notify_user` method below into a state machine that implements the `Future` trait.
+Let's look at a more complex example:
 
 ```rust
 async fn notify_user(user_id: u32) {
@@ -27,7 +32,9 @@ async fn notify_user(user_id: u32) {
 }
 ```
 
-The method above first fetches the user’s information. It then sends an email if the user’s group matches `1`.
+The function above first fetches the user's data, and conditionally sends an email to that user.
+
+
 
 If we think about the function as a state machine, here are its possible states:
 

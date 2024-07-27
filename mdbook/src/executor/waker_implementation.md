@@ -1,23 +1,11 @@
 # Waker
 
-Earlier, we saw that when `RawTask::run` is called, the method creates a `waker` when `poll`ing the user-provided `Future`:
+Earlier, we saw that when `RawTask::run` is called, `run` creates a `waker` which is used to `poll` the user-provided `Future`. In this section, we look at how the `Waker` is implemented.
 
-```rust
-let waker = ManuallyDrop::new(Waker::from_raw(RawWaker::new(ptr, &Self::RAW_WAKER_VTABLE)));
-let cx = &mut Context::from_waker(&waker);
+To create a `waker` in Rust, we need to pass a `RawWakerVTable` to the `Waker` constructor.
 
-let poll = <F as Future>::poll(Pin::new_unchecked(&mut *raw.future), cx);
+Here is the vtable for the task:
 ```
-
-So what does the `Waker` need to do? When `Waker::wake()` is called, the `Waker` needs to notify the executor that the `Task` is ready to be `run` again. Therefore, `Waker::wake()` needs to `schedule` the `Task` by pushing it back to the `TaskQueue`. Let’s look at how we can add a `Task` back to the `TaskQueue` when `Waker::wake` is called.
-
-To create a `Waker`, you need to pass it a `RAW_WAKER_VTABLE`. The `Waker` is created with `Waker::from_raw(RawWaker::new(ptr, &Self::RAW_WAKER_VTABLE))`. The `RAW_WAKER_VTABLE` is just a virtual function pointer table to methods like `wake`.
-
-When `Waker::wake()` is called, the actual wakeup call is delegated through a virtual function call to the implementation which is defined by the executor.
-
-`RAW_WAKER_VTABLE` is defined as a `constant` variable in the `RawTask`:
-
-```rust
 impl<F, R, S> RawTask<F, R, S>
 where
     F: Future<Output = R>,
@@ -31,7 +19,9 @@ where
     );
 ```
 
-Here is the implementation of `wake` and `wake_by_ref`:
+The most important method here is the `wake` method, which is invoked when `Waker::wake` is called.
+
+The `Waker::wake()` simply reschedules the task by pushing it onto the `TaskQueue`. Here is the implementation of `wake` and `wake_by_ref`:
 
 ```rust
 unsafe fn wake(ptr: *const ()) {
@@ -59,42 +49,22 @@ unsafe fn wake_by_ref(ptr: *const ()) {
 }
 ```
 
-`Wake` simply calls `Self::schedule` if the task is not completed, not closed, and not scheduled.
-
-`RawTask::schedule` simply calls `raw.schedule`, which is a property on the `RawTask` provided by the executor during the creation of the `RawTask`.
-
-```rust
-unsafe fn schedule(ptr: *const ()) {
-    let raw = Self::from_ptr(ptr);
-
-		...
-    let task = Task {
-        raw_task: NonNull::new_unchecked(ptr as *mut ()),
-    };
-
-    (*raw.schedule)(task);
-}
+The schedule method is passed to the `task` when the task is created and it looks something like:
+```
+let schedule = move |task| {
+    let task_queue = tq.upgrade();
+    task_queue.local_queue.push(task);
+};
+create_task(executor_id, future, schedule)
 ```
 
-In `create_task` below, we can see that the executor provides a `schedule` callback that simply pushes the task back onto the `local_queue`.
+Finally, here is the code that actually creates the `waker` which is used to poll the user-defined future.
 
 ```rust
-fn create_task<T>(
-    &self,
-    executor_id: usize,
-    tq: Rc<RefCell<TaskQueue>>,
-    future: impl Future<Output = T>,
-) -> (Task, JoinHandle<T>) {
-    ...
-    let schedule = move |task| {
-	      ...
-        if let Some(tq) = tq {
-          tq.borrow().ex.as_ref().local_queue.push(task);
-          ...
-        }
-    };
-    create_task(executor_id, future, schedule)
-}
+let waker = ManuallyDrop::new(Waker::from_raw(RawWaker::new(ptr, &Self::RAW_WAKER_VTABLE)));
+let cx = &mut Context::from_waker(&waker);
+
+let poll = <F as Future>::poll(Pin::new_unchecked(&mut *raw.future), cx);
 ```
 
 ### Code References
