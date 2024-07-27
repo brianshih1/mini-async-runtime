@@ -145,7 +145,7 @@
                         <h1 id="motivation"><a class="header" href="#motivation">Motivation</a></h1>
 <p>I've always wondered how asynchronous runtimes like <a href="https://nodejs.org/en/about">Node.js</a>, <a href="https://seastar.io/">Seastar</a>, <a href="https://docs.rs/glommio/latest/glommio/">Glommio</a>, and <a href="https://tokio.rs/">Tokio</a> work under the hood. Luckily, most asynchronous runtimes are open source.
 There is also a bunch of excellent blogs online such as the <a href="https://rust-lang.github.io/async-book/">Asychronous Programming in Rust blog series</a>.</p>
-<p>To better understand the internals of asynchronous runtimes, I built <code>mini-async-runtime</code>, a lightweight, toy asynchronous runtime written in Rust. I borrowed a lot of code from <a href="https://github.com/DataDog/glommio">Glommio</a> and <a href="https://github.com/smol-rs/async-io">async-io</a> to help myself prototype faster, since my goal was simply to gain a better intuition for how these systems really work. The <a href="https://github.com/brianshih1/mini-async-runtime">source code</a> is available online.</p>
+<p>To better understand the internals of asynchronous runtimes, I built <code>mini-async-runtime</code>, a lightweight, toy asynchronous runtime written in Rust. I reused a lot of code from <a href="https://github.com/DataDog/glommio">Glommio</a> and <a href="https://github.com/smol-rs/async-io">async-io</a> to help myself prototype faster, since my goal was just to gain a better intuition for how these systems really work. The <a href="https://github.com/brianshih1/mini-async-runtime">source code</a> is available online.</p>
 <p>In this blog series, I will deep dive into the internals of <code>mini-async-runtime</code>. Even though my implementation is in Rust, this blog is meant to 
 be language agnostic as most asynchronous runtimes, even in other languages, use a similar event-loop + reactor architecture. </p>
 <h2 id="what-is-an-asynchronous-runtime"><a class="header" href="#what-is-an-asynchronous-runtime">What is an asynchronous runtime?</a></h2>
@@ -171,7 +171,7 @@ tasks onto a single thread or a thread pool, depending on the implementation.</p
 <li><strong>Phase 4 [WIP]</strong>: In phase 4, we will build more advanced abstractions such as Executor Pools.</li>
 </ul>
 <p>As a teaser, here is the architecture of the async runtime that we are building:</p>
-<img src="../images/architecture.png" width="110%">
+<img src="./images/architecture.png" width="110%">
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
