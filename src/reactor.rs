@@ -1,11 +1,8 @@
 use std::{io, os::fd::RawFd};
 
-use nix::fcntl::{self, fcntl, FcntlArg, OFlag};
+use nix::fcntl::{fcntl, FcntlArg, OFlag};
 
-use crate::{
-    executor::executor,
-    sys::{self, source::Source, SourceType},
-};
+use crate::sys::{self, source::Source, SourceType};
 
 /// The reactor.
 ///
@@ -35,8 +32,7 @@ impl Reactor {
         self.new_source(raw, SourceType::PollableFd)
     }
 
-    pub fn react(&self) -> io::Result<bool> {
+    pub fn react(&self) {
         self.sys.wait();
-        Ok(true)
     }
 }

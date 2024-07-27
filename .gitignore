@@ -3,3 +3,4 @@ debug/
 target/
 .DS_Store
 pkg/
+.vscode/

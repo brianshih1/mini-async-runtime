@@ -6,7 +6,11 @@ use std::{
     task::{Context, Poll, RawWaker, RawWakerVTable, Waker},
 };
 
-use crate::{executor::LOCAL_EX, parking, reactor::Reactor, task::join_handle::JoinHandle};
+use crate::{
+    executor::{get_reactor, LOCAL_EX},
+    reactor::Reactor,
+    task::join_handle::JoinHandle,
+};
 
 use super::{
     local_executor_builder::LocalExecutorBuilder,
