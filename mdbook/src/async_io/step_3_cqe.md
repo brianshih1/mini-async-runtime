@@ -98,10 +98,9 @@ pub fn run<T>(&self, future: impl Future<Output = T>) -> T {
             if let Poll::Ready(t) = join_handle.as_mut().poll(cx) {
                 ...
             }
-						// This would call Reactor::wait()
-            self.parker
-                .poll_io()
-                .expect("Failed to poll io! This is actually pretty bad!");
+            // this is what processes the completed I/O events (from the completion queue)
+            // and reschedules any blocked tasks.
+            get_reactor().react();
             ...
         }
     })

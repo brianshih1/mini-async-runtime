@@ -64,7 +64,10 @@ pub fn run<T>(&self, future: impl Future<Output = T>) -> T {
                 return t.unwrap();
             }
 
-            // TODO: I/O work
+            // this is what processes the completed I/O events (from the completion queue)
+            // and reschedules any blocked tasks.
+            get_reactor().react();
+            
             self.run_task_queues();
         }
     })

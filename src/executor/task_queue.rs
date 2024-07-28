@@ -95,6 +95,7 @@ impl TaskQueueExecutor {
                 {
                     LOCAL_EX.with(|local_ex| {
                         let mut queues = local_ex.queues.as_ref().borrow_mut();
+                        // activates the queue if there is no currently active one
                         queues.maybe_activate_queue(tq);
                     });
                 }

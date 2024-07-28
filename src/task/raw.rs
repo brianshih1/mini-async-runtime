@@ -8,6 +8,8 @@ use std::{
     task::{Context, Poll, RawWaker, RawWakerVTable, Waker},
 };
 
+use tracing::debug;
+
 use super::{
     header::Header,
     state::{CLOSED, COMPLETED, HANDLE, RUNNING, SCHEDULED},
@@ -167,7 +169,7 @@ where
 
     /// Wakes a waker. Ptr is the raw task.
     unsafe fn wake_by_ref(ptr: *const ()) {
-        println!("Wake_by_ref");
+        debug!("waking a waker");
         let raw = Self::from_ptr(ptr);
         if Self::thread_id() != Some(raw.my_executor_id()) {
             todo!()
@@ -334,7 +336,7 @@ where
         let mut ret = false;
         match poll {
             Poll::Ready(out) => {
-                println!("poll is ready");
+                debug!("poll is ready");
                 Self::drop_future(ptr);
                 raw.output.write(out);
 
@@ -366,7 +368,7 @@ where
                 drop(output);
             }
             Poll::Pending => {
-                println!("Task is pending");
+                debug!("Task is pending");
                 // The task is still not completed.
 
                 // If the task was closed while running, we'll need to unschedule in case it
@@ -384,12 +386,12 @@ where
                 (*(raw.header as *mut Header)).state = new;
 
                 let is_scheduled = state & SCHEDULED;
-                println!("Scheduled: {}", is_scheduled);
+                debug!("Scheduled: {}", is_scheduled);
                 // If the task was closed while running, we need to notify the awaiter.
                 // If the task was woken up while running, we need to schedule it.
                 // Otherwise, we just drop the task reference.
                 if state & CLOSED != 0 {
-                    println!("err");
+                    debug!("err");
                     // Notify the awaiter that the future has been dropped.
                     (*(raw.header as *mut Header)).notify(None);
                 } else if state & SCHEDULED != 0 {

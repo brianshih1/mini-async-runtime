@@ -1,5 +1,7 @@
 use std::{io, os::fd::AsRawFd};
 
+use tracing::debug;
+
 use crate::{executor::get_reactor, sys::source::Source};
 
 #[derive(Debug)]
@@ -34,7 +36,7 @@ impl<T> Async<T> {
         loop {
             match op(self.get_ref()) {
                 Err(err) if err.kind() == io::ErrorKind::WouldBlock => {
-                    println!("would block");
+                    debug!("would block");
                 }
                 res => return res,
             }
@@ -47,7 +49,7 @@ impl<T> Async<T> {
         loop {
             match op(self.get_ref()) {
                 Err(err) if err.kind() == io::ErrorKind::WouldBlock => {
-                    println!("would block");
+                    debug!("would block");
                 }
                 res => return res,
             }

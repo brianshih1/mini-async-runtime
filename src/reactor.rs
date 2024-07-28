@@ -1,4 +1,4 @@
-use std::{io, os::fd::RawFd};
+use std::os::fd::RawFd;
 
 use nix::fcntl::{fcntl, FcntlArg, OFlag};
 

@@ -5,6 +5,7 @@ use std::{
     rc::Rc,
     task::{Context, Poll, RawWaker, RawWakerVTable, Waker},
 };
+use tracing::debug;
 
 use crate::{
     executor::{get_reactor, LOCAL_EX},
@@ -20,7 +21,7 @@ use super::{
 };
 
 #[derive(Debug)]
-pub(crate) struct LocalExecutor {
+pub struct LocalExecutor {
     pub(crate) id: usize,
     pub(crate) queues: Rc<RefCell<QueueManager>>,
     reactor: Rc<Reactor>,
@@ -76,6 +77,7 @@ impl LocalExecutor {
             .cloned()
     }
 
+    // Spawn places the task on a task queue.
     pub(crate) fn spawn<T>(&self, future: impl Future<Output = T>) -> JoinHandle<T> {
         let active_executing = self.queues.borrow().active_executing.clone();
         let tq = active_executing
@@ -104,22 +106,13 @@ impl LocalExecutor {
                     return t.unwrap();
                 }
 
-                // this is what makes the reactor try to process events
-                // from the completion queue.
+                // this is what processes the completed I/O events (from the completion queue)
+                // and reschedules any blocked tasks.
                 get_reactor().react();
 
-                // TODO: I/O work
                 self.run_task_queues();
             }
         })
-    }
-
-    pub(crate) fn spawn_into<T>(
-        &self,
-        future: impl Future<Output = T>,
-        handle: TaskQueueHandle,
-    ) -> JoinHandle<T> {
-        todo!()
     }
 
     fn run_task_queues(&self) -> bool {
@@ -127,10 +120,10 @@ impl LocalExecutor {
         loop {
             // TODO: Check if prempt
             if !self.run_one_task_queue() {
-                println!("run_task_queues: no task executed, returning");
+                debug!("run_task_queues: no task executed, returning");
                 return false;
             } else {
-                println!("run_task_queues: Ran is true, loop again");
+                debug!("run_task_queues: Ran is true, loop again");
                 ran = true;
             }
         }
@@ -139,10 +132,10 @@ impl LocalExecutor {
 
     // Returns true if a task queue is run
     fn run_one_task_queue(&self) -> bool {
-        println!("run_one_task_queue called");
+        debug!("run_one_task_queue called");
         let mut q_manager = self.queues.borrow_mut();
         let size = q_manager.active_queues.len();
-        println!("Size is: {}", size);
+        debug!("Size is: {}", size);
         let tq = q_manager.active_queues.pop();
         match tq {
             Some(tq) => {
@@ -156,7 +149,7 @@ impl LocalExecutor {
                         drop(tq);
                         task.run();
                     } else {
-                        println!("No task. Break!");
+                        debug!("No task. Break!");
                         break;
                     }
                 }
@@ -169,7 +162,7 @@ impl LocalExecutor {
                 true
             }
             None => {
-                println!("no task queue to run");
+                debug!("no task queue to run");
                 false
             }
         }
@@ -195,13 +188,13 @@ pub(crate) fn dummy_waker() -> Waker {
         &RawWakerVTable::new(
             |_| raw_waker(),
             |_| {
-                println!("Dummy wake");
+                debug!("Dummy wake");
             },
             |_| {
-                println!("Dummy wake_by_ref");
+                debug!("Dummy wake_by_ref");
             },
             |_| {
-                println!("Dummy drop");
+                debug!("Dummy drop");
             },
         )
     }

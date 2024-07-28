@@ -1,5 +1,7 @@
 use std::{future::Future, marker::PhantomData, ptr::NonNull, sync::atomic::Ordering, task::Poll};
 
+use tracing::debug;
+
 use super::{
     header::Header,
     state::{CLOSED, COMPLETED, HANDLE, RUNNING, SCHEDULED},
@@ -26,7 +28,7 @@ impl<R> Future for JoinHandle<R> {
         self: std::pin::Pin<&mut Self>,
         cx: &mut std::task::Context<'_>,
     ) -> std::task::Poll<Self::Output> {
-        println!("Polling join handle");
+        debug!("Polling join handle");
         let ptr = self.raw_task.as_ptr();
         let header = ptr as *mut Header;
 
@@ -50,7 +52,7 @@ impl<R> Future for JoinHandle<R> {
             if state & COMPLETED == 0 {
                 // Replace the waker with one associated with the current task.
                 (*header).register(cx.waker());
-                println!("Join Handle's poll PENDING");
+                debug!("Join Handle's poll PENDING");
                 return Poll::Pending;
             }
 
